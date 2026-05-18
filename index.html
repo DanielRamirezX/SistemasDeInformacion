@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemas de Información · Daniel Vaca · TL0215</title>
+<meta name="description" content="Sistemas de Información — Ingeniería en Sistemas Computacionales, UNITEC Atizapán. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:      #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink:        #2A1D14;
+    --ink-soft:   #4A3A2C;
+    --ink-muted:  #7A6552;
+    --ink-faint:  #A89278;
+    --blood:      #A02418;
+    --blood-dark: #6E1810;
+    --ochre:      #B5852A;
+    --olive:      #5D6638;
+    --line:       rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'Manrope', system-ui, -apple-system, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ==========================================================
+     NAV
+  ========================================================== */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(239, 230, 210, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  @media (max-width: 720px) { .nav-meta { display: none; } }
+
+  /* ==========================================================
+     LAYOUT
+  ========================================================== */
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } }
+
+  /* ==========================================================
+     HERO
+  ========================================================== */
+  .hero {
+    padding: 88px 0 64px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: var(--ochre);
+    display: inline-block;
+  }
+  .hero-eyebrow b { color: var(--blood); font-weight: 500; letter-spacing: 0.24em; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(56px, 9vw, 132px);
+    line-height: 0.95;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+  }
+  .hero h1 .accent { color: var(--blood); }
+  .hero-lead {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+  .hero-lead span { color: var(--blood); }
+  .prof-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+  }
+  .prof-cell .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .prof-cell .value {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .prof-cell .value b { color: var(--blood); font-weight: 500; }
+
+  /* Hero scribble */
+  .hero-scribble {
+    position: absolute;
+    top: 110px;
+    right: 40px;
+    width: 80px;
+    height: 100px;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1s forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+  .hero-scribble path {
+    stroke: var(--ochre);
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: drawIn 1.6s cubic-bezier(0.65,0,0.35,1) 1.2s forwards;
+  }
+  @keyframes drawIn { to { stroke-dashoffset: 0; } }
+  @media (max-width: 900px) { .hero-scribble { display: none; } }
+
+  /* ==========================================================
+     CLASSES GRID
+  ========================================================== */
+  .classes-section {
+    padding: 64px 0 96px;
+    border-top: 1px solid var(--line);
+  }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .sec-head-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .sec-head-meta b { color: var(--blood); font-weight: 500; }
+
+  .classes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .class-card {
+    display: block;
+    padding: 32px 28px 28px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: background 0.25s ease, transform 0.25s ease;
+    min-height: 200px;
+  }
+  .class-card.available {
+    cursor: pointer;
+    background: transparent;
+  }
+  .class-card.available:hover {
+    background: var(--paper-deep);
+  }
+  .class-card.available:hover .class-num {
+    color: var(--blood);
+  }
+  .class-card.available:hover .class-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .class-card.locked {
+    cursor: not-allowed;
+  }
+  .class-card.locked .class-num,
+  .class-card.locked .class-name,
+  .class-card.locked .class-topic {
+    opacity: 0.45;
+  }
+
+  .class-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    transition: color 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .class-num b { font-weight: 500; }
+
+  .class-lock {
+    width: 14px;
+    height: 14px;
+    color: var(--ink-faint);
+  }
+
+  .class-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: -0.015em;
+  }
+
+  .class-topic {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.45;
+    margin-bottom: 24px;
+    min-height: 42px;
+  }
+
+  .class-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .class-date .open-date b { color: var(--blood); font-weight: 500; }
+  .class-card.available .class-date { color: var(--ink-muted); }
+  .class-card.available .class-date .day b { color: var(--ink); font-weight: 500; }
+
+  .class-arrow {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    color: var(--blood);
+    font-size: 16px;
+  }
+
+  /* Special states: exam weeks */
+  .class-card.exam .class-num {
+    color: var(--blood);
+  }
+  .class-card.exam .class-num b {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  /* Reveal animation on load */
+  .class-card {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    animation-delay: calc(var(--i, 0) * 40ms + 200ms);
+  }
+  @keyframes cardIn { to { opacity: 1; transform: none; } }
+
+  /* ==========================================================
+     QUOTE STRIP
+  ========================================================== */
+  .quote-strip {
+    padding: 80px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  .quote-strip blockquote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(24px, 3.5vw, 40px);
+    line-height: 1.25;
+    color: var(--ink);
+    max-width: 800px;
+    margin: 0 auto 24px;
+    letter-spacing: -0.01em;
+  }
+  .quote-strip cite {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-style: normal;
+  }
+  .quote-strip cite b { color: var(--blood); font-weight: 500; }
+
+  /* ==========================================================
+     FOOTER
+  ========================================================== */
+  .footer {
+    padding: 56px 0 80px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .footer-role {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .footer-end {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--blood);
+    text-align: right;
+  }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; }
+    body::before { display: none; }
+    .nav { display: none; }
+    .class-card.locked { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <b>TL0215</b></div>
+    <div class="nav-meta">Cuatrimestre 26-3 · UNITEC Atizapán</div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow"><b>Curso</b> · 14 capítulos · 28 sesiones</div>
+    <h1>Sistemas <span class="accent">de información</span></h1>
+    <p class="hero-lead">Catorce semanas. Catorce ideas. <span>Un sistema propio</span> al final.</p>
+
+    <div class="prof-bar">
+      <div class="prof-cell">
+        <div class="label">Profesor</div>
+        <div class="value"><b>Daniel Vaca</b></div>
+      </div>
+      <div class="prof-cell">
+        <div class="label">Empresa</div>
+        <div class="value">Developer · BBVA México</div>
+      </div>
+      <div class="prof-cell">
+        <div class="label">Periodo</div>
+        <div class="value">18 mayo — 20 ago 2026</div>
+      </div>
+      <div class="prof-cell">
+        <div class="label">Horario</div>
+        <div class="value">Lun y jue · 20:00–21:59</div>
+      </div>
+    </div>
+
+    <svg class="hero-scribble" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M15,20 Q5,40 18,55 T25,90 M10,28 L40,28 M14,48 L46,48 M55,15 Q70,30 60,50"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ========== CLASSES GRID ========== -->
+<section class="classes-section">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Los capítulos</h2>
+      <div class="sec-head-meta">Cada capítulo lleva el nombre del filósofo <b>cuya idea</b> mejor lo ilumina</div>
+    </div>
+    <div class="classes" id="classesGrid">
+      <!-- Cards rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== QUOTE STRIP ========== -->
+<section class="quote-strip">
+  <div class="wrap">
+    <blockquote>"El todo es más que la suma de sus partes."</blockquote>
+    <cite>— <b>Ludwig von Bertalanffy</b> · 1968</cite>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">El curso es el sistema.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ========== CLASS DATA ==========
+  // Cada capítulo: { num, filósofo, tema (corto), fecha de apertura, url opcional }
+  // url solo se asigna cuando la clase está lista. Si no hay url, el card será solo informativo aunque ya esté disponible.
+  const CLASSES = [
+    { num:  1, name: "Bertalanffy",  topic: "Fundamentos y tipos de sistemas",         date: "2026-05-18", url: "clase-01/" },
+    { num:  2, name: "Heráclito",    topic: "Ciclos de vida del desarrollo",           date: "2026-05-25" },
+    { num:  3, name: "Aristóteles",  topic: "Modelos orientados a objetos y ágiles",   date: "2026-06-01" },
+    { num:  4, name: "Descartes",    topic: "Análisis estructurado vs orientado a objetos", date: "2026-06-08" },
+    { num:  5, name: "Sócrates",     topic: "Roles y levantamiento de requerimientos", date: "2026-06-15" },
+    { num:  6, name: "Maquiavelo",   topic: "Elección de metodología según el contexto", date: "2026-06-22" },
+    { num:  7, name: "Kant",         topic: "Examen parcial · diagnóstico del problema", date: "2026-06-29", exam: true },
+    { num:  8, name: "Confucio",     topic: "Requerimientos formales · SOW y backlog", date: "2026-07-06" },
+    { num:  9, name: "Wittgenstein", topic: "Diagramas de flujo de datos · ER",         date: "2026-07-13" },
+    { num: 10, name: "Pascal",       topic: "Árboles de decisión · Sprint review",     date: "2026-07-20" },
+    { num: 11, name: "Platón",       topic: "UML · abstracción · refinamiento",         date: "2026-07-27" },
+    { num: 12, name: "Vitruvio",     topic: "Diseño de interfaces · HIPO",              date: "2026-08-03" },
+    { num: 13, name: "Spinoza",      topic: "Cuplas · acoplamiento · cohesión",         date: "2026-08-10" },
+    { num: 14, name: "Nietzsche",    topic: "Examen final · Demo Day",                  date: "2026-08-17", exam: true },
+  ];
+
+  // ========== UTILS ==========
+  const MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const WEEKDAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+  function fmtDate(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    return { day: dt.getDate(), month: MONTHS[dt.getMonth()], weekday: WEEKDAYS[dt.getDay()] };
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function isOpen(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const openTs = new Date(y, m - 1, d, 0, 0, 0).getTime();
+    return Date.now() >= openTs;
+  }
+
+  // ========== RENDER ==========
+  function renderClasses() {
+    const grid = document.getElementById('classesGrid');
+    const html = CLASSES.map((c, i) => {
+      const open = isOpen(c.date);
+      const f = fmtDate(c.date);
+      const hasUrl = Boolean(c.url);
+      const available = open && hasUrl;
+      const tag = available ? 'a' : 'div';
+      const href = available ? ` href="${c.url}"` : '';
+      const cls = ['class-card'];
+      if (available) cls.push('available');
+      else cls.push('locked');
+      if (c.exam) cls.push('exam');
+
+      const lockIcon = !available
+        ? '<svg class="class-lock" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'
+        : '<span class="class-arrow">→</span>';
+
+      const dateLine = available
+        ? `<div class="class-date"><span class="day"><b>${f.weekday}</b> ${f.day} ${f.month}</span>${lockIcon}</div>`
+        : `<div class="class-date"><span class="open-date">Se abre <b>${f.day} ${f.month}</b></span>${lockIcon}</div>`;
+
+      const labelNum = c.exam
+        ? (c.num === 7 ? 'Cap. ' + pad(c.num) + ' · Parcial' : 'Cap. ' + pad(c.num) + ' · Final')
+        : 'Capítulo ' + pad(c.num);
+
+      return `<${tag}${href} class="${cls.join(' ')}" style="--i:${i}">
+        <div class="class-num"><b>${labelNum}</b></div>
+        <div class="class-name">${c.name}</div>
+        <div class="class-topic">${c.topic}</div>
+        ${dateLine}
+      </${tag}>`;
+    }).join('');
+    grid.innerHTML = html;
+  }
+
+  renderClasses();
+</script>
+
+</body>
+</html>
