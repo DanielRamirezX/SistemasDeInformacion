@@ -442,9 +442,9 @@
 <!-- ========== HERO ========== -->
 <section class="hero">
   <div class="wrap">
-    <div class="hero-eyebrow"><b>Curso</b> · 14 capítulos · 28 sesiones</div>
+    <div class="hero-eyebrow"><b>Curso</b> · 28 sesiones · 14 semanas</div>
     <h1>Sistemas <span class="accent">de información</span></h1>
-    <p class="hero-lead">Catorce semanas. Catorce ideas. <span>Un sistema propio</span> al final.</p>
+    <p class="hero-lead">Catorce semanas. Veintiocho ideas. <span>Un sistema propio</span> al final.</p>
 
     <div class="prof-bar">
       <div class="prof-cell">
@@ -510,20 +510,48 @@
   // Cada capítulo: { num, filósofo, tema (corto), fecha de apertura, url opcional }
   // url solo se asigna cuando la clase está lista. Si no hay url, el card será solo informativo aunque ya esté disponible.
   const CLASSES = [
-    { num:  1, name: "Bertalanffy",  topic: "Fundamentos y tipos de sistemas",         date: "2026-05-18", url: "clase-01/" },
-    { num:  2, name: "Heráclito",    topic: "Ciclos de vida del desarrollo",           date: "2026-05-25" },
-    { num:  3, name: "Aristóteles",  topic: "Modelos orientados a objetos y ágiles",   date: "2026-06-01" },
-    { num:  4, name: "Descartes",    topic: "Análisis estructurado vs orientado a objetos", date: "2026-06-08" },
-    { num:  5, name: "Sócrates",     topic: "Roles y levantamiento de requerimientos", date: "2026-06-15" },
-    { num:  6, name: "Maquiavelo",   topic: "Elección de metodología según el contexto", date: "2026-06-22" },
-    { num:  7, name: "Kant",         topic: "Examen parcial · diagnóstico del problema", date: "2026-06-29", exam: true },
-    { num:  8, name: "Confucio",     topic: "Requerimientos formales · SOW y backlog", date: "2026-07-06" },
-    { num:  9, name: "Wittgenstein", topic: "Diagramas de flujo de datos · ER",         date: "2026-07-13" },
-    { num: 10, name: "Pascal",       topic: "Árboles de decisión · Sprint review",     date: "2026-07-20" },
-    { num: 11, name: "Platón",       topic: "UML · abstracción · refinamiento",         date: "2026-07-27" },
-    { num: 12, name: "Vitruvio",     topic: "Diseño de interfaces · HIPO",              date: "2026-08-03" },
-    { num: 13, name: "Spinoza",      topic: "Cuplas · acoplamiento · cohesión",         date: "2026-08-10" },
-    { num: 14, name: "Nietzsche",    topic: "Examen final · Demo Day",                  date: "2026-08-17", exam: true },
+    // SEMANA 1 — Fundamentos
+    { num:  1, name: "Bertalanffy",    topic: "Fundamentos y tipos de sistemas",            date: "2026-05-18", url: "clase-01/" },
+    { num:  2, name: "Heráclito",      topic: "Ciclos de vida del desarrollo",              date: "2026-05-21", url: "clase-02/" },
+    // SEMANA 2 — Proyecto y orientación a objetos
+    { num:  3, name: "Maquiavelo",     topic: "Asignación del proyecto · elección de método", date: "2026-05-25" },
+    { num:  4, name: "Aristóteles",    topic: "Modelos orientados a objetos · UML intro",   date: "2026-05-28" },
+    // SEMANA 3 — Ágiles y análisis
+    { num:  5, name: "Sócrates",       topic: "Modelos ágiles a fondo · método iterativo",  date: "2026-06-01" },
+    { num:  6, name: "Confucio",       topic: "Análisis estructurado vs orientado a objetos", date: "2026-06-04" },
+    // SEMANA 4 — Análisis de sistemas
+    { num:  7, name: "Descartes",      topic: "Análisis de sistemas · método cartesiano",   date: "2026-06-08" },
+    { num:  8, name: "Bacon",          topic: "Estándares y normas · método inductivo",     date: "2026-06-11" },
+    // SEMANA 5 — Usuarios y diseño
+    { num:  9, name: "Locke",          topic: "Identificación de usuarios participantes",   date: "2026-06-15" },
+    { num: 10, name: "Platón",         topic: "Diseño de sistemas · formas ideales",        date: "2026-06-18" },
+    // SEMANA 6 — Metodología y repaso
+    { num: 11, name: "Kierkegaard",    topic: "Metodología según contexto · decisión",      date: "2026-06-22" },
+    { num: 12, name: "Hume",           topic: "Repaso integrador · escepticismo metódico",  date: "2026-06-25" },
+    // SEMANA 7 — Examen parcial y diagnóstico
+    { num: 13, name: "Kant",           topic: "Examen parcial · crítica de la razón",       date: "2026-06-29", exam: "parcial" },
+    { num: 14, name: "Diógenes",       topic: "Diagnóstico del problema · la lámpara",      date: "2026-07-02" },
+    // SEMANA 8 — Requerimientos
+    { num: 15, name: "Spinoza",        topic: "Análisis y modelado de requerimientos",      date: "2026-07-06" },
+    { num: 16, name: "Wittgenstein",   topic: "Aprobación · lenguaje de los requisitos",    date: "2026-07-09" },
+    // SEMANA 9 — Funciones y datos
+    { num: 17, name: "Pitágoras",      topic: "DFD · modelado de funciones",                date: "2026-07-13" },
+    { num: 18, name: "Euclides",       topic: "Diccionario de datos · especificación",      date: "2026-07-16" },
+    // SEMANA 10 — Modelado y decisiones
+    { num: 19, name: "Leibniz",        topic: "Modelado de datos · diagramas ER",           date: "2026-07-20" },
+    { num: 20, name: "Pascal",         topic: "Árboles de decisión y matrices",             date: "2026-07-23" },
+    // SEMANA 11 — Conceptos de diseño
+    { num: 21, name: "Vitruvio",       topic: "Conceptos y principios de diseño",           date: "2026-07-27" },
+    { num: 22, name: "Hegel",          topic: "Abstracción y refinamiento · dialéctica",    date: "2026-07-30" },
+    // SEMANA 12 — Interfaces y estructurado
+    { num: 23, name: "Da Vinci",       topic: "Diseño de interfaces de usuario",            date: "2026-08-03" },
+    { num: 24, name: "Mies van der Rohe", topic: "Diseño estructurado · HIPO · less is more", date: "2026-08-06" },
+    // SEMANA 13 — Cuplas y calidad
+    { num: 25, name: "Lévi-Strauss",   topic: "Módulos · cuplas · estructuralismo",         date: "2026-08-10" },
+    { num: 26, name: "Goethe",         topic: "Validación de calidad · la totalidad",       date: "2026-08-13" },
+    // SEMANA 14 — Cierre
+    { num: 27, name: "Tomás de Aquino", topic: "Examen final · síntesis",                   date: "2026-08-17", exam: "final" },
+    { num: 28, name: "Nietzsche",      topic: "Demo Day · afirmación del valor propio",     date: "2026-08-20", exam: "demo" },
   ];
 
   // ========== UTILS ==========
@@ -567,8 +595,9 @@
         ? `<div class="class-date"><span class="day"><b>${f.weekday}</b> ${f.day} ${f.month}</span>${lockIcon}</div>`
         : `<div class="class-date"><span class="open-date">Se abre <b>${f.day} ${f.month}</b></span>${lockIcon}</div>`;
 
+      const examLabels = { parcial: 'Parcial', final: 'Final', demo: 'Demo Day' };
       const labelNum = c.exam
-        ? (c.num === 7 ? 'Cap. ' + pad(c.num) + ' · Parcial' : 'Cap. ' + pad(c.num) + ' · Final')
+        ? 'Cap. ' + pad(c.num) + ' · ' + (examLabels[c.exam] || 'Examen')
         : 'Capítulo ' + pad(c.num);
 
       return `<${tag}${href} class="${cls.join(' ')}" style="--i:${i}">
