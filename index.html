@@ -427,6 +427,99 @@
     .nav { display: none; }
     .class-card.locked { display: none; }
   }
+
+  /* ============================================================
+     HERRAMIENTAS
+  ============================================================ */
+  .tools-section { padding: 64px 0 96px; border-top: 1px solid var(--line); }
+  .tools-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+  .tool-filter {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 22px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .tool-filter:hover { color: var(--ink); border-color: var(--ink); }
+  .tool-filter.active { background: var(--blood); border-color: var(--blood); color: var(--paper); }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .tool-card {
+    display: flex;
+    flex-direction: column;
+    padding: 28px 26px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: background 0.25s ease, transform 0.2s ease;
+    min-height: 188px;
+  }
+  .tool-card:hover { background: var(--paper-deep); }
+  .tool-card:hover .tool-arrow { transform: translate(3px, -3px); color: var(--blood); }
+  .tool-cat {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blood);
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .tool-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .tool-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .tool-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .tool-domain {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--ink-muted);
+    word-break: break-all;
+  }
+  .tool-arrow {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink-muted);
+    line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+  }
+  .tool-card.hidden { display: none; }
+  @media (max-width: 600px) { .tools-grid { grid-template-columns: 1fr; } }
+
 </style>
 </head>
 <body>
@@ -484,6 +577,23 @@
   </div>
 </section>
 
+
+<!-- ========== TOOLS ========== -->
+<section class="tools-section" id="herramientas">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>El taller</h2>
+      <div class="sec-head-meta">Herramientas del curso <b>· filtra por categoría</b></div>
+    </div>
+    <div class="tools-filters" id="toolsFilters">
+      <!-- filtros rendered by JS -->
+    </div>
+    <div class="tools-grid" id="toolsGrid">
+      <!-- tools rendered by JS -->
+    </div>
+  </div>
+</section>
+
 <!-- ========== QUOTE STRIP ========== -->
 <section class="quote-strip">
   <div class="wrap">
@@ -514,10 +624,10 @@
     { num:  1, name: "Bertalanffy",    topic: "Fundamentos y tipos de sistemas",            date: "2026-05-18", url: "clase-01/" },
     { num:  2, name: "Heráclito",      topic: "Ciclos de vida del desarrollo",              date: "2026-05-21", url: "clase-02/" },
     // SEMANA 2 — Proyecto y orientación a objetos
-    { num:  3, name: "Maquiavelo",     topic: "Asignación del proyecto · elección de método", date: "2026-05-25" },
-    { num:  4, name: "Aristóteles",    topic: "Modelos orientados a objetos · UML intro",   date: "2026-05-28" },
-    // SEMANA 3 — Ágiles y análisis
-    { num:  5, name: "Sócrates",       topic: "Modelos ágiles a fondo · método iterativo",  date: "2026-06-01" },
+    { num:  3, name: "Aristóteles",    topic: "Objetos · UML · requerimientos · práctica con IA", date: "2026-05-25", url: "clase-03/" },
+    { num:  4, name: "Sócrates",       topic: "Modelos ágiles a fondo · vivir un sprint",   date: "2026-05-28" },
+    // SEMANA 3 — Metodología y análisis
+    { num:  5, name: "Maquiavelo",     topic: "Elección de metodología según el contexto",  date: "2026-06-01" },
     { num:  6, name: "Confucio",       topic: "Análisis estructurado vs orientado a objetos", date: "2026-06-04" },
     // SEMANA 4 — Análisis de sistemas
     { num:  7, name: "Descartes",      topic: "Análisis de sistemas · método cartesiano",   date: "2026-06-08" },
@@ -611,6 +721,75 @@
   }
 
   renderClasses();
+
+  // ============================================================
+  // HERRAMIENTAS
+  // ============================================================
+  const TOOLS = [
+    { title: "GitHub", cat: "Desarrollo",
+      desc: "Donde vive el código del mundo. Control de versiones, colaboración y portafolio en un solo lugar.",
+      domain: "github.com", url: "https://github.com" },
+    { title: "freeCodeCamp", cat: "Aprender",
+      desc: "Miles de horas de cursos de programación gratis, con certificaciones y proyectos reales.",
+      domain: "freecodecamp.org", url: "https://www.freecodecamp.org" },
+    { title: "Codewars", cat: "Aprender",
+      desc: "Mejora resolviendo retos de código \u2014 katas \u2014 en el lenguaje que elijas. Práctica gamificada.",
+      domain: "codewars.com", url: "https://www.codewars.com/trainer/setup" },
+    { title: "Artificial Analysis", cat: "IA",
+      desc: "Comparativa independiente de modelos de IA: cuál es más rápido, más barato y más capaz.",
+      domain: "artificialanalysis.ai", url: "https://artificialanalysis.ai/leaderboards/models" },
+    { title: "La Guía Scrum 2020", cat: "Metodologías",
+      desc: "La definición oficial y canónica de Scrum, en español. Trece páginas que lo explican todo.",
+      domain: "scrumguides.org", url: "https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Spanish-Latin-South-American.pdf" },
+    { title: "Scrum, de Jeff Sutherland", cat: "Metodologías",
+      desc: "El libro del co-creador de Scrum. La historia y la filosofía detrás del método ágil más usado.",
+      domain: "PDF · super.so", url: "https://assets.super.so/e745dfd7-232e-47c1-a806-753f45b941ba/files/e5c9770b-4e7d-4df6-880f-a9a15ace7b51.pdf" },
+    { title: "Jira", cat: "Metodologías",
+      desc: "El estándar de la industria para gestionar sprints, backlog y tableros ágiles.",
+      domain: "atlassian.com", url: "https://www.atlassian.com/es/software/jira" },
+    { title: "JetBrains Student Pack", cat: "Estudiantes",
+      desc: "IDEs profesionales \u2014 IntelliJ, PyCharm, WebStorm \u2014 gratis con tu correo de estudiante.",
+      domain: "jetbrains.com", url: "https://www.jetbrains.com/academy/student-pack/" },
+    { title: "GitHub Student Pack", cat: "Estudiantes",
+      desc: "Decenas de herramientas premium gratis para estudiantes: hosting, dominios y créditos en la nube.",
+      domain: "education.github.com", url: "https://education.github.com/pack" },
+  ];
+
+  const CATS = ["Desarrollo", "Aprender", "IA", "Metodologías", "Estudiantes"];
+
+  const toolsGrid = document.getElementById('toolsGrid');
+  const toolsFilters = document.getElementById('toolsFilters');
+  let activeCat = "Todas";
+
+  function renderTools() {
+    toolsGrid.innerHTML = TOOLS.map(t => {
+      const hidden = (activeCat !== "Todas" && t.cat !== activeCat) ? ' hidden' : '';
+      return '<a class="tool-card' + hidden + '" href="' + t.url + '" target="_blank" rel="noopener" data-cat="' + t.cat + '">' +
+        '<div class="tool-cat">' + t.cat + '</div>' +
+        '<div class="tool-title">' + t.title + '</div>' +
+        '<div class="tool-desc">' + t.desc + '</div>' +
+        '<div class="tool-foot"><span class="tool-domain">' + t.domain + '</span><span class="tool-arrow">\u2197</span></div>' +
+        '</a>';
+    }).join('');
+  }
+
+  function renderFilters() {
+    const all = ["Todas"].concat(CATS);
+    toolsFilters.innerHTML = all.map(c =>
+      '<button class="tool-filter' + (c === activeCat ? ' active' : '') + '" data-cat="' + c + '">' + c + '</button>'
+    ).join('');
+    toolsFilters.querySelectorAll('.tool-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCat = btn.getAttribute('data-cat');
+        renderFilters();
+        renderTools();
+      });
+    });
+  }
+
+  renderFilters();
+  renderTools();
+
 </script>
 
 </body>
