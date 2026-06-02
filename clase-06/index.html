@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 06 · Confucio · Sistemas de Información</title>
+<meta name="description" content="Clase 06: análisis estructurado vs orientado a objetos. Dos formas de mirar y ordenar el mismo problema. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* ============================================================
+     COMPARACIÓN DE PARADIGMAS (s3)
+  ============================================================ */
+  .para-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 32px 0; }
+  @media (max-width: 640px) { .para-grid { grid-template-columns: 1fr; } }
+  .para-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 26px 24px; }
+  .para-card.est { border-top: 3px solid var(--ochre); }
+  .para-card.oo { border-top: 3px solid var(--blood); }
+  .para-card .pc-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+  .para-card.est .pc-eyebrow { color: var(--ochre); }
+  .para-card.oo .pc-eyebrow { color: var(--blood); }
+  .para-card h4 { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); margin-bottom: 6px; }
+  .para-card .pc-word { font-family: var(--serif); font-size: 15px; color: var(--ink-muted); font-style: italic; margin-bottom: 16px; }
+  .para-card ul { list-style: none; padding: 0; margin: 0; }
+  .para-card li { font-size: 13.5px; color: var(--ink-soft); padding: 7px 0 7px 16px; position: relative; line-height: 1.4; border-top: 1px solid var(--line); }
+  .para-card li:first-child { border-top: none; }
+  .para-card li::before { content: '·'; position: absolute; left: 2px; font-weight: 700; }
+  .para-card.est li::before { color: var(--ochre); }
+  .para-card.oo li::before { color: var(--blood); }
+
+  /* ============================================================
+     DFD (s4)
+  ============================================================ */
+  .diagram-box { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 32px 24px; margin: 32px 0; }
+  .dfd-svg, .oo-svg { width: 100%; height: auto; display: block; }
+  .dfd-node { opacity: 0; transition: opacity 0.55s ease; }
+  .diagram-box.go .dfd-node { opacity: 1; }
+  .diagram-box.go .dfd-node.n1 { transition-delay: 0.2s; }
+  .diagram-box.go .dfd-node.n2 { transition-delay: 0.6s; }
+  .diagram-box.go .dfd-node.n3 { transition-delay: 1.0s; }
+  .diagram-box.go .dfd-node.n4 { transition-delay: 1.4s; }
+  .dfd-ext { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .dfd-proc { fill: var(--paper); stroke: var(--ochre); stroke-width: 2; }
+  .dfd-store-line { stroke: var(--ink); stroke-width: 1.5; }
+  .dfd-store-bg { fill: var(--paper); }
+  .dfd-label { font-family: var(--mono); font-size: 11px; fill: var(--ink-soft); }
+  .dfd-label.title { font-family: var(--serif); font-style: italic; font-size: 14px; fill: var(--ink); }
+  .dfd-flow { stroke: var(--ink-soft); stroke-width: 1.5; fill: none; marker-end: url(#arrowC); stroke-dasharray: 220; stroke-dashoffset: 220; transition: stroke-dashoffset 0.7s ease; }
+  .diagram-box.go .dfd-flow.f1 { stroke-dashoffset: 0; transition-delay: 1.7s; }
+  .diagram-box.go .dfd-flow.f2 { stroke-dashoffset: 0; transition-delay: 2.0s; }
+  .diagram-box.go .dfd-flow.f3 { stroke-dashoffset: 0; transition-delay: 2.3s; }
+  .diagram-box.go .dfd-flow.f4 { stroke-dashoffset: 0; transition-delay: 2.6s; }
+  .dfd-flowlabel { font-family: var(--mono); font-size: 9px; fill: var(--ink-muted); opacity: 0; transition: opacity 0.4s ease; }
+  .diagram-box.go .dfd-flowlabel { opacity: 1; transition-delay: 2.8s; }
+
+  /* ============================================================
+     OBJETOS OO (s5)
+  ============================================================ */
+  .oo-obj { opacity: 0; transition: opacity 0.55s ease; }
+  .diagram-box.go .oo-obj { opacity: 1; }
+  .diagram-box.go .oo-obj.o1 { transition-delay: 0.2s; }
+  .diagram-box.go .oo-obj.o2 { transition-delay: 0.6s; }
+  .diagram-box.go .oo-obj.o3 { transition-delay: 1.0s; }
+  .oo-box { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .oo-band { fill: var(--blood); }
+  .oo-name { font-family: var(--mono); font-size: 11px; font-weight: 500; fill: var(--paper); }
+  .oo-data { font-family: var(--mono); font-size: 8.5px; fill: var(--ink-muted); }
+  .oo-method { font-family: var(--mono); font-size: 8.5px; fill: var(--blood); }
+  .oo-sep { stroke: var(--ink); stroke-width: 1; }
+  .oo-msg { stroke: var(--blood); stroke-width: 1.5; fill: none; marker-end: url(#arrowMsg); stroke-dasharray: 160; stroke-dashoffset: 160; transition: stroke-dashoffset 0.7s ease; }
+  .diagram-box.go .oo-msg.m1 { stroke-dashoffset: 0; transition-delay: 1.4s; }
+  .diagram-box.go .oo-msg.m2 { stroke-dashoffset: 0; transition-delay: 1.9s; }
+  .oo-msglabel { font-family: var(--mono); font-size: 9px; fill: var(--blood); opacity: 0; transition: opacity 0.4s ease; }
+  .diagram-box.go .oo-msglabel.l1 { opacity: 1; transition-delay: 1.7s; }
+  .diagram-box.go .oo-msglabel.l2 { opacity: 1; transition-delay: 2.2s; }
+  .oo-caption, .dfd-caption { text-align: center; font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-muted); margin-top: 22px; }
+
+  /* ============================================================
+     SPLIT VIEW (s6)
+  ============================================================ */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 32px 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  @media (max-width: 680px) { .split { grid-template-columns: 1fr; } }
+  .split-col { padding: 28px 24px; }
+  .split-col.est { background: rgba(181,133,42,0.06); border-right: 1px solid var(--line); }
+  .split-col.oo { background: rgba(160,36,24,0.05); }
+  @media (max-width: 680px) { .split-col.est { border-right: none; border-bottom: 1px solid var(--line); } }
+  .split-head { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 4px; }
+  .split-col.est .split-head { color: var(--ochre); }
+  .split-col.oo .split-head { color: var(--blood); }
+  .split-sub { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); margin-bottom: 18px; }
+  .split-piece { background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 11px 14px; margin-bottom: 9px; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); line-height: 1.35; }
+  .split-col.est .split-piece { border-left: 2px solid var(--ochre); }
+  .split-col.oo .split-piece { border-left: 2px solid var(--blood); }
+  .split-piece b { color: var(--ink); font-weight: 600; }
+  .split-piece .sp-tag { display: block; font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 3px; }
+  .split-note { font-size: 12.5px; color: var(--ink-muted); font-family: var(--sans); line-height: 1.45; margin-top: 14px; font-style: italic; }
+
+  /* ============================================================
+     CUÁNDO CADA UNO (s7)
+  ============================================================ */
+  .when-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 32px 0; }
+  @media (max-width: 640px) { .when-grid { grid-template-columns: 1fr; } }
+  .when-card { border: 1px solid var(--line); border-radius: 6px; padding: 24px; background: var(--paper-deep); }
+  .when-card h4 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px; }
+  .when-card.est h4 { color: var(--ochre); }
+  .when-card.oo h4 { color: var(--blood); }
+  .when-card .wc-case { padding: 9px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-soft); line-height: 1.4; }
+  .when-card .wc-case:first-of-type { border-top: none; }
+  .when-card .wc-case b { font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--ink); }
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 06</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#s1">Repaso</a></li>
+      <li><a href="#s2">Confucio</a></li>
+      <li><a href="#s3">Dos paradigmas</a></li>
+      <li><a href="#s4">Estructurado</a></li>
+      <li><a href="#s5">Objetos</a></li>
+      <li><a href="#s6">Dos miradas</a></li>
+      <li><a href="#s7">¿Cuándo?</a></li>
+      <li><a href="#s8">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 06</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Confucio</h1>
+      <p class="hero-tagline">Antes de construir un sistema,<br>decides <span>cómo lo vas a mirar</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 4 junio 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">El principio de la sabiduría es llamar a las cosas por su nombre correcto.</p>
+    <p class="quote-attr">— <b>Confucio</b> · Analectas · siglo v a.C.</p>
+  </div>
+</section>
+
+<section id="agenda">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
+          <span class="sec-chip">119 min · dos lentes</span>
+        </div>
+        <p class="sec-objective">Hay dos grandes formas de analizar un sistema: verlo como procesos que transforman datos, o como objetos que colaboran. Hoy aprendes a usar las dos y a saber cuándo conviene cada una.</p>
+      </div>
+      <div class="agenda">
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: la decisión más profunda que la metodología</span><span class="agenda-dur">10 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:10</span><span class="agenda-title">¿Por qué Confucio?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:18</span><span class="agenda-title">Los dos paradigmas</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:32</span><span class="agenda-title">El lente estructurado</span><span class="agenda-dur">20 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:52</span><span class="agenda-title">El lente orientado a objetos</span><span class="agenda-dur">20 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:12</span><span class="agenda-title">El mismo problema, dos miradas</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">¿Cuándo conviene cada uno?</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:46</span><span class="agenda-title">Cierre y actividad</span><span class="agenda-dur">13 min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 REPASO -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Más profundo<br>que la metodología</h2></div>
+          <span class="sec-chip">10 min · 20:00</span>
+        </div>
+        <p class="sec-objective">El lunes elegiste cómo organizar el trabajo. Hoy decides algo anterior: cómo vas a entender el problema.</p>
+      </div>
+      <p>En la clase de Maquiavelo aprendiste a elegir <em>metodología</em> &mdash; cómo organizas el trabajo: en sprints, en cascada, híbrido. Pero hay una decisión todavía más profunda, que tomas antes de escribir una sola línea: <em>¿cómo vas a mirar el problema?</em></p>
+      <p>Porque un mismo sistema &mdash; una biblioteca, un banco, una tienda &mdash; puedes entenderlo de dos maneras radicalmente distintas. Puedes verlo como una serie de <em>procesos</em> que transforman datos (registrar, calcular, generar), o como un conjunto de <em>objetos</em> con vida propia que se mandan mensajes (el libro, el usuario, el préstamo). Misma realidad, dos lentes. Y el lente que elijas determina cómo será todo tu diseño.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La idea de hoy</div>
+          <p class="say-text">"El paradigma de análisis no es un detalle técnico. Es la decisión de fondo: ¿este sistema es, en esencia, un conjunto de procesos, o un conjunto de cosas que interactúan? Elegir bien te ahorra meses de pelear contra tu propio diseño."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ CONFUCIO -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Confucio?</h2></div>
+          <span class="sec-chip">8 min · 20:10</span>
+        </div>
+        <p class="sec-objective">Porque su idea más célebre &mdash; la rectificación de los nombres &mdash; es exactamente lo que haces al elegir un paradigma de análisis.</p>
+      </div>
+      <p>A Confucio le preguntaron qué haría primero si tuviera que gobernar. Su respuesta sorprendió: <em>rectificar los nombres</em>. Para él, el orden empieza por nombrar correctamente cada cosa y que cada quien ocupe su rol &mdash; si los nombres están confundidos, todo lo demás se desmorona. "Si los nombres no son correctos, el lenguaje no concuerda con la realidad."</p>
+      <p>Analizar un sistema es, antes que nada, un acto de nombrar. ¿Llamarás a las partes de tu sistema <em>funciones</em> (verbos: calcular, registrar, validar) o <em>objetos</em> (sustantivos: cliente, factura, cuenta)? Esa elección &mdash; cómo nombras y ordenas el mundo del problema &mdash; define la estructura entera de tu solución. Confucio lo entendió hace 2.500 años: el orden empieza por los nombres.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Confucio aplicado al análisis</div>
+          <p class="say-text">"Antes de diseñar, ordena los nombres. Decide si tu sistema se cuenta mejor con verbos o con sustantivos. Esa decisión, aparentemente lingüística, es la más arquitectónica de todas."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 DOS PARADIGMAS -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Los dos<br>paradigmas</h2></div>
+          <span class="sec-chip">14 min · 20:18</span>
+        </div>
+        <p class="sec-objective">Análisis estructurado y análisis orientado a objetos. Dos tradiciones, dos vocabularios, dos maneras de partir el mundo.</p>
+      </div>
+      <p>Durante décadas, el análisis de sistemas tuvo un solo rey: el <em>análisis estructurado</em>, que piensa en procesos y datos por separado. Luego llegó el <em>análisis orientado a objetos</em>, que junta datos y comportamiento en una sola cosa. No es que uno reemplazara al otro &mdash; ambos siguen vivos y conviven. La diferencia esencial está en una pregunta: <em>¿los datos y las funciones viven separados, o juntos?</em></p>
+
+      <div class="para-grid">
+        <div class="para-card est">
+          <div class="pc-eyebrow">Análisis estructurado</div>
+          <h4>El sistema es lo que hace</h4>
+          <div class="pc-word">Piensa en verbos &mdash; procesos.</div>
+          <ul>
+            <li>El sistema se descompone en funciones que transforman datos.</li>
+            <li>Los datos viven aparte, en almacenes; las funciones los leen y escriben.</li>
+            <li>Herramientas: diagramas de flujo de datos (DFD), diccionario de datos.</li>
+            <li>Pregunta clave: ¿qué <em>hace</em> el sistema con la información?</li>
+          </ul>
+        </div>
+        <div class="para-card oo">
+          <div class="pc-eyebrow">Orientado a objetos</div>
+          <h4>El sistema es lo que es</h4>
+          <div class="pc-word">Piensa en sustantivos &mdash; objetos.</div>
+          <ul>
+            <li>El sistema se modela como objetos con identidad propia.</li>
+            <li>Cada objeto guarda sus datos <em>y</em> su comportamiento, juntos (encapsulación).</li>
+            <li>Herramientas: diagramas de clases UML, casos de uso, mensajes.</li>
+            <li>Pregunta clave: ¿qué <em>cosas</em> hay y cómo colaboran entre sí?</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>Fíjate en el corazón del contraste: en lo estructurado, los datos y las funciones que los manipulan están en lugares distintos del diseño. En orientado a objetos, cada objeto es una cápsula que lleva sus propios datos y sus propias operaciones. Veamos cada lente en acción.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4 LENTE ESTRUCTURADO -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>El lente<br>estructurado</h2></div>
+          <span class="sec-chip">20 min · 20:32</span>
+        </div>
+        <p class="sec-objective">Mira el sistema como una red de procesos por donde fluyen los datos. La herramienta reina: el diagrama de flujo de datos.</p>
+      </div>
+      <p>En el análisis estructurado, el sistema es una máquina que transforma información. Identificas los <em>procesos</em> (lo que el sistema hace), las <em>entidades externas</em> (quién manda y recibe datos), los <em>almacenes</em> (dónde se guardan) y los <em>flujos</em> (cómo viaja la información). Así se ve el préstamo de un libro, mirado con este lente:</p>
+
+      <div class="diagram-box" data-animate>
+        <svg class="dfd-svg" viewBox="0 0 620 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowC" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="var(--ink-soft)"/></marker>
+          </defs>
+          <!-- entidad externa Usuario -->
+          <g class="dfd-node n1">
+            <rect class="dfd-ext" x="14" y="138" width="104" height="56"/>
+            <text class="dfd-label title" x="66" y="171" text-anchor="middle">Usuario</text>
+          </g>
+          <!-- proceso -->
+          <g class="dfd-node n2">
+            <circle class="dfd-proc" cx="320" cy="120" r="62"/>
+            <text class="dfd-label" x="320" y="112" text-anchor="middle" style="font-size:10px;">1.0</text>
+            <text class="dfd-label title" x="320" y="128" text-anchor="middle" style="font-size:12px;">Registrar</text>
+            <text class="dfd-label title" x="320" y="143" text-anchor="middle" style="font-size:12px;">préstamo</text>
+          </g>
+          <!-- almacen Préstamos -->
+          <g class="dfd-node n3">
+            <rect class="dfd-store-bg" x="470" y="96" width="138" height="46"/>
+            <line class="dfd-store-line" x1="470" y1="96" x2="608" y2="96"/>
+            <line class="dfd-store-line" x1="470" y1="142" x2="608" y2="142"/>
+            <line class="dfd-store-line" x1="496" y1="96" x2="496" y2="142"/>
+            <text class="dfd-label" x="480" y="116" style="font-size:10px;">D1</text>
+            <text class="dfd-label" x="504" y="124" style="font-size:10px;">Préstamos</text>
+          </g>
+          <!-- almacen Catálogo -->
+          <g class="dfd-node n4">
+            <rect class="dfd-store-bg" x="250" y="270" width="150" height="46"/>
+            <line class="dfd-store-line" x1="250" y1="270" x2="400" y2="270"/>
+            <line class="dfd-store-line" x1="250" y1="316" x2="400" y2="316"/>
+            <line class="dfd-store-line" x1="276" y1="270" x2="276" y2="316"/>
+            <text class="dfd-label" x="260" y="290" style="font-size:10px;">D2</text>
+            <text class="dfd-label" x="284" y="298" style="font-size:10px;">Catálogo</text>
+          </g>
+          <!-- flujos -->
+          <path class="dfd-flow f1" d="M120,158 Q200,150 262,138"/>
+          <text class="dfd-flowlabel" x="150" y="140">solicitud</text>
+          <path class="dfd-flow f2" d="M380,108 Q430,104 470,114"/>
+          <text class="dfd-flowlabel" x="392" y="96">registro</text>
+          <path class="dfd-flow f3" d="M325,270 Q322,230 322,184"/>
+          <text class="dfd-flowlabel" x="332" y="232">datos del libro</text>
+          <path class="dfd-flow f4" d="M270,170 Q190,200 120,180"/>
+          <text class="dfd-flowlabel" x="150" y="205">comprobante</text>
+        </svg>
+        <p class="dfd-caption">Procesos (círculos) transforman datos que viven aparte, en almacenes. El verbo manda.</p>
+      </div>
+
+      <p>Observa lo importante: el proceso "Registrar préstamo" y los datos (D1, D2) están en lugares <em>distintos</em> del diagrama. La función opera sobre datos que viven afuera de ella. Este lente es viejo pero poderosísimo cuando el sistema es, sobre todo, una tubería de transformaciones: reportes, nóminas, procesos por lotes, ETL de datos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5 LENTE OO -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>El lente<br>orientado a objetos</h2></div>
+          <span class="sec-chip">20 min · 20:52</span>
+        </div>
+        <p class="sec-objective">Ahora mira el mismo sistema como cosas vivas que se mandan mensajes. Aquí los datos y el comportamiento viajan juntos.</p>
+      </div>
+      <p>En el análisis orientado a objetos &mdash; el que practicaste con Aristóteles &mdash; no hay procesos sueltos ni datos sueltos. Hay <em>objetos</em>: cada uno guarda sus propios datos y sabe hacer sus propias cosas. El trabajo se logra cuando los objetos se mandan <em>mensajes</em>. El mismo préstamo, con este lente:</p>
+
+      <div class="diagram-box" data-animate>
+        <svg class="oo-svg" viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowMsg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="var(--blood)"/></marker>
+          </defs>
+          <!-- Usuario -->
+          <g class="oo-obj o1">
+            <rect class="oo-box" x="14" y="80" width="150" height="118"/>
+            <rect class="oo-band" x="14" y="80" width="150" height="20"/>
+            <text class="oo-name" x="89" y="94" text-anchor="middle">Usuario</text>
+            <line class="oo-sep" x1="14" y1="138" x2="164" y2="138"/>
+            <text class="oo-data" x="22" y="116">- id</text>
+            <text class="oo-data" x="22" y="129">- nombre</text>
+            <text class="oo-method" x="22" y="156">+ pedirPrestamo()</text>
+            <text class="oo-method" x="22" y="172">+ verHistorial()</text>
+          </g>
+          <!-- Prestamo -->
+          <g class="oo-obj o2">
+            <rect class="oo-box" x="235" y="80" width="150" height="118"/>
+            <rect class="oo-band" x="235" y="80" width="150" height="20"/>
+            <text class="oo-name" x="310" y="94" text-anchor="middle">Préstamo</text>
+            <line class="oo-sep" x1="235" y1="138" x2="385" y2="138"/>
+            <text class="oo-data" x="243" y="116">- fecha</text>
+            <text class="oo-data" x="243" y="129">- vencimiento</text>
+            <text class="oo-method" x="243" y="156">+ registrar()</text>
+            <text class="oo-method" x="243" y="172">+ estaVencido()</text>
+          </g>
+          <!-- Libro -->
+          <g class="oo-obj o3">
+            <rect class="oo-box" x="456" y="80" width="150" height="118"/>
+            <rect class="oo-band" x="456" y="80" width="150" height="20"/>
+            <text class="oo-name" x="531" y="94" text-anchor="middle">Libro</text>
+            <line class="oo-sep" x1="456" y1="138" x2="606" y2="138"/>
+            <text class="oo-data" x="464" y="116">- título</text>
+            <text class="oo-data" x="464" y="129">- disponible</text>
+            <text class="oo-method" x="464" y="156">+ marcarPrestado()</text>
+            <text class="oo-method" x="464" y="172">+ estaLibre()</text>
+          </g>
+          <!-- mensajes -->
+          <path class="oo-msg m1" d="M164,118 L235,118"/>
+          <text class="oo-msglabel l1" x="170" y="110">crea ▸</text>
+          <path class="oo-msg m2" d="M385,118 L456,118"/>
+          <text class="oo-msglabel l2" x="392" y="110">avisa ▸</text>
+        </svg>
+        <p class="oo-caption">Cada objeto lleva sus datos y sus métodos en la misma cápsula. El sustantivo manda.</p>
+      </div>
+
+      <p>La diferencia salta a la vista: aquí no hay un almacén de datos separado de las funciones. Cada objeto <em>es</em> sus datos más su comportamiento. El usuario pide un préstamo, que a su vez le avisa al libro que ya está prestado. El trabajo emerge de la conversación entre objetos, no de un proceso central que lo orquesta todo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 DOS MIRADAS -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>El mismo problema,<br>dos miradas</h2></div>
+          <span class="sec-chip">18 min · 21:12</span>
+        </div>
+        <p class="sec-objective">Pongamos los dos lentes lado a lado sobre exactamente la misma tarea: prestar un libro. Verás que no compiten &mdash; ordenan distinto.</p>
+      </div>
+      <p>Ninguno de los dos está "mal". Resuelven la misma necesidad organizando el mundo de forma diferente. Mira cómo cada lente reparte la misma funcionalidad:</p>
+
+      <div class="split">
+        <div class="split-col est">
+          <div class="split-head">Estructurado</div>
+          <div class="split-sub">Procesos + datos separados</div>
+          <div class="split-piece"><span class="sp-tag">Proceso (verbo)</span><b>registrarPréstamo(</b>idUsuario, idLibro<b>)</b></div>
+          <div class="split-piece"><span class="sp-tag">Almacén de datos</span>Tabla PRÉSTAMOS · Tabla LIBROS · Tabla USUARIOS</div>
+          <div class="split-piece"><span class="sp-tag">Cómo trabaja</span>El proceso lee de las tablas, decide y escribe de vuelta.</div>
+          <p class="split-note">La lógica está concentrada en el proceso; los datos son pasivos, esperan ser leídos y escritos.</p>
+        </div>
+        <div class="split-col oo">
+          <div class="split-head">Orientado a objetos</div>
+          <div class="split-sub">Objetos que colaboran</div>
+          <div class="split-piece"><span class="sp-tag">Objeto (sustantivo)</span><b>usuario.pedirPrestamo(</b>libro<b>)</b></div>
+          <div class="split-piece"><span class="sp-tag">Objetos con datos + métodos</span>Usuario · Libro · Préstamo, cada uno con su comportamiento</div>
+          <div class="split-piece"><span class="sp-tag">Cómo trabaja</span>Los objetos se mandan mensajes; cada uno cuida sus propios datos.</div>
+          <p class="split-note">La lógica está repartida entre los objetos; cada dato vive con la función que lo cuida.</p>
+        </div>
+      </div>
+
+      <p>El estructurado pone <em>un</em> proceso al mando y los datos quietos a un lado. El orientado a objetos reparte la responsabilidad: cada objeto sabe cuidarse a sí mismo. La misma tarea, dos formas de ordenar los nombres &mdash; justo lo que diría Confucio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S7 CUÁNDO -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>¿Cuándo<br>conviene cada uno?</h2></div>
+          <span class="sec-chip">16 min · 21:30</span>
+        </div>
+        <p class="sec-objective">No hay ganador absoluto &mdash; eso ya lo aprendiste con Maquiavelo. Hay un lente que encaja mejor según la naturaleza del problema.</p>
+      </div>
+      <p>La pregunta no es cuál es mejor, sino cuál ordena mejor <em>tu</em> problema. Si el sistema es ante todo una secuencia de transformaciones de datos, el lente estructurado es limpio y directo. Si el sistema está lleno de entidades con identidad que cambian de estado y colaboran, el orientado a objetos encaja como un guante.</p>
+
+      <div class="when-grid">
+        <div class="when-card est">
+          <h4>Conviene estructurado</h4>
+          <div class="wc-case"><b>Procesos por lotes</b> &mdash; nóminas, facturación masiva, cálculos contables.</div>
+          <div class="wc-case"><b>ETL y reportería</b> &mdash; mover y transformar datos de un lado a otro.</div>
+          <div class="wc-case"><b>Flujos lineales</b> &mdash; entra dato, se transforma, sale resultado.</div>
+          <div class="wc-case"><b>Sistemas centrados en datos</b> con poca lógica de comportamiento.</div>
+        </div>
+        <div class="when-card oo">
+          <h4>Conviene orientado a objetos</h4>
+          <div class="wc-case"><b>Apps interactivas</b> &mdash; banca digital, e-commerce, redes sociales.</div>
+          <div class="wc-case"><b>Dominios ricos</b> &mdash; muchas entidades que cambian de estado y se relacionan.</div>
+          <div class="wc-case"><b>Sistemas que evolucionan</b> &mdash; donde mañana habrá nuevos tipos de cosas.</div>
+          <div class="wc-case"><b>Reutilización</b> &mdash; cuando quieres herencia y componentes intercambiables.</div>
+        </div>
+      </div>
+
+      <p>Y como casi todo en esta materia: lo más común en la industria es <em>mezclar</em>. Una app moderna suele ser orientada a objetos en su corazón, pero su tubería de datos &mdash; reportes, integraciones, procesos nocturnos &mdash; se piensa de forma estructurada. Saber leer con ambos lentes es lo que te hace versátil.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S8 CIERRE -->
+<section id="s8">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">viii.</span><h2>Cierre y actividad</h2></div>
+          <span class="sec-chip">13 min · 21:46</span>
+        </div>
+        <p class="sec-objective">Elige el lente para tu proyecto y nómbralo con claridad.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>Analizar es nombrar: decides si tu sistema se cuenta con verbos (procesos) o con sustantivos (objetos).</div></div>
+        <div class="point"><span class="point-num">02</span><div>Estructurado separa datos de funciones; orientado a objetos los encapsula juntos. Ese es el contraste de fondo.</div></div>
+        <div class="point"><span class="point-num">03</span><div>Ninguno gana siempre. Estructurado para tuberías de datos; OO para dominios ricos que colaboran y evolucionan. Lo real suele ser mixto.</div></div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-eyebrow">Actividad en clase · 10 min</div>
+        <h3>¿Con qué lente se cuenta tu proyecto?</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Sin entregable formal &mdash; insumo directo para el documento de tu proyecto integrador:</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Escribe tu sistema en una frase con un verbo principal y otra con sus sustantivos clave.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>¿Es más una tubería de datos o un dominio de cosas que colaboran?</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Elige tu lente principal y justifícalo en dos frases.</li>
+        </ul>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El lunes que viene</div>
+          <p class="say-text">"Descartes y la duda metódica. Ya sabes con qué lente mirar; ahora aprendemos a dudar de todo lo que creemos saber del problema, para no diseñar sobre supuestos falsos. Empieza el análisis serio de requerimientos."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Fin del capítulo 06.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+</script>
+
+</body>
+</html>
