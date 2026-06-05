@@ -227,6 +227,45 @@
   .when-card .wc-case:first-of-type { border-top: none; }
   .when-card .wc-case b { font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--ink); }
 
+
+  /* ============================================================
+     QUIZ DE CLASIFICACIÓN
+  ============================================================ */
+  .quiz { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 28px 26px; margin: 32px 0; }
+  .quiz-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+  .quiz-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blood); }
+  .quiz-score { font-family: var(--mono); font-size: 11px; color: var(--ink-muted); }
+  .quiz-score b { color: var(--ink); }
+  .quiz-intro { font-size: 13.5px; color: var(--ink-muted); margin-bottom: 22px; line-height: 1.5; }
+  .quiz-case { padding: 16px 0; border-top: 1px solid var(--line); }
+  .quiz-case:first-of-type { border-top: none; }
+  .quiz-q { font-family: var(--serif); font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+  .quiz-q b { font-style: italic; }
+  .quiz-desc { font-size: 13px; color: var(--ink-muted); margin-bottom: 12px; line-height: 1.4; }
+  .quiz-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .quiz-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 9px 18px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 4px; color: var(--ink-soft); cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+  .quiz-btn:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
+  .quiz-btn:disabled { cursor: default; }
+  .quiz-btn.correct { background: rgba(93,102,56,0.16); border-color: var(--olive); color: var(--olive); font-weight: 500; }
+  .quiz-btn.wrong { background: rgba(160,36,24,0.1); border-color: var(--blood); color: var(--blood); text-decoration: line-through; }
+  .quiz-fb { margin-top: 11px; font-size: 13px; line-height: 1.5; color: var(--ink-soft); padding-left: 14px; border-left: 2px solid var(--olive); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.3s ease, max-height 0.3s ease; }
+  .quiz-fb.show { opacity: 1; max-height: 120px; margin-top: 11px; }
+  .quiz-fb .qf-verdict { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive); }
+
+  /* ============================================================
+     EJEMPLO RESUELTO
+  ============================================================ */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 28px 26px; margin: 28px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .example h4 { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-bottom: 18px; }
+  .ex-row { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .ex-row:first-of-type { border-top: none; }
+  @media (max-width: 560px) { .ex-row { grid-template-columns: 1fr; gap: 4px; } }
+  .ex-q { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
+  .ex-a { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
+  .ex-a b { color: var(--ink); font-weight: 600; }
+  .ex-a .pick { color: var(--blood); font-weight: 600; font-style: italic; font-family: var(--serif); font-size: 16px; }
+
 </style>
 </head>
 <body>
@@ -584,6 +623,52 @@
       </div>
 
       <p>Y como casi todo en esta materia: lo más común en la industria es <em>mezclar</em>. Una app moderna suele ser orientada a objetos en su corazón, pero su tubería de datos &mdash; reportes, integraciones, procesos nocturnos &mdash; se piensa de forma estructurada. Saber leer con ambos lentes es lo que te hace versátil.</p>
+
+      <div class="quiz" id="quiz">
+        <div class="quiz-top">
+          <span class="quiz-eyebrow">Ejercicio en clase · clasifica cada sistema</span>
+          <span class="quiz-score">Aciertos: <b id="quizScore">0</b> / 5</span>
+        </div>
+        <p class="quiz-intro">Antes de decidir el lente de tu proyecto, calienta con estos cinco. Lee cada caso y elige el lente que mejor lo ordena. La respuesta aparece al instante &mdash; lo hacemos juntos, en voz alta.</p>
+
+        <div class="quiz-case">
+          <div class="quiz-q"><b>Nómina quincenal</b></div>
+          <div class="quiz-desc">Cada quince días entra la info de empleados y asistencias; el sistema calcula percepciones y deducciones y genera los recibos.</div>
+          <div class="quiz-btns"><button class="quiz-btn" data-correct="est">Estructurado</button><button class="quiz-btn" data-correct="est" data-pick="oo">Orientado a objetos</button></div>
+          <div class="quiz-fb"><span class="qf-verdict"></span> Cálculo masivo por lotes: entran datos, se transforman, salen recibos. Pura tubería &mdash; gana <b>estructurado</b>.</div>
+        </div>
+
+        <div class="quiz-case">
+          <div class="quiz-q"><b>Red social</b></div>
+          <div class="quiz-desc">Usuarios que publican, comentan, siguen y reaccionan; cada cosa tiene estado y se relaciona con las demás.</div>
+          <div class="quiz-btns"><button class="quiz-btn" data-correct="oo" data-pick="est">Estructurado</button><button class="quiz-btn" data-correct="oo">Orientado a objetos</button></div>
+          <div class="quiz-fb"><span class="qf-verdict"></span> Dominio rico: muchas entidades con identidad y estado que colaboran. Encaja como guante en <b>orientado a objetos</b>.</div>
+        </div>
+
+        <div class="quiz-case">
+          <div class="quiz-q"><b>Reporte mensual de ventas</b></div>
+          <div class="quiz-desc">Toma los movimientos del mes, los agrupa por región y producto y produce un PDF con totales y gráficas.</div>
+          <div class="quiz-btns"><button class="quiz-btn" data-correct="est">Estructurado</button><button class="quiz-btn" data-correct="est" data-pick="oo">Orientado a objetos</button></div>
+          <div class="quiz-fb"><span class="qf-verdict"></span> Lee, agrega y transforma datos en un reporte. El verbo manda &mdash; <b>estructurado</b>.</div>
+        </div>
+
+        <div class="quiz-case">
+          <div class="quiz-q"><b>Videojuego de plataformas</b></div>
+          <div class="quiz-desc">Un jugador, enemigos, monedas y plataformas; cada uno con su posición, su vida y su comportamiento en cada cuadro.</div>
+          <div class="quiz-btns"><button class="quiz-btn" data-correct="oo" data-pick="est">Estructurado</button><button class="quiz-btn" data-correct="oo">Orientado a objetos</button></div>
+          <div class="quiz-fb"><span class="qf-verdict"></span> Entidades con identidad, estado y comportamiento que interactúan. Caso de libro de texto de <b>orientado a objetos</b>.</div>
+        </div>
+
+        <div class="quiz-case">
+          <div class="quiz-q"><b>Proceso ETL nocturno</b></div>
+          <div class="quiz-desc">Cada madrugada extrae datos de varias fuentes, los limpia y los carga en el almacén de datos central.</div>
+          <div class="quiz-btns"><button class="quiz-btn" data-correct="est">Estructurado</button><button class="quiz-btn" data-correct="est" data-pick="oo">Orientado a objetos</button></div>
+          <div class="quiz-fb"><span class="qf-verdict"></span> Extraer, transformar, cargar: tres verbos en fila. Flujo de datos puro &mdash; <b>estructurado</b>.</div>
+        </div>
+
+        <p class="quiz-intro" style="margin:20px 0 0;">Fíjate en el patrón: si el sistema <em>hace</em> algo con un montón de datos, tiende a estructurado; si el sistema <em>es</em> un montón de cosas que conviven, tiende a objetos.</p>
+      </div>
+
     </div>
   </div>
 </section>
@@ -605,14 +690,36 @@
         <div class="point"><span class="point-num">03</span><div>Ninguno gana siempre. Estructurado para tuberías de datos; OO para dominios ricos que colaboran y evolucionan. Lo real suele ser mixto.</div></div>
       </div>
 
+      <div class="example">
+        <div class="example-tag">Ejemplo resuelto · así se ve la actividad</div>
+        <h4>Caso: app de reservas de canchas deportivas</h4>
+        <div class="ex-row">
+          <div class="ex-q">En un verbo</div>
+          <div class="ex-a">"El sistema <b>registra</b> reservas de canchas, cobra el pago y libera los horarios cuando se cancela."</div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-q">En sustantivos</div>
+          <div class="ex-a">Socio · Cancha · Reserva · Pago &mdash; cada uno con su estado (la cancha está libre u ocupada; la reserva está activa o cancelada).</div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-q">¿Tubería o dominio?</div>
+          <div class="ex-a"><b>Dominio.</b> No es un cálculo masivo de datos: son varias entidades con estado propio que cambian y colaboran entre sí.</div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-q">Lente elegido</div>
+          <div class="ex-a"><span class="pick">Orientado a objetos.</span> Porque hay entidades con identidad y estado que evoluciona, y el comportamiento (reservar, cancelar, liberar) vive naturalmente dentro de cada objeto. Si en cambio solo necesitara <em>generar el reporte mensual de uso de las canchas</em>, esa parte la pensaría estructurada.</div>
+        </div>
+      </div>
+
       <div class="challenge">
-        <div class="challenge-eyebrow">Actividad en clase · 10 min</div>
-        <h3>¿Con qué lente se cuenta tu proyecto?</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Sin entregable formal &mdash; insumo directo para el documento de tu proyecto integrador:</p>
+        <div class="challenge-eyebrow">Actividad en clase · 12 min · en parejas</div>
+        <h3>Modela tu proyecto en vivo</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Júntate con un compañero. Por turnos, cada quien presenta su proyecto y entre los dos lo resuelven &mdash; igual que el ejemplo de arriba. Insumo directo para tu documento del proyecto integrador:</p>
         <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Escribe tu sistema en una frase con un verbo principal y otra con sus sustantivos clave.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>¿Es más una tubería de datos o un dominio de cosas que colaboran?</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Elige tu lente principal y justifícalo en dos frases.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Tu sistema en una frase con verbo y otra con sus sustantivos clave.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>¿Tubería de datos o dominio de cosas que colaboran? Tu pareja te rebate si no convence.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Boceta a mano 3 cajas: del lente que elegiste (3 objetos, o 1 proceso + 2 almacenes).</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Elige tu lente y defiéndelo en dos frases ante tu pareja.</li>
         </ul>
       </div>
 
@@ -656,6 +763,32 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
   }, { threshold: 0.2 });
   document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // Quiz de clasificación
+  let quizScore = 0;
+  const quizScoreEl = document.getElementById('quizScore');
+  document.querySelectorAll('#quiz .quiz-case').forEach(caseEl => {
+    const btns = caseEl.querySelectorAll('.quiz-btn');
+    const fb = caseEl.querySelector('.quiz-fb');
+    const verdict = fb.querySelector('.qf-verdict');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (caseEl.dataset.answered) return;
+        caseEl.dataset.answered = '1';
+        const isWrongPick = btn.hasAttribute('data-pick');
+        btns.forEach(b => {
+          b.disabled = true;
+          if (!b.hasAttribute('data-pick')) b.classList.add('correct');
+        });
+        if (isWrongPick) { btn.classList.remove('correct'); btn.classList.add('wrong'); }
+        if (!isWrongPick) { quizScore++; quizScoreEl.textContent = quizScore; }
+        verdict.textContent = isWrongPick ? 'Casi —' : 'Correcto ·';
+        fb.style.borderLeftColor = isWrongPick ? 'var(--blood)' : 'var(--olive)';
+        verdict.style.color = isWrongPick ? 'var(--blood)' : 'var(--olive)';
+        fb.classList.add('show');
+      });
+    });
+  });
 </script>
 
 </body>
