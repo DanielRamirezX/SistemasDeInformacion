@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 26 · Goethe · Sistemas de Información</title>
+<meta name="description" content="Clase 26: validación de calidad del diseño. Acoplamiento y cohesión, factoring, Fan-Out y Fan-In; los sistemas en la organización (transaccionales, de decisión y ejecutivos) y temas transversales: DevOps, ciberseguridad y compliance. La calidad no se declara, se valida. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* tarjetas que aparecen al hacer scroll (reuso del patrón de clase 11) */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
+  .card-r { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .cards-grid.go .card-r { opacity: 1; transform: translateY(0); }
+  .cards-grid.go .card-r:nth-child(1) { transition-delay: 0.05s; }
+  .cards-grid.go .card-r:nth-child(2) { transition-delay: 0.13s; }
+  .cards-grid.go .card-r:nth-child(3) { transition-delay: 0.21s; }
+  .cards-grid.go .card-r:nth-child(4) { transition-delay: 0.29s; }
+  .cards-grid.go .card-r:nth-child(5) { transition-delay: 0.37s; }
+  .cards-grid.go .card-r:nth-child(6) { transition-delay: 0.45s; }
+  .card-r h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
+  .card-r .cr-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .card-r p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+
+  /* ejemplo y taller (reuso) */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
+  .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .example p b { color: var(--ink); font-weight: 600; }
+  .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .field-step:first-child { border-top: none; padding-top: 0; }
+  .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .field-step h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+  .field-step p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
+  .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .field-planb b { color: var(--ochre); font-weight: 600; }
+
+  /* ============================================================
+     INTERACTIVO DE CALIDAD (s6) — prefijo .qa-
+     1) comparador alta/baja cohesión y acoplamiento
+     2) explorador SVG de Fan-In / Fan-Out
+  ============================================================ */
+  .qa { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .qa-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
+  .qa-toggle { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 30px; padding: 4px; background: var(--paper); margin-bottom: 22px; gap: 4px; }
+  .qa-tbtn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 18px; border: none; border-radius: 24px; background: transparent; color: var(--ink-muted); cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .qa-tbtn[aria-pressed="true"] { background: var(--blood); color: var(--paper); }
+  .qa-tbtn:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .qa-board { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 560px) { .qa-board { grid-template-columns: 1fr; } }
+  .qa-cell { border: 1px solid var(--line-strong); border-radius: 6px; padding: 18px 18px 20px; background: var(--paper); }
+  .qa-cell.good { border-top: 3px solid var(--olive); }
+  .qa-cell.bad { border-top: 3px solid var(--blood); }
+  .qa-verdict { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+  .qa-cell.good .qa-verdict { color: var(--olive); }
+  .qa-cell.bad .qa-verdict { color: var(--blood); }
+  .qa-svg { width: 100%; height: auto; display: block; margin: 0 auto 12px; max-width: 280px; }
+  .qa-mod { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.4; }
+  .qa-mod.hot { fill: rgba(160,36,24,0.10); stroke: var(--blood); }
+  .qa-mod.cool { fill: rgba(93,102,56,0.10); stroke: var(--olive); }
+  .qa-edge { stroke: var(--ink-muted); stroke-width: 1.3; fill: none; }
+  .qa-edge.tense { stroke: var(--blood); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .qa-edge.calm { stroke: var(--olive); stroke-width: 1.5; }
+  .qa-modtxt { font-family: var(--mono); font-size: 10px; fill: var(--ink-soft); letter-spacing: 0.04em; }
+  .qa-celltext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .qa-celltext b { color: var(--ink); font-weight: 600; }
+  .qa-read { padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); }
+  .qa-read b { color: var(--ink); font-weight: 600; }
+
+  /* panel Fan-In / Fan-Out */
+  .qa-fan { background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; padding: 24px 22px; margin-top: 18px; }
+  .qa-fan-svg { width: 100%; max-width: 520px; height: auto; display: block; margin: 0 auto; }
+  .qa-node { cursor: pointer; touch-action: manipulation; }
+  .qa-node rect { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.5; transition: fill 0.2s, stroke 0.2s; }
+  .qa-node text { font-family: var(--mono); font-size: 12px; fill: var(--ink); letter-spacing: 0.04em; pointer-events: none; }
+  .qa-node.sel rect { fill: rgba(181,133,42,0.16); stroke: var(--ochre); stroke-width: 2.2; }
+  .qa-node:focus-visible rect { outline: none; stroke: var(--blood); stroke-width: 2.4; }
+  .qa-link { stroke: var(--ink-faint); stroke-width: 1.4; fill: none; transition: stroke 0.2s, stroke-width 0.2s; }
+  .qa-link.up { stroke: var(--blood); stroke-width: 2.4; }
+  .qa-link.down { stroke: var(--olive); stroke-width: 2.4; }
+  .qa-arrow { fill: var(--ink-faint); }
+  .qa-fan-legend { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; margin: 14px 0 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; color: var(--ink-muted); text-transform: uppercase; }
+  .qa-fan-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .qa-fan-legend i { width: 18px; height: 0; border-top: 2.4px solid; display: inline-block; }
+  .qa-fan-legend .li-up { border-color: var(--blood); }
+  .qa-fan-legend .li-down { border-color: var(--olive); }
+  .qa-fan-read { margin-top: 12px; padding: 16px 18px; border-radius: 4px; background: var(--paper-deep); border: 1px dashed var(--line-strong); font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); }
+  .qa-fan-read b { color: var(--ink); font-weight: 600; }
+  .qa-fan-read .fr-in { color: var(--olive); font-weight: 600; }
+  .qa-fan-read .fr-out { color: var(--blood); font-weight: 600; }
+  .qa-hint { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); text-align: center; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 26</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#s1">Repaso</a></li>
+      <li><a href="#s2">Goethe</a></li>
+      <li><a href="#s3">Acople y cohesión</a></li>
+      <li><a href="#s4">Factoring</a></li>
+      <li><a href="#s5">Fan-In/Out</a></li>
+      <li><a href="#s6">Validador</a></li>
+      <li><a href="#s7">Sistemas</a></li>
+      <li><a href="#s8">Taller</a></li>
+      <li><a href="#s9">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 26</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Goethe</h1>
+      <p class="hero-tagline">La calidad no se declara:<br>se <span>valida</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 13 agosto 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">No basta con saber, hay que aplicar; no basta con querer, hay que hacer.</p>
+    <p class="quote-attr">— <b>Johann Wolfgang von Goethe</b> · siglo xviii-xix</p>
+  </div>
+</section>
+
+<section id="agenda">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
+          <span class="sec-chip">119 min · medir la totalidad</span>
+        </div>
+        <p class="sec-objective">Tienes un diseño. Pero, ¿es bueno? Hoy aprendes a no creerle: a medir la calidad de un diseño con criterios reales &mdash; acoplamiento, cohesión, Fan-Out y Fan-In &mdash; y a ubicar tu sistema en el mapa de la organización. La calidad no se declara; se valida.</p>
+      </div>
+      <div class="agenda">
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes el diseño; ¿es bueno?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Goethe?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Acoplamiento y cohesión: los dos criterios</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:32</span><span class="agenda-title">Factoring: partir hasta que cada parte valga</span><span class="agenda-dur">12 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">Fan-Out y Fan-In: leer el árbol</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:58</span><span class="agenda-title">El validador de calidad</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:16</span><span class="agenda-title">Los sistemas en la organización (+ temas transversales)</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:32</span><span class="agenda-title">Taller: valida la calidad de tu diseño</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre, entrega en clase y repaso final</span><span class="agenda-dur">11 min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 REPASO -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Tienes el diseño.<br>¿Pero es bueno?</h2></div>
+          <span class="sec-chip">8 min · 20:00</span>
+        </div>
+        <p class="sec-objective">Sabes diseñar un sistema y modularlo. Falta lo que separa al aficionado del profesional: saber si tu diseño es bueno &mdash; y demostrarlo con criterios, no con fe.</p>
+      </div>
+      <p>En las clases pasadas pasaste de los requerimientos al diseño: aprendiste a descomponer el sistema en módulos, a dibujar su arquitectura, a repartir responsabilidades. Sabes <em>hacer</em> un diseño. La pregunta de hoy es más incómoda y mucho más adulta: ¿tu diseño es <em>bueno</em>? Y si dices que sí, ¿con qué lo pruebas?</p>
+      <p>Porque "yo siento que está bien" no es un criterio. La diferencia entre un diseño que envejece bien y uno que se vuelve una pesadilla de mantenimiento casi nunca se ve el primer día &mdash; se cobra meses después, cuando un cambio pequeño rompe medio sistema. La buena noticia: la calidad de un diseño <em>sí se puede medir</em>, con criterios concretos. Hoy te los doy, y te doy una herramienta para que dejes de adivinar.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El dato que duele</div>
+          <p class="say-text">"Dos diseños pueden cumplir exactamente los mismos requisitos y, aun así, uno valdrá oro y el otro será una bomba de tiempo. La diferencia no está en lo que hacen, sino en cómo están armados por dentro &mdash; y eso, hasta hoy, lo medías a ojo."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ GOETHE -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Goethe?</h2></div>
+          <span class="sec-chip">8 min · 20:08</span>
+        </div>
+        <p class="sec-objective">Porque fue un polímata que unía saber y hacer, y porque entendió antes que nadie que un todo no es la suma de sus partes &mdash; es cómo encajan.</p>
+      </div>
+      <p>Goethe no fue solo el poeta de <em>Fausto</em>: fue científico, naturalista, administrador. Un polímata. Su lema podría ser la frase de hoy: "no basta con saber, hay que aplicar; no basta con querer, hay que hacer". Justo lo que separa a tu diseño en papel de un diseño validado. Saberlo dibujar no basta &mdash; hay que aplicarle criterios y comprobar que aguanta.</p>
+      <p>Su segunda gran intuición es todavía más útil hoy. Goethe pensaba en términos de <em>totalidades vivas</em>: un organismo no se entiende despedazándolo, porque sus partes solo cobran sentido por la forma en que se relacionan entre sí. Un sistema de información es exactamente eso. Puedes tener módulos impecables uno por uno y, aun así, un mal sistema &mdash; porque la calidad no vive en las partes aisladas, sino en cómo encajan. Acoplamiento y cohesión son, literalmente, la manera de Goethe de mirar tu diseño: ¿cada parte es una unidad coherente? ¿y se enlazan con la justa medida, sin enredarse unas con otras?</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Goethe aplicado al diseño</div>
+          <p class="say-text">"El sistema es una totalidad. Un módulo perfecto dentro de un diseño mal articulado es como un órgano sano en un cuerpo enfermo: no salva al conjunto. La calidad se juega en las junturas &mdash; y por eso hay que ir a verlas, no suponerlas."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 ACOPLAMIENTO Y COHESIÓN -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Acoplamiento<br>y cohesión</h2></div>
+          <span class="sec-chip">16 min · 20:16</span>
+        </div>
+        <p class="sec-objective">Los dos criterios maestros de calidad de un diseño. La regla cabe en una línea: alta cohesión, bajo acoplamiento.</p>
+      </div>
+      <p>Casi toda la teoría de calidad del diseño se condensa en dos palabras. La buena noticia es que apuntan en direcciones opuestas, así que la regla es fácil de recordar: <em>busca alta cohesión y bajo acoplamiento</em>. Veamos cada una.</p>
+
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Cohesión</b> &mdash; qué tan unida está una parte <em>por dentro</em>. Un módulo cohesivo hace <b>una sola cosa</b> y la hace completa: el módulo de "facturación" factura, y nada más. <b>Alta cohesión es buena.</b> Su enemigo es el módulo "varios", ese cajón de sastre que valida, imprime, manda correo y cobra &mdash; sin un propósito claro.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Acoplamiento</b> &mdash; qué tan amarrada está una parte <em>con las otras</em>. Mide cuánto depende un módulo del resto. <b>Bajo acoplamiento es bueno:</b> si puedes cambiar un módulo sin tocar los demás, están poco acoplados. Cuando todo depende de todo, mover una pieza derrumba el conjunto.</div></div>
+      </div>
+
+      <p>La conexión goetheana es directa: la <em>cohesión</em> es la salud interna de cada parte; el <em>acoplamiento</em>, la calidad de las junturas que las unen. Un buen diseño tiene partes sanas (cohesivas) unidas con junturas limpias (poco acopladas). Y ojo: las dos van de la mano. Cuando subes la cohesión &mdash; cada módulo con un propósito nítido &mdash; casi siempre baja el acoplamiento por sí solo, porque las partes dejan de meterse en los asuntos de las demás.</p>
+
+      <div class="example">
+        <div class="example-tag">La regla de bolsillo</div>
+        <p>Para sentirlo sin teoría: imagina que mañana cambia una regla del negocio &mdash; el IVA, digamos. Si solo tocas el módulo de <b>impuestos</b> y nada más se entera, tu diseño tiene alta cohesión y bajo acoplamiento: <b>aprobado</b>. Si para cambiar el IVA tienes que abrir seis módulos porque cada uno calcula impuestos a su manera, tu diseño te está avisando que reprueba en calidad &mdash; antes de que un cliente lo descubra por ti.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 FACTORING -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>Factoring:<br>partir bien</h2></div>
+          <span class="sec-chip">12 min · 20:32</span>
+        </div>
+        <p class="sec-objective">Si un módulo hace demasiado, se parte. Factoring es el arte de dividir hasta que cada parte tenga una sola razón de existir.</p>
+      </div>
+      <p>¿Qué haces cuando descubres que un módulo está sobrecargado &mdash; baja cohesión, hace de todo? Lo <em>factorizas</em>: lo partes en módulos más pequeños, cada uno con un propósito único. <em>Factoring</em> es esa operación de descomponer una función grande en subfunciones bien delimitadas. No es partir por partir: es partir hasta que cada parte valga por sí misma y se entienda sin explicación.</p>
+      <p>Hay un punto dulce, y aquí entra el criterio goetheano de la totalidad. Factorizar de menos te deja módulos "Frankenstein" que hacen mil cosas (poca cohesión). Pero factorizar de más &mdash; cien módulos minúsculos que se llaman entre sí sin parar &mdash; dispara el acoplamiento y nadie entiende el todo. El buen factoring busca el equilibrio: tantas partes como sentido tengan, ni una más.</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Una razón para cambiar.</b> Si un módulo tiene dos motivos distintos por los que tocarlo (cambia el cálculo o cambia el formato del reporte), pide a gritos que lo partas en dos.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Nómbralo en una frase.</b> Si para describir qué hace un módulo necesitas la palabra "y" dos veces, ya tienes tres módulos disfrazados de uno. El nombre honesto delata la falta de cohesión.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>No te pases.</b> Factorizar de más es tan malo como de menos. Cada módulo nuevo es una juntura nueva &mdash; y cada juntura es acoplamiento potencial. Parte solo donde gana claridad.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 FAN-OUT Y FAN-IN -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>Fan-Out<br>y Fan-In</h2></div>
+          <span class="sec-chip">14 min · 20:44</span>
+        </div>
+        <p class="sec-objective">Dos métricas que se leen mirando el diagrama de estructura: cuántos módulos llama uno (Fan-Out) y cuántos lo llaman a él (Fan-In).</p>
+      </div>
+      <p>Cuando dibujas el diagrama de estructura de tu sistema &mdash; ese árbol de módulos donde unos llaman a otros &mdash; dos números saltan a la vista y te dicen muchísimo sobre la calidad:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Fan-Out</b> &mdash; cuántos módulos llama (controla) un módulo, hacia abajo. Un Fan-Out alto significa un "jefe" que coordina a demasiados subordinados: difícil de entender y de cambiar. <b>Fan-Out alto suele ser mala señal:</b> ese módulo hace demasiada coordinación.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Fan-In</b> &mdash; cuántos módulos lo llaman a él, desde arriba. Un Fan-In alto significa una pieza muy reutilizada: muchos confían en ella. <b>Fan-In alto suele ser buena señal</b> (reúso), siempre que ese módulo sea muy cohesivo y estable &mdash; porque si falla, falla para todos.</div></div>
+      </div>
+      <p>La forma sana de un árbol, dicho rápido: <em>estrecho arriba, ancho abajo</em>. Pocos módulos de coordinación con Fan-Out moderado en la cima; utilidades muy reutilizadas con Fan-In alto en la base. Esto, otra vez, es Goethe: no juzgas un módulo solo, sino por su lugar y sus relaciones dentro de la totalidad del árbol. En la sección que sigue lo vas a ver y a tocar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 EL VALIDADOR (INTERACTIVO) -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>El validador<br>de calidad</h2></div>
+          <span class="sec-chip">18 min · 20:58</span>
+        </div>
+        <p class="sec-objective">Dos herramientas en una. Primero compara, lado a lado, un diseño bien hecho contra uno mal hecho. Luego toca módulos de un árbol real y mira su Fan-In y su Fan-Out.</p>
+      </div>
+      <p>Basta de teoría: vamos a ver la calidad. La herramienta tiene dos modos. Cambia entre <em>cohesión</em> y <em>acoplamiento</em> para comparar el mismo principio bien y mal aplicado &mdash; y, más abajo, toca cualquier módulo del árbol para que se iluminen sus relaciones y leas qué te dice su Fan-In y su Fan-Out. Todo funciona con teclado y con el dedo.</p>
+
+      <div class="qa" id="qa">
+        <div class="qa-instr">Modo del comparador · toca para cambiar el criterio que examinas</div>
+        <div class="qa-toggle" role="group" aria-label="Elegir criterio de calidad a comparar">
+          <button class="qa-tbtn" id="qaTabCoh" type="button" aria-pressed="true">Cohesión</button>
+          <button class="qa-tbtn" id="qaTabAco" type="button" aria-pressed="false">Acoplamiento</button>
+        </div>
+
+        <div class="qa-board">
+          <div class="qa-cell good">
+            <div class="qa-verdict" id="qaGoodTag">Alta cohesión · bien</div>
+            <svg class="qa-svg" id="qaGoodSvg" viewBox="0 0 240 140" role="img" aria-labelledby="qaGoodTitle">
+              <title id="qaGoodTitle">Diagrama de buena calidad</title>
+            </svg>
+            <p class="qa-celltext" id="qaGoodText"></p>
+          </div>
+          <div class="qa-cell bad">
+            <div class="qa-verdict" id="qaBadTag">Baja cohesión · mal</div>
+            <svg class="qa-svg" id="qaBadSvg" viewBox="0 0 240 140" role="img" aria-labelledby="qaBadTitle">
+              <title id="qaBadTitle">Diagrama de mala calidad</title>
+            </svg>
+            <p class="qa-celltext" id="qaBadText"></p>
+          </div>
+        </div>
+        <div class="qa-read" id="qaRead"></div>
+
+        <div class="qa-fan">
+          <div class="qa-instr" style="margin-bottom:12px;">Explorador Fan-In / Fan-Out · toca un módulo del árbol</div>
+          <svg class="qa-fan-svg" id="qaFanSvg" viewBox="0 0 520 300" role="img" aria-labelledby="qaFanTitle">
+            <title id="qaFanTitle">Diagrama de estructura: módulos que se llaman entre sí. Selecciona un módulo para ver su Fan-In y su Fan-Out.</title>
+            <defs>
+              <marker id="qaTip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" class="qa-arrow"></path>
+              </marker>
+            </defs>
+            <g id="qaLinks"></g>
+            <g id="qaNodes"></g>
+          </svg>
+          <div class="qa-fan-legend">
+            <span><i class="li-up"></i> Fan-In (lo llaman)</span>
+            <span><i class="li-down"></i> Fan-Out (él llama)</span>
+          </div>
+          <div class="qa-fan-read" id="qaFanRead">Toca un módulo para iluminar quién lo llama (Fan-In) y a quién llama él (Fan-Out), con la lectura de calidad.</div>
+          <div class="qa-hint">En celular y con teclado: toca o pulsa Enter sobre cualquier módulo.</div>
+        </div>
+      </div>
+
+      <p>Lo que acabas de hacer es exactamente lo que hace un revisor de arquitectura: no le creyó al diseño, lo midió. Fíjate que ningún módulo era "bueno" o "malo" por sí solo &mdash; lo era por su lugar y sus relaciones en el árbol. Esa mirada de la totalidad es la que hoy te llevas, y es la que vas a aplicar a tu propio diseño en el taller.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S7 SISTEMAS EN LA ORGANIZACIÓN + TRANSVERSALES -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>Los sistemas<br>en la organización</h2></div>
+          <span class="sec-chip">16 min · 21:16</span>
+        </div>
+        <p class="sec-objective">Tu sistema no vive solo: ocupa un piso en la pirámide de la organización. Saber cuál te dice a quién sirve, qué decisiones apoya y qué calidad le exigen.</p>
+      </div>
+      <p>Subimos un nivel de zoom. Hasta ahora miramos el sistema por dentro; ahora lo miramos como parte de una totalidad mayor &mdash; la organización. Por niveles, los sistemas de información suelen clasificarse en tres pisos de una pirámide, según a quién sirven y qué tipo de decisión apoyan:</p>
+
+      <div class="cards-grid" data-animate>
+        <div class="card-r">
+          <h4>Transaccionales (TPS)</h4>
+          <div class="cr-when">base · operación diaria</div>
+          <p>Registran las operaciones del día a día: ventas, retiros, inscripciones. Mucho volumen, datos exactos. Aquí la calidad es no perder ni una transacción.</p>
+        </div>
+        <div class="card-r">
+          <h4>Apoyo a decisiones (DSS)</h4>
+          <div class="cr-when">mando medio · análisis</div>
+          <p>Toman los datos del nivel transaccional y los convierten en análisis y escenarios para que los gerentes decidan. Reportes, tableros, "¿qué pasaría si&hellip;?".</p>
+        </div>
+        <div class="card-r">
+          <h4>Ejecutivos (EIS)</h4>
+          <div class="cr-when">dirección · visión global</div>
+          <p>Para la alta dirección: indicadores clave del negocio resumidos, vista panorámica para decisiones estratégicas. Pocos números, pero los que importan.</p>
+        </div>
+      </div>
+
+      <p>La pirámide es, de nuevo, una totalidad: el EIS no existiría sin los datos limpios que captura el TPS abajo. La calidad de cada piso depende de la del de abajo. Y por encima de estos pisos hay tres preocupaciones que cruzan todo el edificio &mdash; los temas transversales que cierran el curso:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>DevOps y CI/CD.</b> La cultura y las prácticas para integrar, probar y entregar cambios de forma continua y automatizada. No es una herramienta: es aplicar lo que sabes &mdash; muy goetheano &mdash; en un flujo constante en lugar de grandes entregas riesgosas.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Ciberseguridad.</b> La seguridad no es un módulo que se agrega al final: es una propiedad de la totalidad. Confidencialidad, integridad y disponibilidad del dato, por diseño, en cada juntura del sistema.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Compliance en banca.</b> En sectores regulados, el sistema debe cumplir la ley y poder demostrarlo: trazabilidad, auditoría, normas de la CNBV. Aquí la calidad no se declara &mdash; literalmente se audita.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 TALLER -->
+<section id="s8">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">viii.</span><h2>Taller: valida<br>la calidad de tu diseño</h2></div>
+          <span class="sec-chip">16 min · 21:32</span>
+        </div>
+        <p class="sec-objective">Saber no basta, hay que aplicar. Toma el diseño de tu proyecto y somételo a los criterios de hoy &mdash; no para defenderlo, sino para encontrarle el punto débil antes que tu evaluador.</p>
+      </div>
+      <p>Goethe lo diría sin rodeos: de nada sirve que sepas qué es la cohesión si no la aplicas a tu propio trabajo. Así que hoy auditas tu diseño con la mirada de la totalidad. Esto alimenta directamente la sección de calidad de tu documento del proyecto &mdash; y es práctica directa para el examen final.</p>
+
+      <div class="field">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Dibuja tu árbol de módulos <span class="fs-time">4 min</span></h4>
+            <p>Esboza el diagrama de estructura de tu sistema: tus módulos principales y quién llama a quién. No tiene que ser bonito; tiene que ser honesto. Si no te cabe en una hoja, ya aprendiste algo.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Caza el módulo "varios" <span class="fs-time">4 min</span></h4>
+            <p>Nombra cada módulo en una frase. El que no puedas describir sin un "y" repetido tiene <b>baja cohesión</b>: márcalo y propón cómo lo factorizarías en dos o tres con propósito único.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Lee Fan-Out y Fan-In <span class="fs-time">4 min</span></h4>
+            <p>Busca el módulo con el <b>Fan-Out más alto</b> (el que coordina demasiado): ¿se puede aligerar? Y el de <b>Fan-In más alto</b> (el más reutilizado): ¿es lo bastante cohesivo y estable para que tantos dependan de él?</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">4</div>
+          <div>
+            <h4>La prueba del cambio <span class="fs-time">4 min</span></h4>
+            <p>Inventa un cambio realista de negocio (cambia un impuesto, un dato del cliente, una regla). Cuenta cuántos módulos tendrías que tocar. Uno o dos: bajo acoplamiento, <b>aprobado</b>. Media docena: ya sabes dónde refactorizar.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Si trabajas en equipo</b> &mdash; intercambien árboles y háganse la prueba del cambio mutuamente. El compañero que detecta tu acoplamiento escondido hoy te ahorra el comentario del evaluador en el examen final. Atacar el diseño ajeno con cariño es el mejor regalo entre colegas.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 CIERRE -->
+<section id="s9">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ix.</span><h2>Cierre, entrega<br>y repaso final</h2></div>
+          <span class="sec-chip">11 min · 21:48</span>
+        </div>
+        <p class="sec-objective">Saber, querer, aplicar, hacer. Hoy aprendiste a no creerle a un diseño y a medirlo. Eso es pensar como profesional &mdash; y como Goethe.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>La calidad no se declara, se valida. La regla cabe en una frase: <b>alta cohesión, bajo acoplamiento</b> &mdash; partes sanas, junturas limpias.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Factoring parte un módulo hasta que cada parte valga por sí sola; Fan-Out alto avisa de exceso de coordinación y Fan-In alto premia el reúso de piezas estables.</div></div>
+        <div class="point"><span class="point-num">03</span><div>El sistema es una totalidad: vive en una pirámide (TPS, DSS, EIS) y lo cruzan DevOps, ciberseguridad y compliance. Ningún módulo se juzga solo.</div></div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-eyebrow">Entrega en clase · participación · hoy mismo</div>
+        <h3>Ejercicio de Fan-Out &middot; rumbo al examen final</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">No es una tarea para casa: es una entrega aquí, en clase, que vale como participación y te deja afilado para el examen final del próximo jueves. Sobre el árbol de módulos de tu proyecto (el del taller):</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Anota el <b>Fan-Out</b> de cada módulo de coordinación y señala el más alto &mdash; tu candidato a refactorizar.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Identifica el módulo de mayor <b>Fan-In</b> y justifica en una línea si su cohesión y estabilidad merecen tanta confianza.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Concluye con un veredicto de calidad: alta cohesión y bajo acoplamiento, ¿sí o no? &mdash; y una mejora concreta.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Entrégalo antes de salir. Repasa con el grupo: este criterio cae en el examen final.</li>
+        </ul>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El jueves que viene</div>
+          <p class="say-text">"Tomás de Aquino y el examen final. Lo propio del sabio es ordenar: el examen final es síntesis, integrar y ordenar todo lo aprendido en el curso."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Fin del capítulo 26.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // ============================================================
+  // INTERACTIVO DE CALIDAD
+  // ============================================================
+  const SVGNS = 'http://www.w3.org/2000/svg';
+
+  // ----- 1) Comparador cohesión / acoplamiento -----
+  // Cada modo define dos mini-diagramas (bueno / malo) dibujados en SVG.
+  function box(svg, x, y, w, h, label, cls) {
+    const r = document.createElementNS(SVGNS, 'rect');
+    r.setAttribute('x', x); r.setAttribute('y', y);
+    r.setAttribute('width', w); r.setAttribute('height', h);
+    r.setAttribute('rx', 6); r.setAttribute('class', 'qa-mod ' + (cls || ''));
+    svg.appendChild(r);
+    const t = document.createElementNS(SVGNS, 'text');
+    t.setAttribute('x', x + w / 2); t.setAttribute('y', y + h / 2 + 4);
+    t.setAttribute('text-anchor', 'middle'); t.setAttribute('class', 'qa-modtxt');
+    t.textContent = label;
+    svg.appendChild(t);
+  }
+  function line(svg, x1, y1, x2, y2, cls) {
+    const l = document.createElementNS(SVGNS, 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('class', 'qa-edge ' + (cls || ''));
+    svg.appendChild(l);
+  }
+
+  const QA_MODES = {
+    cohesion: {
+      goodTag: 'Alta cohesión · bien',
+      badTag: 'Baja cohesión · mal',
+      good(svg) {
+        box(svg, 70, 16, 100, 34, 'Facturación', 'cool');
+        box(svg, 30, 80, 80, 30, 'Calcular total', 'cool');
+        box(svg, 130, 80, 80, 30, 'Emitir folio', 'cool');
+        line(svg, 120, 50, 70, 80, 'calm');
+        line(svg, 120, 50, 170, 80, 'calm');
+      },
+      badText: 'Un solo módulo "Varios" que valida, imprime, cobra y manda correo. Cuatro propósitos sin relación = baja cohesión.',
+      goodText: 'El módulo "Facturación" hace una cosa y la hace completa, con submódulos del mismo propósito. Una sola razón para cambiarlo.',
+      bad(svg) {
+        box(svg, 70, 52, 100, 36, 'Módulo "Varios"', 'hot');
+        box(svg, 8, 8, 64, 26, 'Validar', 'hot');
+        box(svg, 168, 8, 64, 26, 'Imprimir', 'hot');
+        box(svg, 8, 106, 64, 26, 'Cobrar', 'hot');
+        box(svg, 168, 106, 64, 26, 'Correo', 'hot');
+        line(svg, 70, 60, 40, 34, 'tense');
+        line(svg, 170, 60, 200, 34, 'tense');
+        line(svg, 70, 80, 40, 106, 'tense');
+        line(svg, 170, 80, 200, 106, 'tense');
+      },
+      read: '<b>Cohesión = qué hace por dentro un módulo.</b> Izquierda: cada parte tiene un propósito nítido (alta cohesión, líneas verdes). Derecha: un cajón de sastre que hace de todo (baja cohesión, líneas rojas). Si no puedes nombrar el módulo en una frase sin "y", pártelo.'
+    },
+    acoplamiento: {
+      goodTag: 'Bajo acoplamiento · bien',
+      badTag: 'Alto acoplamiento · mal',
+      good(svg) {
+        box(svg, 16, 30, 60, 30, 'Ventas', 'cool');
+        box(svg, 90, 30, 60, 30, 'Pagos', 'cool');
+        box(svg, 164, 30, 60, 30, 'Stock', 'cool');
+        box(svg, 90, 96, 60, 30, 'Datos', 'cool');
+        line(svg, 46, 60, 110, 96, 'calm');
+        line(svg, 120, 60, 120, 96, 'calm');
+        line(svg, 194, 60, 130, 96, 'calm');
+      },
+      goodText: 'Cada módulo habla solo con un punto común y limpio. Cambias "Ventas" sin tocar "Stock": junturas limpias, bajo acoplamiento.',
+      badText: 'Todos dependen de todos: cada módulo conoce a los demás. Tocar uno obliga a abrir el resto. Una madeja, alto acoplamiento.',
+      bad(svg) {
+        box(svg, 16, 16, 60, 30, 'Ventas', 'hot');
+        box(svg, 164, 16, 60, 30, 'Pagos', 'hot');
+        box(svg, 16, 96, 60, 30, 'Stock', 'hot');
+        box(svg, 164, 96, 60, 30, 'Datos', 'hot');
+        line(svg, 76, 31, 164, 31, 'tense');
+        line(svg, 76, 111, 164, 111, 'tense');
+        line(svg, 46, 46, 46, 96, 'tense');
+        line(svg, 194, 46, 194, 96, 'tense');
+        line(svg, 76, 31, 164, 111, 'tense');
+        line(svg, 164, 31, 76, 111, 'tense');
+      },
+      read: '<b>Acoplamiento = cuánto depende un módulo de los demás.</b> Izquierda: pocas conexiones, limpias (bajo acoplamiento, verde). Derecha: todos atados a todos (alto acoplamiento, rojo). Prueba rápida: si cambiar un módulo te obliga a abrir cinco, repruebas.'
+    }
+  };
+
+  (function initQa() {
+    const tabCoh = document.getElementById('qaTabCoh');
+    const tabAco = document.getElementById('qaTabAco');
+    if (!tabCoh) return;
+    const goodSvg = document.getElementById('qaGoodSvg');
+    const badSvg = document.getElementById('qaBadSvg');
+    const goodTag = document.getElementById('qaGoodTag');
+    const badTag = document.getElementById('qaBadTag');
+    const goodText = document.getElementById('qaGoodText');
+    const badText = document.getElementById('qaBadText');
+    const readEl = document.getElementById('qaRead');
+
+    function clearSvg(svg) {
+      // conserva <title>, borra el resto
+      [...svg.childNodes].forEach(n => { if (n.nodeName !== 'title') svg.removeChild(n); });
+    }
+    function render(modeKey) {
+      const m = QA_MODES[modeKey];
+      tabCoh.setAttribute('aria-pressed', String(modeKey === 'cohesion'));
+      tabAco.setAttribute('aria-pressed', String(modeKey === 'acoplamiento'));
+      goodTag.textContent = m.goodTag;
+      badTag.textContent = m.badTag;
+      goodText.textContent = m.goodText;
+      badText.textContent = m.badText;
+      readEl.innerHTML = m.read;
+      clearSvg(goodSvg); clearSvg(badSvg);
+      m.good(goodSvg); m.bad(badSvg);
+    }
+    tabCoh.addEventListener('click', () => render('cohesion'));
+    tabAco.addEventListener('click', () => render('acoplamiento'));
+    render('cohesion');
+  })();
+
+  // ----- 2) Explorador Fan-In / Fan-Out -----
+  // Árbol de un sistema de ventas. Cada nodo: id, etiqueta, posición y a quién llama (calls = Fan-Out).
+  const FAN_NODES = {
+    main:    { label: 'Principal',  x: 210, y: 22,  calls: ['ventas', 'reportes'] },
+    ventas:  { label: 'Ventas',     x: 90,  y: 110, calls: ['validar', 'datos'] },
+    reportes:{ label: 'Reportes',   x: 330, y: 110, calls: ['datos', 'formato'] },
+    validar: { label: 'Validar',    x: 30,  y: 220, calls: ['datos'] },
+    formato: { label: 'Formato',    x: 270, y: 220, calls: [] },
+    datos:   { label: 'Acceso datos', x: 150, y: 220, calls: [] }
+  };
+  const FAN_W = 96, FAN_H = 38;
+  function fanCenter(id) {
+    const n = FAN_NODES[id];
+    return { x: n.x + FAN_W / 2, y: n.y + FAN_H / 2 };
+  }
+  // Fan-In: cuántos lo llaman
+  function fanInList(id) {
+    return Object.keys(FAN_NODES).filter(k => FAN_NODES[k].calls.includes(id));
+  }
+
+  (function initFan() {
+    const svg = document.getElementById('qaFanSvg');
+    if (!svg) return;
+    const linksG = document.getElementById('qaLinks');
+    const nodesG = document.getElementById('qaNodes');
+    const readEl = document.getElementById('qaFanRead');
+    const linkEls = {}; // key: "from->to"
+
+    // dibujar enlaces (de quien llama hacia quien es llamado)
+    Object.keys(FAN_NODES).forEach(from => {
+      FAN_NODES[from].calls.forEach(to => {
+        const a = fanCenter(from), b = fanCenter(to);
+        const ln = document.createElementNS(SVGNS, 'line');
+        ln.setAttribute('x1', a.x); ln.setAttribute('y1', a.y + FAN_H / 2 - 2);
+        ln.setAttribute('x2', b.x); ln.setAttribute('y2', b.y - FAN_H / 2 + 2);
+        ln.setAttribute('class', 'qa-link');
+        ln.setAttribute('marker-end', 'url(#qaTip)');
+        linksG.appendChild(ln);
+        linkEls[from + '->' + to] = ln;
+      });
+    });
+
+    // dibujar nodos como <g> enfocables (accesibles por teclado)
+    const nodeEls = {};
+    Object.keys(FAN_NODES).forEach(id => {
+      const n = FAN_NODES[id];
+      const g = document.createElementNS(SVGNS, 'g');
+      g.setAttribute('class', 'qa-node');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('role', 'button');
+      const fin = fanInList(id).length, fout = n.calls.length;
+      g.setAttribute('aria-label', n.label + ', Fan-In ' + fin + ', Fan-Out ' + fout);
+      const r = document.createElementNS(SVGNS, 'rect');
+      r.setAttribute('x', n.x); r.setAttribute('y', n.y);
+      r.setAttribute('width', FAN_W); r.setAttribute('height', FAN_H);
+      r.setAttribute('rx', 6);
+      g.appendChild(r);
+      const t = document.createElementNS(SVGNS, 'text');
+      t.setAttribute('x', n.x + FAN_W / 2); t.setAttribute('y', n.y + FAN_H / 2 + 4);
+      t.setAttribute('text-anchor', 'middle');
+      t.textContent = n.label;
+      g.appendChild(t);
+      g.addEventListener('click', () => select(id));
+      g.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); select(id); }
+      });
+      nodesG.appendChild(g);
+      nodeEls[id] = g;
+    });
+
+    function clearHighlight() {
+      Object.values(linkEls).forEach(l => l.setAttribute('class', 'qa-link'));
+      Object.values(nodeEls).forEach(g => g.classList.remove('sel'));
+    }
+
+    function select(id) {
+      clearHighlight();
+      const n = FAN_NODES[id];
+      nodeEls[id].classList.add('sel');
+      // Fan-Out: enlaces que salen de id (verde/oliva = down)
+      n.calls.forEach(to => { const l = linkEls[id + '->' + to]; if (l) l.setAttribute('class', 'qa-link down'); });
+      // Fan-In: enlaces que entran a id (rojo = up)
+      const ins = fanInList(id);
+      ins.forEach(from => { const l = linkEls[from + '->' + id]; if (l) l.setAttribute('class', 'qa-link up'); });
+
+      const fout = n.calls.length, fin = ins.length;
+      const inNames = ins.map(k => FAN_NODES[k].label).join(', ') || 'nadie (es la raíz)';
+      const outNames = n.calls.map(k => FAN_NODES[k].label).join(', ') || 'nadie (es una hoja)';
+
+      let verdict;
+      if (fout >= 2 && fin === 0) {
+        verdict = 'Es la raíz que coordina. Vigila que su Fan-Out no crezca de más: demasiada coordinación arriba se vuelve un cuello de botella difícil de cambiar.';
+      } else if (fout >= 2) {
+        verdict = 'Coordina a varios (Fan-Out alto). Revisa que de verdad necesite mandar a tantos &mdash; o pártelo, porque hace demasiado.';
+      } else if (fin >= 2 && fout === 0) {
+        verdict = 'Pieza muy reutilizada en la base (Fan-In alto). Excelente reúso, <b>siempre que sea muy cohesiva y estable</b>: si falla, falla para todos los que la llaman.';
+      } else if (fin >= 2) {
+        verdict = 'Muchos confían en ella (Fan-In alto) y aún coordina algo. Buen reúso; cuida su estabilidad.';
+      } else {
+        verdict = 'Acoplamiento moderado, sano. Ni coordina de más ni carga con medio sistema: el tipo de módulo que no da problemas.';
+      }
+
+      readEl.innerHTML =
+        '<b>' + n.label + '</b> &mdash; ' +
+        '<span class="fr-in">Fan-In ' + fin + '</span> (lo llaman: ' + inNames + ') · ' +
+        '<span class="fr-out">Fan-Out ' + fout + '</span> (él llama a: ' + outNames + ').<br>' +
+        verdict;
+    }
+
+    // arranque: selecciona la raíz para que se vea algo desde el inicio
+    select('main');
+  })();
+</script>
+
+</body>
+</html>

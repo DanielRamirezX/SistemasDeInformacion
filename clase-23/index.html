@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 23 · Da Vinci · Sistemas de Información</title>
+<meta name="description" content="Clase 23: diseño de interfaces de usuario. Entrada y salida de datos, patrones modernos (Kanban, dashboards), diseño centrado en el usuario y generación de maquetas con IA (Google Stitch). La simplicidad como máxima sofisticación, según Da Vinci. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* tarjetas de patrones de UI (aparecen al hacer scroll) */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
+  .card-r { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .cards-grid.go .card-r { opacity: 1; transform: translateY(0); }
+  .cards-grid.go .card-r:nth-child(1) { transition-delay: 0.05s; }
+  .cards-grid.go .card-r:nth-child(2) { transition-delay: 0.13s; }
+  .cards-grid.go .card-r:nth-child(3) { transition-delay: 0.21s; }
+  .cards-grid.go .card-r:nth-child(4) { transition-delay: 0.29s; }
+  .cards-grid.go .card-r:nth-child(5) { transition-delay: 0.37s; }
+  .cards-grid.go .card-r:nth-child(6) { transition-delay: 0.45s; }
+  .card-r h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
+  .card-r .cr-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .card-r p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+
+  /* ============================================================
+     COMPARADOR: interfaz que estorba vs interfaz que comunica (s6)
+  ============================================================ */
+  .cmp { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .cmp-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
+  .cmp-toggle { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 30px; background: var(--paper); padding: 4px; margin-bottom: 22px; gap: 4px; }
+  .cmp-btn { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; border: none; background: transparent; color: var(--ink-muted); border-radius: 24px; cursor: pointer; transition: background 0.25s, color 0.25s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .cmp-btn:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .cmp-btn.on { background: var(--blood); color: var(--paper); }
+  .cmp-stage { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; align-items: start; }
+  @media (max-width: 620px) { .cmp-stage { grid-template-columns: 1fr; } }
+
+  /* la "pantalla" simulada — todo dibujado con CSS, sin imágenes ni código */
+  .screen { background: var(--paper); border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; box-shadow: 0 3px 18px rgba(42,29,20,0.07); }
+  .screen-bar { display: flex; align-items: center; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--line); background: var(--paper-elev); }
+  .screen-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+  .screen-title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-left: 8px; }
+  .screen-body { padding: 18px 16px; min-height: 252px; }
+  .screen-h { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink); margin-bottom: 12px; }
+
+  /* skin "estorba": amontonado, denso, ruidoso */
+  .scr-bad .screen-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+  .scr-bad .b-line { height: 9px; border-radius: 2px; background: var(--line-strong); opacity: 0.55; }
+  .scr-bad .b-box { border: 1px solid var(--line-strong); border-radius: 2px; padding: 5px; display: grid; gap: 4px; }
+  .scr-bad .b-pill { font-family: var(--mono); font-size: 7.5px; padding: 3px 5px; border: 1px solid var(--line-strong); border-radius: 10px; color: var(--ink-muted); text-align: center; white-space: nowrap; overflow: hidden; }
+  .scr-bad .b-btn { font-family: var(--mono); font-size: 7.5px; padding: 4px; border-radius: 3px; text-align: center; color: var(--paper); }
+  .scr-bad .b-btn.r { background: var(--blood); }
+  .scr-bad .b-btn.o { background: var(--ochre); }
+  .scr-bad .b-btn.g { background: var(--olive); }
+  .scr-bad .b-span2 { grid-column: span 2; }
+  .scr-bad .b-span3 { grid-column: span 3; }
+
+  /* skin "comunica": jerarquía, aire, un solo foco */
+  .scr-good .screen-body { display: grid; gap: 16px; }
+  .scr-good .g-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .scr-good .g-field { height: 38px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper-elev); }
+  .scr-good .g-primary { background: var(--blood); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 13px; border-radius: 6px; text-align: center; }
+  .scr-good .g-ghost { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); text-align: center; }
+
+  .cmp-read { background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--blood); border-radius: 6px; padding: 20px 22px; }
+  .cmp-read .cr-kicker { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .cmp-read .cr-verdict { font-family: var(--serif); font-style: italic; font-size: 23px; line-height: 1.2; margin-bottom: 12px; }
+  .cmp-read.is-bad .cr-verdict { color: var(--blood); }
+  .cmp-read.is-good .cr-verdict { color: var(--olive); }
+  .cmp-read .cr-why { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin-bottom: 14px; }
+  .cmp-read .cr-prin { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; padding: 8px 12px; border-radius: 4px; background: var(--paper-elev); border: 1px dashed var(--line-strong); color: var(--ink-muted); line-height: 1.5; }
+  .cmp-read .cr-prin b { color: var(--blood); font-weight: 600; }
+
+  /* ============================================================
+     PRINCIPIOS DE BUENA UI — revelables (s4)
+  ============================================================ */
+  .prin { display: grid; gap: 0; margin: 32px 0; border-top: 1px solid var(--line); }
+  .prin-row { border-bottom: 1px solid var(--line); }
+  .prin-q { width: 100%; text-align: left; background: transparent; border: none; cursor: pointer; padding: 20px 0; display: grid; grid-template-columns: 30px 1fr 24px; gap: 14px; align-items: baseline; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); touch-action: manipulation; -webkit-appearance: none; appearance: none; transition: color 0.2s; }
+  .prin-q:hover { color: var(--blood); }
+  .prin-q:focus-visible { outline: 2px solid var(--blood); outline-offset: 3px; }
+  .prin-n { font-family: var(--serif); font-size: 18px; color: var(--blood); font-style: italic; }
+  .prin-plus { font-family: var(--mono); font-size: 18px; color: var(--ochre); text-align: center; transition: transform 0.3s; line-height: 1; }
+  .prin-q[aria-expanded="true"] .prin-plus { transform: rotate(45deg); }
+  .prin-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0; }
+  .prin-a.open { max-height: 320px; opacity: 1; }
+  .prin-a-inner { padding: 0 0 22px 44px; font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
+  .prin-a-inner b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 480px) { .prin-a-inner { padding-left: 0; } }
+
+  /* ejemplo y taller (reuso) */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
+  .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .example p b { color: var(--ink); font-weight: 600; }
+  .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .field-step:first-child { border-top: none; padding-top: 0; }
+  .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .field-step h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+  .field-step p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
+  .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .field-planb b { color: var(--ochre); font-weight: 600; }
+
+  /* bloque de prompt de ejemplo (reuso visual del .example, sin código) */
+  .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--ochre); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
+  .prompt-box .pb-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); margin-bottom: 10px; }
+  .prompt-box p { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+  .prompt-box p b { color: var(--ink); font-weight: 600; font-style: normal; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 23</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#s1">Repaso</a></li>
+      <li><a href="#s2">Da Vinci</a></li>
+      <li><a href="#s3">Entrada/Salida</a></li>
+      <li><a href="#s4">Principios</a></li>
+      <li><a href="#s5">Patrones</a></li>
+      <li><a href="#s6">Comparador</a></li>
+      <li><a href="#s7">Stitch</a></li>
+      <li><a href="#s8">Taller</a></li>
+      <li><a href="#s9">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 23</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Da Vinci</h1>
+      <p class="hero-tagline">La interfaz no se decora:<br>se <span>piensa para el usuario</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 3 agosto 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">La simplicidad es la máxima sofisticación.</p>
+    <p class="quote-attr">— <b>Leonardo da Vinci</b> · atribuido</p>
+  </div>
+</section>
+
+<section id="agenda">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
+          <span class="sec-chip">119 min · la máxima sofisticación</span>
+        </div>
+        <p class="sec-objective">Hoy diseñamos la cara de tu sistema. No con gusto artístico, sino con criterio: cómo entran y salen los datos, qué principios separan una pantalla que estorba de una que comunica, y cómo generar maquetas con IA sin delegar el juicio.</p>
+      </div>
+      <div class="agenda">
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes los datos; ¿cómo los ve el humano?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Da Vinci?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Entrada y salida de datos</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">Los principios de la buena interfaz</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">Patrones modernos: Kanban y dashboards</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:58</span><span class="agenda-title">Comparador: estorbar vs comunicar</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:16</span><span class="agenda-title">Del problema a la maqueta con Google Stitch</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: el Design Sprint de tu proyecto</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 10</span><span class="agenda-dur">11 min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 REPASO -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Tienes los datos.<br>¿Cómo los ve el humano?</h2></div>
+          <span class="sec-chip">8 min · 20:00</span>
+        </div>
+        <p class="sec-objective">Ya modelaste la base, las entidades y las relaciones. Pero ningún usuario habla con una tabla: habla con una pantalla. Hoy diseñamos esa pantalla.</p>
+      </div>
+      <p>Hasta ahora trabajaste las tripas del sistema: el modelo de datos, las entidades, las relaciones, las reglas del negocio. Es la ingeniería que sostiene todo. Pero hay un detalle incómodo: el usuario final jamás verá una tabla normalizada ni un diagrama entidad&ndash;relación. Lo único que toca, lo único que juzga, es la <em>interfaz</em>. Para él, la interfaz <em>es</em> el sistema.</p>
+      <p>Y aquí va la advertencia de la clase: no somos una materia de diseño gráfico. No vamos a discutir tipografías de moda ni paletas bonitas. Lo que aprendes hoy es el <em>criterio</em> para decidir qué va en la pantalla, dónde y por qué &mdash; cómo entran los datos y cómo salen. El acabado visual de las maquetas lo va a generar la IA; el juicio sobre si esa maqueta sirve al usuario es tuyo, y es lo que no se delega.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El dato que duele</div>
+          <p class="say-text">"Un sistema con la base de datos impecable y una interfaz confusa fracasa igual que uno mal hecho. El usuario no abandona tu sistema porque el modelo relacional esté mal: lo abandona porque no encuentra el botón. La interfaz es donde todo tu trabajo invisible se gana o se pierde."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ DA VINCI -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Da Vinci?</h2></div>
+          <span class="sec-chip">8 min · 20:08</span>
+        </div>
+        <p class="sec-objective">Porque fue el punto exacto donde el arte y la ingeniería se tocan &mdash; y porque resumió el diseño de interfaces en seis palabras antes de que existieran las interfaces.</p>
+      </div>
+      <p>Leonardo es el lugar donde el arte y la ingeniería dejan de ser dos cosas. Diseccionaba cadáveres para dibujar mejor; estudiaba el vuelo de los pájaros para imaginar máquinas. Para él, entender cómo funciona algo y hacerlo bello no eran tareas separadas: eran la misma tarea. Eso es justamente el diseño de interfaces &mdash; entender el flujo del usuario (ingeniería) y presentárselo de modo que lo comprenda sin esfuerzo (arte).</p>
+      <p>Su frase, "la simplicidad es la máxima sofisticación", es el principio rector de hoy. Cuidado con malinterpretarla: simple no es pobre ni vacío. Llegar a lo simple es <em>difícil</em>; exige saber tanto del problema que puedes quitar todo lo que sobra sin perder lo que importa. Una interfaz recargada suele ser señal de que el diseñador no entendió qué necesitaba el usuario, así que puso todo "por si acaso". La interfaz simple es la que costó más pensar.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Da Vinci aplicado a la interfaz</div>
+          <p class="say-text">"Una buena interfaz comunica sin estorbar. No te hace admirar el diseño: te deja olvidarte de él y hacer lo que viniste a hacer. La sofisticación no está en lo que agregas para impresionar, sino en lo que te atreves a quitar para que el usuario respire."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 ENTRADA Y SALIDA DE DATOS -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Entrada y salida<br>de datos</h2></div>
+          <span class="sec-chip">14 min · 20:16</span>
+        </div>
+        <p class="sec-objective">Toda interfaz hace solo dos cosas: deja que el dato entre y muestra el dato que sale. Diseñar bien es diseñar bien esos dos momentos.</p>
+      </div>
+      <p>Despojada de adornos, una interfaz tiene dos trabajos. La <em>entrada</em>: el usuario le da datos al sistema &mdash; formularios, búsquedas, selecciones, una foto. La <em>salida</em>: el sistema le devuelve datos al usuario &mdash; listas, reportes, gráficas, una confirmación. Todo lo demás &mdash; menús, botones, navegación &mdash; existe para llevar al usuario de una entrada a una salida. Si tienes claros esos dos momentos en cada pantalla, ya tienes la mitad del diseño.</p>
+      <p>La entrada es donde se pierde más gente, porque pedir datos es pedirle trabajo al usuario, y el usuario es perezoso con razón. Cada campo que agregas es un peaje. Tres reglas de oro para la entrada:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Pide lo mínimo.</b> Cada campo extra cuesta abandonos. Si puedes deducir el dato (la fecha de hoy, la ciudad por el código postal), no se lo preguntes al usuario. El formulario más amable es el más corto.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Previene el error, no solo lo regañes.</b> Un menú desplegable no se puede escribir mal; un calendario no acepta el 32 de febrero. Es mejor diseñar para que el error sea imposible que mostrar un mensaje en rojo después.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Habla el idioma del usuario.</b> La etiqueta dice "Fecha de nacimiento", no "campo_fec_nac". El usuario no conoce tu modelo de datos &mdash; ni tiene por qué.</div></div>
+      </div>
+      <p>La salida tiene su propia regla, y es de Da Vinci pura: muestra lo que el usuario necesita <em>ahora</em>, no todo lo que el sistema sabe. Un reporte que vomita doscientas columnas no informa: esconde. La salida buena <em>jerarquiza</em> &mdash; lo importante grande y arriba, el detalle a un clic de distancia. Mostrar todo es no haber decidido nada.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4 PRINCIPIOS DE BUENA UI -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>Los principios<br>de la buena interfaz</h2></div>
+          <span class="sec-chip">14 min · 20:30</span>
+        </div>
+        <p class="sec-objective">No hay reglas mágicas, pero sí seis principios que llevan décadas siendo ciertos. Toca cada uno para descubrir qué exige &mdash; y qué castiga.</p>
+      </div>
+      <p>El diseño de interfaces no se improvisa con gusto personal; se apoya en principios que el oficio ya comprobó. Aquí tienes seis, escritos como afirmación. <b>Toca cada uno para revelar qué significa y por qué importa.</b> Léelos como una lista de verificación para tus propias maquetas:</p>
+
+      <div class="prin" id="prin">
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">01</span>
+            <span>El usuario no debería tener que pensar.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">Si para usar tu pantalla hay que adivinar dónde está algo o qué hace un botón, la interfaz ya falló. Lo evidente no se explica. <b>Cada duda que provocas es fricción</b>, y la fricción expulsa usuarios. La meta es que la siguiente acción siempre sea obvia.</div></div>
+        </div>
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">02</span>
+            <span>La jerarquía visual guía la mirada.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">Tamaño, color, posición y espacio le dicen al ojo qué mirar primero. Lo importante se ve importante; lo secundario, secundario. <b>Si todo grita, nada se oye.</b> Una pantalla sin jerarquía obliga al usuario a leerlo todo para encontrar una cosa.</div></div>
+        </div>
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">03</span>
+            <span>La consistencia ahorra aprendizaje.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">El botón de guardar va siempre en el mismo lugar; el color de "peligro" significa peligro en toda la app. <b>Lo que el usuario aprende en una pantalla debe servirle en las demás.</b> La inconsistencia obliga a reaprender en cada esquina y se siente como descuido.</div></div>
+        </div>
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">04</span>
+            <span>El sistema siempre da retroalimentación.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">El usuario nunca debe quedarse sin saber qué pasó: guardó, cargó, falló. Un botón que se presiona y no responde genera ansiedad &mdash; y doble clic. <b>Confirma lo que ocurrió</b>, muestra que algo está cargando, explica el error con palabras humanas y, de ser posible, cómo resolverlo.</div></div>
+        </div>
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">05</span>
+            <span>Perdona el error: todo es reversible.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">La gente se equivoca; el buen diseño lo asume. Ofrece deshacer, pide confirmación antes de borrar algo grave, no castigues un clic accidental con una catástrofe. <b>Una interfaz que perdona da confianza</b>; una que castiga cada paso en falso da miedo, y el miedo paraliza.</div></div>
+        </div>
+        <div class="prin-row">
+          <button class="prin-q" type="button" aria-expanded="false">
+            <span class="prin-n">06</span>
+            <span>La accesibilidad no es un extra.</span>
+            <span class="prin-plus" aria-hidden="true">+</span>
+          </button>
+          <div class="prin-a"><div class="prin-a-inner">Contraste suficiente para quien ve poco, áreas tocables grandes para el pulgar, texto que crece, todo usable con teclado. <b>Diseñar para quien tiene una limitación mejora la experiencia de todos.</b> Una interfaz que excluye a alguien no es elegante: es incompleta.</div></div>
+        </div>
+      </div>
+
+      <p>Ninguno es una opinión de moda: son hallazgos repetidos durante décadas. Tenlos a mano cuando juzgues una maqueta &mdash; la tuya o la que te dé la IA.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5 PATRONES MODERNOS -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>Patrones modernos:<br>Kanban y dashboards</h2></div>
+          <span class="sec-chip">14 min · 20:44</span>
+        </div>
+        <p class="sec-objective">No reinventes la rueda de la pantalla. Existen patrones probados que el usuario ya sabe leer &mdash; úsalos y le ahorras el aprendizaje.</p>
+      </div>
+      <p>Un patrón de interfaz es una solución ya resuelta para un problema que se repite. Su mayor virtud no es verse moderno: es que el usuario <em>ya los conoce</em> de otras apps, así que no tiene que aprender nada nuevo. Reconocer cuál encaja con cada flujo de tu sistema es parte del criterio de hoy. Estos son los que más vas a usar:</p>
+
+      <div class="cards-grid" data-animate>
+        <div class="card-r">
+          <h4>Tablero Kanban</h4>
+          <div class="cr-when">trabajo que avanza por etapas</div>
+          <p>Columnas que representan estados (Por hacer · En proceso · Listo) y tarjetas que se mueven entre ellas. Ideal cuando algo cambia de estado: pedidos, tickets, tareas, candidatos.</p>
+        </div>
+        <div class="card-r">
+          <h4>Dashboard</h4>
+          <div class="cr-when">decidir de un vistazo</div>
+          <p>Pantalla de inicio con los indicadores clave (KPIs), gráficas y avisos. Salida pura: responde "¿cómo va todo?" en tres segundos. Lo importante grande; el detalle, a un clic.</p>
+        </div>
+        <div class="card-r">
+          <h4>Maestro&ndash;detalle</h4>
+          <div class="cr-when">lista y ficha</div>
+          <p>Una lista a un lado, el detalle del seleccionado al otro. El correo, los contactos, los productos. Patrón eterno para "ver muchos y abrir uno".</p>
+        </div>
+        <div class="card-r">
+          <h4>Asistente (wizard)</h4>
+          <div class="cr-when">un proceso largo por pasos</div>
+          <p>Divide una tarea compleja en pasos cortos con avance visible. Reduce la sensación de esfuerzo: cinco preguntas se sienten menos que un formulario gigante.</p>
+        </div>
+        <div class="card-r">
+          <h4>Búsqueda y filtros</h4>
+          <div class="cr-when">muchos registros</div>
+          <p>Cuando hay miles de elementos, navegar no sirve: hay que buscar y filtrar. Filtros visibles y combinables convierten una bodega de datos en algo manejable.</p>
+        </div>
+        <div class="card-r">
+          <h4>Estado vacío</h4>
+          <div class="cr-when">aún no hay datos</div>
+          <p>El detalle que casi nadie diseña: qué ve el usuario la primera vez, sin nada cargado. Una pantalla vacía bien hecha enseña y anima a dar el primer paso.</p>
+        </div>
+      </div>
+
+      <p>No los uses por moda: úsalos porque encajan con el flujo. Un dashboard donde se necesitaba un Kanban confunde tanto como uno hecho a mano. El patrón correcto es el que el usuario ya esperaba.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 COMPARADOR (INTERACTIVO) -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>Comparador:<br>estorbar vs comunicar</h2></div>
+          <span class="sec-chip">18 min · 20:58</span>
+        </div>
+        <p class="sec-objective">El mismo flujo, dos interfaces. Alterna entre ellas y el sitio te dice exactamente qué principio cambió &mdash; y por qué una respira y la otra ahoga.</p>
+      </div>
+      <p>Teoría hecha pantalla. Abajo tienes la <b>misma tarea</b> &mdash; registrar un pago en tu sistema &mdash; diseñada de dos maneras. <b>Toca los botones para alternar</b> entre la versión que estorba y la que comunica, y lee a la derecha qué principio de diseño de hoy explica la diferencia. Pista: no cambió la función; cambió lo que el diseñador se atrevió a quitar.</p>
+
+      <div class="cmp" id="cmp">
+        <div class="cmp-instr">Toca para alternar la misma pantalla · tarea: registrar un pago</div>
+        <div class="cmp-toggle" role="group" aria-label="Elige qué versión de la interfaz ver">
+          <button class="cmp-btn on" type="button" id="cmpBad" aria-pressed="true">Interfaz que estorba</button>
+          <button class="cmp-btn" type="button" id="cmpGood" aria-pressed="false">Interfaz que comunica</button>
+        </div>
+        <div class="cmp-stage">
+          <!-- la pantalla cambia de skin con JS -->
+          <div class="screen scr-bad" id="cmpScreen" aria-live="polite">
+            <div class="screen-bar">
+              <span class="screen-dot"></span><span class="screen-dot"></span><span class="screen-dot"></span>
+              <span class="screen-title" id="cmpScreenTitle">Registrar pago</span>
+            </div>
+            <div class="screen-body" id="cmpScreenBody"><!-- inyectado por JS --></div>
+          </div>
+          <div class="cmp-read is-bad" id="cmpRead" aria-live="polite"><!-- inyectado por JS --></div>
+        </div>
+      </div>
+
+      <p>¿Notaste qué pasó? La función es idéntica &mdash; en ambas registras un pago &mdash; pero la segunda <em>decidió</em>: ocultó lo que no hacía falta ahora, jerarquizó lo importante y dejó un solo siguiente paso evidente. Eso es la frase de Da Vinci hecha pantalla: lo difícil no fue agregar, fue atreverse a quitar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S7 GOOGLE STITCH -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>Del problema a la maqueta<br>con Google Stitch</h2></div>
+          <span class="sec-chip">14 min · 21:16</span>
+        </div>
+        <p class="sec-objective">La IA dibuja la maqueta en minutos. Lo que no hace es decidir si esa maqueta sirve al usuario. Ese juicio &mdash; el criterio &mdash; sigue siendo tuyo.</p>
+      </div>
+      <p>Antes, hacer una maqueta (un <em>mockup</em>: el dibujo de cómo se verá la pantalla, sin que funcione todavía) tomaba horas con herramientas de diseño. Hoy se las pides a una IA como <b>Google Stitch</b> &mdash; le describes la pantalla en palabras y te devuelve un diseño visual editable. Eso cambia todo&hellip; y no cambia nada. Cambia la velocidad; no cambia de quién es el criterio.</p>
+      <p>Porque la IA solo es tan buena como tu instrucción. Si le pides "una pantalla bonita", te da relleno genérico. Si llegas con el <em>flujo de usuario</em> claro &mdash; quién es, qué quiere lograr, qué datos entran y salen, qué patrón encaja &mdash; entonces la IA se vuelve un colaborador rapidísimo. El flujo lo piensas tú; el pixel lo pone ella. Para que la maqueta tenga sentido, el problema tuvo que estar resuelto antes de abrir Stitch.</p>
+
+      <div class="prompt-box">
+        <div class="pb-tag">Cómo se ve un buen prompt</div>
+        <p>"Diseña una pantalla para <b>registrar un pago</b> en un sistema de cobranza, para una <b>cajera</b> con prisa. Patrón: <b>formulario corto</b>. Entrada: monto, método de pago y cliente (buscable). Salida: confirmación clara. Una sola acción primaria visible. Estilo limpio, alto contraste, accesible."</p>
+      </div>
+
+      <p>Esto es un <em>Design Sprint</em> en miniatura: del problema a la maqueta en una sesión corta, para tener algo visible que enseñar y discutir pronto &mdash; en vez de imaginar en abstracto. La maqueta no es la verdad: es una propuesta para provocar reacciones reales. Y como todo lo que haces con IA en esta materia, cierras documentando <b>cómo la usaste</b> y qué decidiste tú &mdash; porque tú firmas el resultado, no la herramienta.</p>
+
+      <div class="example">
+        <div class="example-tag">La trampa de la maqueta perfecta</div>
+        <p>La IA te dará una maqueta pulida y convincente en treinta segundos. <b>Que se vea profesional no significa que sirva.</b> Tu trabajo empieza ahí: pásale a esa maqueta la lista de seis principios de hoy. ¿El siguiente paso es obvio? ¿Hay jerarquía? ¿Pide lo mínimo? ¿Perdona el error? Si algo falla, ajustas el prompt y vuelves a pedir. La IA itera gratis; tu criterio es lo único caro &mdash; y lo único tuyo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 TALLER -->
+<section id="s8">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">viii.</span><h2>Taller: el Design Sprint<br>de tu proyecto</h2></div>
+          <span class="sec-chip">18 min · 21:30</span>
+        </div>
+        <p class="sec-objective">Hoy sales con una maqueta real de tu sistema, generada con IA y juzgada con tu criterio. Es el arranque directo de tu Tarea 10.</p>
+      </div>
+      <p>Da Vinci no teorizaba el vuelo: construía el modelo. Tú harás lo mismo con tu proyecto: del flujo de usuario a una maqueta visible, en una sesión. Toma una de las pantallas principales de tu sistema &mdash; la que más importa &mdash; y llévala del problema al mockup. Esto es el primer empujón de tu tarea; aquí solo arrancas.</p>
+
+      <div class="field">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Elige una pantalla y su flujo <span class="fs-time">4 min</span></h4>
+            <p>Escoge <b>una</b> pantalla clave de tu sistema. En una frase: quién la usa, qué quiere lograr, qué datos <b>entran</b> y qué datos <b>salen</b>. Si no puedes decirlo en una frase, todavía no la entiendes bien.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Decide el patrón <span class="fs-time">3 min</span></h4>
+            <p>De los patrones de hoy &mdash; Kanban, dashboard, maestro&ndash;detalle, asistente, búsqueda, formulario &mdash; ¿cuál encaja con ese flujo? Escribe cuál y <b>por qué</b>. La razón importa más que la elección.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Escribe el prompt y genera en Stitch <span class="fs-time">6 min</span></h4>
+            <p>Redacta el prompt como el ejemplo de hoy: usuario, patrón, entrada, salida, una acción primaria, estilo accesible. Genera la maqueta en <b>Google Stitch</b> y <b>guarda el prompt exacto</b> que usaste &mdash; lo necesitarás en la tarea.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">4</div>
+          <div>
+            <h4>Júzgala con los seis principios <span class="fs-time">5 min</span></h4>
+            <p>Pasa la maqueta por la lista: ¿siguiente paso obvio? ¿jerarquía? ¿pide lo mínimo? ¿da retroalimentación? ¿perdona el error? ¿es accesible? Anota <b>una mejora</b> y, si alcanzas, vuelve a pedirla. Esa decisión tuya es lo que evaluará la tarea.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Si no tienes acceso a Stitch en clase</b> &mdash; no te frenes: dibuja la maqueta a mano o en cualquier herramienta y deja el prompt redactado. Lo que evalúo es el criterio &mdash; el patrón elegido, el flujo claro, los principios aplicados &mdash;, no la herramienta. La IA es el pincel; el cuadro lo piensas tú.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 CIERRE -->
+<section id="s9">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ix.</span><h2>Cierre y Tarea 10</h2></div>
+          <span class="sec-chip">11 min · 21:48</span>
+        </div>
+        <p class="sec-objective">La interfaz no se decora: se piensa para el usuario. Y lo simple, lejos de ser lo fácil, es lo más difícil de lograr &mdash; la máxima sofisticación.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>Toda interfaz hace dos cosas: deja entrar el dato y muestra el que sale. Pide lo mínimo, previene el error y jerarquiza la salida &mdash; mostrar todo es no decidir nada.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Seis principios mandan: no hagas pensar, jerarquiza, sé consistente, da retroalimentación, perdona el error y diseña accesible. Y usa los patrones que el usuario ya conoce.</div></div>
+        <div class="point"><span class="point-num">03</span><div>La IA genera la maqueta en minutos; el criterio para saber si sirve es tuyo. La simplicidad cuesta pensar &mdash; por eso es la máxima sofisticación.</div></div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-eyebrow">Tarea 10 · valor 1 punto · entrega: jueves 13 de agosto</div>
+        <h3>El Design Sprint de tu proyecto</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Genera las maquetas (mockups) de las interfaces principales de tu sistema con <b>Google Stitch</b>, partiendo del flujo de usuario. No se evalúa que se vean bonitas, sino que comuniquen: que apliquen los principios y patrones de hoy. Esto debes entregar:</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Las <b>maquetas (mockups)</b> de las interfaces principales de tu sistema, generadas con Google Stitch a partir del flujo de usuario.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Para cada pantalla, el <b>patrón elegido</b> (Kanban, dashboard, formulario&hellip;) y una frase con su flujo: qué entra y qué sale.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>El <b>prompt usado</b> en Stitch para cada maqueta, tal cual lo escribiste.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>La sección <b>"Cómo usé IA"</b>: qué le pediste, qué corregiste y qué decidiste tú aplicando los seis principios &mdash; porque tú firmas la interfaz, no la herramienta.</li>
+        </ul>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El lunes que viene</div>
+          <p class="say-text">"Mies van der Rohe y el diseño estructurado. Menos es más: diagramas HIPO y diseño top-down para estructurar tu sistema sin sobrarle nada."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Fin del capítulo 23.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // ============================================================
+  // Principios revelables (acordeón accesible)
+  // ============================================================
+  (function initPrin() {
+    const root = document.getElementById('prin');
+    if (!root) return;
+    root.querySelectorAll('.prin-q').forEach(btn => {
+      const ans = btn.parentElement.querySelector('.prin-a');
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        ans.classList.toggle('open', !open);
+      });
+    });
+  })();
+
+  // ============================================================
+  // Comparador: interfaz que estorba vs interfaz que comunica
+  // ============================================================
+  (function initCmp() {
+    const screen = document.getElementById('cmpScreen');
+    const body = document.getElementById('cmpScreenBody');
+    const read = document.getElementById('cmpRead');
+    const btnBad = document.getElementById('cmpBad');
+    const btnGood = document.getElementById('cmpGood');
+    if (!screen || !body || !read) return;
+
+    // markup de las dos "pantallas", dibujadas solo con CSS (sin imágenes ni código)
+    const BAD_BODY =
+      '<div class="b-box b-span3"><div class="b-line"></div><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-box b-span2"><div class="b-line"></div><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-pill">Avanzado</div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-box"><div class="b-line"></div></div>' +
+      '<div class="b-btn r">Guardar</div>' +
+      '<div class="b-btn o">Guardar y nuevo</div>' +
+      '<div class="b-btn g">Exportar</div>' +
+      '<div class="b-btn r">Imprimir</div>' +
+      '<div class="b-btn o">Duplicar</div>' +
+      '<div class="b-btn g">Cancelar</div>';
+
+    const GOOD_BODY =
+      '<div class="screen-h">Registrar pago</div>' +
+      '<div><div class="g-label">Monto</div><div class="g-field"></div></div>' +
+      '<div><div class="g-label">Método de pago</div><div class="g-field"></div></div>' +
+      '<div><div class="g-label">Cliente</div><div class="g-field"></div></div>' +
+      '<div class="g-primary">Registrar pago</div>' +
+      '<div class="g-ghost">Cancelar</div>';
+
+    const READ = {
+      bad: {
+        cls: 'cmp-read is-bad',
+        kicker: 'Lo que ves',
+        verdict: 'Te hace pensar.',
+        why: 'Campos amontonados, seis botones que compiten y ningún espacio para respirar. ¿Cuál es la acción principal? No se sabe: todo grita igual. El usuario tiene que leerlo todo para encontrar lo que vino a hacer.',
+        prin: '<b>Falla los principios 01 y 02:</b> obliga a pensar &mdash; el siguiente paso no es obvio &mdash; y no tiene jerarquía visual: todo pesa lo mismo, así que nada destaca.'
+      },
+      good: {
+        cls: 'cmp-read is-good',
+        kicker: 'Lo que ves',
+        verdict: 'Comunica sin estorbar.',
+        why: 'Tres campos &mdash; lo mínimo para registrar un pago &mdash;, etiquetas en idioma humano y una sola acción primaria que salta a la vista. Lo demás se ocultó porque ahora no hace falta. La pantalla respira y el siguiente paso es obvio.',
+        prin: '<b>Cumple los principios 01 y 02:</b> no te hace pensar y jerarquiza con un solo foco. Además pide lo mínimo. Misma función, menos ruido &mdash; la simplicidad costó más pensar.'
+      }
+    };
+
+    function render(mode) {
+      const isBad = mode === 'bad';
+      screen.className = 'screen ' + (isBad ? 'scr-bad' : 'scr-good');
+      body.innerHTML = isBad ? BAD_BODY : GOOD_BODY;
+      const r = READ[mode];
+      read.className = r.cls;
+      read.innerHTML =
+        '<div class="cr-kicker">' + r.kicker + '</div>' +
+        '<div class="cr-verdict">' + r.verdict + '</div>' +
+        '<div class="cr-why">' + r.why + '</div>' +
+        '<div class="cr-prin">' + r.prin + '</div>';
+      btnBad.classList.toggle('on', isBad);
+      btnGood.classList.toggle('on', !isBad);
+      btnBad.setAttribute('aria-pressed', isBad ? 'true' : 'false');
+      btnGood.setAttribute('aria-pressed', isBad ? 'false' : 'true');
+    }
+
+    btnBad.addEventListener('click', () => render('bad'));
+    btnGood.addEventListener('click', () => render('good'));
+    render('bad');
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 27 · Tomás de Aquino · Sistemas de Información</title>
+<meta name="description" content="Clase 27: Examen Final. Síntesis e integración de todo el curso — análisis, modelado y diseño. Examen escrito tradicional, teoría más caso integrador, sin IA, 25% de la calificación final. Lo propio del sabio es ordenar, según Tomás de Aquino. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* ejemplo y bloque informativo (reuso) */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
+  .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .example p b { color: var(--ink); font-weight: 600; }
+  .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .field-step:first-child { border-top: none; padding-top: 0; }
+  .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .field-step h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+  .field-step p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .field-planb b { color: var(--ochre); font-weight: 600; }
+
+  /* ============================================================
+     CHECKLIST DE SÍNTESIS INTERACTIVO (s5)
+  ============================================================ */
+  .synth { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .synth-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 18px; }
+  .synth-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+  .synth-meter { flex: 1; min-width: 180px; height: 8px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 20px; overflow: hidden; }
+  .synth-fill { height: 100%; width: 0%; background: linear-gradient(to right, var(--ochre), var(--blood)); border-radius: 20px; transition: width 0.45s ease; }
+  .synth-count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--ink-muted); white-space: nowrap; }
+  .synth-count b { color: var(--blood); font-weight: 600; }
+  .synth-list { display: grid; gap: 10px; }
+  .synth-item { display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: start; text-align: left; width: 100%; font-family: var(--sans); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; padding: 15px 18px; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; color: var(--ink-soft); }
+  .synth-item:hover { border-color: var(--blood); transform: translateY(-1px); }
+  .synth-item:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .synth-box { width: 24px; height: 24px; border: 1.6px solid var(--line-strong); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 14px; font-weight: 700; color: transparent; transition: background 0.2s, border-color 0.2s, color 0.2s; margin-top: 1px; }
+  .synth-item.done { border-color: var(--olive); background: rgba(93, 102, 56, 0.08); }
+  .synth-item.done .synth-box { background: var(--olive); border-color: var(--olive); color: var(--paper); }
+  .synth-item.done .si-name { color: var(--ink-muted); }
+  .si-name { font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.25; color: var(--ink); display: block; margin-bottom: 2px; }
+  .si-desc { font-size: 13px; color: var(--ink-muted); line-height: 1.45; }
+  .synth-actions { display: flex; align-items: center; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .synth-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 9px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .synth-reset:hover { background: var(--paper); color: var(--ink); }
+  .synth-note { font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; color: var(--ink-faint); }
+  .synth-conclusion { margin-top: 16px; padding: 18px 20px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .synth-conclusion.show { opacity: 1; max-height: 600px; }
+  .synth-conclusion b { color: var(--blood); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 27</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#s1">Hoy</a></li>
+      <li><a href="#s2">Aquino</a></li>
+      <li><a href="#s3">Formato</a></li>
+      <li><a href="#s4">Temario</a></li>
+      <li><a href="#s5">Checklist</a></li>
+      <li><a href="#s6">Evaluación</a></li>
+      <li><a href="#s7">Recomendaciones</a></li>
+      <li><a href="#s8">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 27</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Tomás de Aquino</h1>
+      <p class="hero-tagline">El examen final<br>es <span>síntesis</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 17 agosto 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">Lo propio del sabio es ordenar.</p>
+    <p class="quote-attr">— <b>Tomás de Aquino</b> · siglo xiii</p>
+  </div>
+</section>
+
+<!-- S1 QUÉ SE EVALÚA HOY -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Hoy es<br>día de examen</h2></div>
+          <span class="sec-chip">examen final · 119 min</span>
+        </div>
+        <p class="sec-objective">Esta página no es una lección: es tu mapa para el examen final. Aquí está qué entra, cómo será, cuánto vale y cómo presentarlo bien.</p>
+      </div>
+      <p>Hoy no hay tema nuevo. Hoy se evalúa el curso entero. El examen final es un <em>examen escrito tradicional</em> que combina dos partes: teoría &mdash; conceptos, definiciones, criterios &mdash; y un <em>caso integrador</em>, donde recibes una situación de negocio y tienes que analizarla, modelarla y proponer un diseño, como lo harías frente a un cliente real.</p>
+      <p>La cobertura es integral: todo lo que vimos a lo largo del cuatrimestre, con énfasis en el corazón de la materia &mdash; <em>análisis, modelado y diseño</em>. No se trata de recitar; se trata de demostrar que sabes ordenar las piezas: tomar un problema crudo y entregarlo convertido en un sistema pensado. Esa es justamente la palabra del día: <em>síntesis</em>.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Lo que de verdad se mide hoy</div>
+          <p class="say-text">"Un examen final no premia a quien memorizó más fichas, sino a quien sabe poner cada concepto en su lugar y conectarlo con los demás. No se evalúa cuánto guardaste; se evalúa cuánto puedes ordenar bajo presión."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ AQUINO -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Tomás de Aquino?</h2></div>
+          <span class="sec-chip">el gran sintetizador</span>
+        </div>
+        <p class="sec-objective">Porque dedicó su vida a la tarea exacta que hoy te pedimos: tomar saberes dispersos y ordenarlos en un todo coherente.</p>
+      </div>
+      <p>Tomás de Aquino, en pleno siglo xiii, hizo algo que parecía imposible: unió la filosofía de Aristóteles &mdash; pagano, redescubierto y sospechoso para muchos &mdash; con la teología cristiana, en una obra monumental llamada <em>Summa Theologiae</em>. No inventó cada pieza; las <em>integró</em>. Tomó fragmentos que vivían separados, a veces en tensión, y los ordenó hasta formar un sistema que se sostiene entero. Eso es síntesis en estado puro.</p>
+      <p>Su frase &mdash; <em>"lo propio del sabio es ordenar"</em> (sapientis est ordinare) &mdash; es la consigna perfecta para hoy. El examen final es, en miniatura, tu propia Summa: no te pedimos que repitas, sino que <em>ordenes</em>. Que muestres cómo el levantamiento de requerimientos conecta con el modelado, cómo el modelado conecta con el diseño, y cómo todo eso responde a un problema de negocio. El sabio no es quien sabe más cosas; es quien sabe ponerlas en orden.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Aquino aplicado a tu examen</div>
+          <p class="say-text">"Quien estudia tema por tema, aislado, llega al examen con cajones llenos y sin llaves. Quien estudia buscando los hilos que unen los temas llega con una Summa propia &mdash; y para esa persona el caso integrador deja de dar miedo."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 FORMATO DEL EXAMEN -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Cómo será<br>el examen</h2></div>
+          <span class="sec-chip">formato</span>
+        </div>
+        <p class="sec-objective">Examen escrito tradicional, presencial, individual. Dos bloques: teoría y un caso integrador. Conoce el terreno antes de pisarlo.</p>
+      </div>
+      <p>Para que llegues sin sorpresas, así está estructurado el examen. Saber la forma de antemano te quita ansiedad y te deja administrar mejor el tiempo:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Parte teórica.</b> Preguntas de conceptos y criterios: ciclos de vida, tipos de sistemas, factibilidad, requerimientos, metodologías, modelado. No basta la definición de diccionario; se valora que expliques <em>cuándo y por qué</em> aplica cada idea.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Caso integrador.</b> Un escenario de negocio que tendrás que analizar de punta a punta: identificar stakeholders y requerimientos, modelar con el diagrama adecuado y esbozar un diseño justificado. Es la parte que más pesa el criterio.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Modelado a mano.</b> Cuando el caso lo pida, dibujarás <em>diagramas</em> &mdash; casos de uso (UML), flujo de datos (DFD) o entidad&ndash;relación (ER) &mdash; no código. Importa la notación correcta y que el modelo refleje fielmente el problema.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>Escrito, individual, presencial.</b> Resuelves en papel, con tus propias palabras y tu propio criterio. Lleva con qué escribir y dibujar diagramas legibles. El tiempo de la sesión es tu límite.</div></div>
+      </div>
+      <div class="example">
+        <div class="example-tag">Cómo se ve un caso integrador</div>
+        <p>No esperes "define qué es un DFD". Espera algo como: <b>"Una farmacia de barrio quiere controlar inventario y ventas. Identifica tres stakeholders, escribe dos requerimientos como historias de usuario, dibuja el diagrama de casos de uso del módulo de venta y propón las entidades principales de su modelo ER."</b> Una sola pregunta que recorre medio curso: eso es integrar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 TEMARIO / COBERTURA -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>Qué entra:<br>el curso completo</h2></div>
+          <span class="sec-chip">cobertura integral</span>
+        </div>
+        <p class="sec-objective">Todo lo que construimos juntos puede caer hoy. Aquí está el mapa de bloques, ordenado como un solo recorrido &mdash; no como cajones sueltos.</p>
+      </div>
+      <p>El examen cubre la materia de principio a fin, pero con un centro de gravedad claro: <em>análisis, modelado y diseño</em>. Para repasar con sentido, no veas el temario como una lista; míralo como la cadena que va del problema a la solución. Cada eslabón se apoya en el anterior:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Fundamentos.</b> Qué es un sistema de información, sus componentes y tipos (TPS, MIS, DSS, ERP), y los ciclos de vida del software &mdash; cascada y demás. El vocabulario base de todo lo que sigue.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Análisis y requerimientos.</b> Factibilidad, stakeholders, levantamiento y la duda metódica: distinguir lo que el cliente pide de lo que necesita. Requerimientos funcionales y no funcionales.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Modelado.</b> Casos de uso y UML, diagramas de flujo de datos (DFD), modelo entidad&ndash;relación (ER). El idioma con que se dibuja un sistema antes de construirlo.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>Diseño.</b> De los modelos a una solución: arquitectura, diseño de datos e interfaz, y el criterio para tomar decisiones sensatas y defendibles.</div></div>
+        <div class="point"><span class="point-num">05</span><div><b>Metodologías y gestión.</b> Cascada, ágil, Scrum, Kanban e híbridos; cómo elegir según el contexto y cuándo conviene &mdash; o no &mdash; automatizar.</div></div>
+        <div class="point"><span class="point-num">06</span><div><b>Profesión y criterio.</b> Roles del proyecto, ética del analista y el uso responsable de la IA: la diferencia entre apoyarte en una herramienta y delegarle el criterio.</div></div>
+      </div>
+      <p>Léelo de arriba abajo y notarás el hilo: un problema de negocio entra por <em>fundamentos</em>, se aclara en <em>análisis</em>, se dibuja en <em>modelado</em>, se resuelve en <em>diseño</em> y se ejecuta con una <em>metodología</em>. Eso es la Summa de la materia. El caso integrador te pedirá recorrer ese hilo entero.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5 CHECKLIST DE SÍNTESIS INTERACTIVO -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>Checklist<br>de síntesis</h2></div>
+          <span class="sec-chip">repaso · sin calificación</span>
+        </div>
+        <p class="sec-objective">Antes de entrar al examen, ordena tu cabeza. Marca cada gran tema que ya dominas y deja ver, de un vistazo, dónde poner tus últimos minutos.</p>
+      </div>
+      <p>Estos son los grandes temas que el examen integra. <b>Toca cada uno que sientas dominado</b> para marcarlo &mdash; el contador y la barra te muestran tu avance. No vale calificación ni se guarda en ningún lado: es solo tu autodiagnóstico para repasar con cabeza fría. Los que queden sin marcar son tu lista de prioridades para los últimos minutos.</p>
+
+      <div class="synth" id="synth">
+        <div class="synth-instr">Toca un tema para marcarlo como dominado · herramienta de repaso, sin valor en la calificación</div>
+        <div class="synth-bar">
+          <div class="synth-meter" aria-hidden="true"><div class="synth-fill" id="synthFill"></div></div>
+          <div class="synth-count" id="synthCount"><b>0</b> de 8 temas marcados</div>
+        </div>
+        <div class="synth-list" id="synthList" role="group" aria-label="Checklist de temas del curso para repasar"></div>
+        <div class="synth-actions">
+          <button class="synth-reset" id="synthReset" type="button">Reiniciar checklist</button>
+          <span class="synth-note">Nada de esto se guarda ni se reporta.</span>
+        </div>
+        <div class="synth-conclusion" id="synthConclusion">
+          <b>Los ocho marcados.</b> Si de verdad dominas los ocho, no es porque tengas ocho temas sueltos en la cabeza: es porque entiendes cómo se conectan &mdash; el problema baja de fundamentos a análisis, a modelado, a diseño, a metodología. Eso es justo lo que premia el caso integrador. Lo propio del sabio es ordenar; ya ordenaste. Entra con calma.
+        </div>
+      </div>
+
+      <p>Si quedaron temas sin marcar, no te angusties: úsalos. Son exactamente lo que conviene repasar en tus últimos minutos &mdash; y al ordenar tu repaso así, ya estás haciendo lo que el examen va a pedirte.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 EVALUACIÓN Y POLÍTICA -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>Evaluación<br>y política</h2></div>
+          <span class="sec-chip">valor · reglas</span>
+        </div>
+        <p class="sec-objective">Cuánto pesa, qué se vale y qué no. Reglas claras para que el único reto de hoy sea pensar bien.</p>
+      </div>
+      <p>El examen final vale <em>25% de tu calificación final</em>. Es un peso serio, pero no decide solo: se suma a tu proyecto integrador, tus tareas y tu trabajo de todo el cuatrimestre. Llega descansado y administra tu energía; el examen recompensa la claridad, no la velocidad.</p>
+      <div class="example">
+        <div class="example-tag">El peso de los exámenes en tu calificación</div>
+        <p>Para que ubiques este examen en el panorama: el <b>examen parcial</b> aportó <b>20%</b> y este <b>examen final</b> aporta <b>25%</b>. Entre ambos, casi la mitad de tu calificación se juega en tu capacidad de pensar sola, sin red. El resto vive en tu proyecto integrador y tu trabajo continuo. Hoy se cobra una parte grande &mdash; vale la pena darlo todo.</p>
+      </div>
+      <div class="field">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Sin IA, sin excepciones</h4>
+            <p>Este examen es <b>sin inteligencia artificial</b>. Nada de asistentes, copiloto ni consultas externas. No es un castigo: durante el curso la IA fue una herramienta válida &mdash; siempre con tu criterio por encima. Hoy se mide ese criterio <em>tuyo</em>, en limpio. Es la diferencia entre saber usar una herramienta y depender de ella.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Individual y a libro cerrado</h4>
+            <p>Trabajo individual, sin apoyarte en compañeros ni en notas, salvo que el profesor indique lo contrario al inicio. Lo que cuenta es lo que <b>tú</b> sabes ordenar bajo presión &mdash; ese es el punto del examen.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>En resumen:</b> 25% de la final · escrito, presencial e individual · teoría + caso integrador · sin IA. Si tienes una duda de logística (material permitido, tiempo, hojas para diagramas), pregúntala <b>antes</b> de empezar.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 RECOMENDACIONES -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>Cómo<br>presentarlo bien</h2></div>
+          <span class="sec-chip">recomendaciones</span>
+        </div>
+        <p class="sec-objective">El examen no solo mide qué sabes, sino cómo lo administras. Tres consejos prácticos para que tu conocimiento llegue completo al papel.</p>
+      </div>
+      <p>Saber no basta si el nervio o el reloj te ganan. Estas recomendaciones &mdash; muy en el espíritu de Aquino &mdash; te ayudan a <em>ordenar</em> tu respuesta y tu tiempo, no a estudiar más:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Integra entre bloques.</b> Las mejores respuestas tienden puentes: conecta el requerimiento con el modelo, el modelo con el diseño. Cuando puedas, di "esto se relaciona con&hellip;". Demostrar la conexión vale más que recitar piezas aisladas.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Justifica con criterio.</b> Casi nunca hay una sola respuesta correcta; hay respuestas bien argumentadas. No te limites a elegir Scrum o un DFD: explica <em>por qué</em>, anclado en el contexto del caso. El "porque sí" no suma; el "porque, dado que el requisito cambia&hellip;" sí.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Administra el tiempo.</b> Da una pasada rápida a todo el examen antes de escribir, reparte los minutos según el peso de cada parte y arranca por lo que dominas. Reserva tiempo al final para los diagramas: un modelo claro y bien hecho cuenta tanto como una buena teoría.</div></div>
+      </div>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La regla de oro de hoy</div>
+          <p class="say-text">"Antes de escribir una sola línea, lee el caso entero y ordénalo en tu cabeza. Cinco minutos de orden valen más que cuarenta de improvisación. Lo propio del sabio &mdash; también en un examen &mdash; es ordenar primero, responder después."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 CIERRE -->
+<section id="s8">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">viii.</span><h2>Antes<br>de empezar</h2></div>
+          <span class="sec-chip">cierre</span>
+        </div>
+        <p class="sec-objective">Llegaste hasta aquí ordenando un montón de piezas dispersas. Hoy solo tienes que mostrarlo. Respira: ya sabes más de lo que crees.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>El examen final es síntesis: teoría más un caso integrador que recorre análisis, modelado y diseño. No se premia memorizar, sino ordenar.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Vale 25% de la final, es escrito, individual y <b>sin IA</b>: hoy se mide tu criterio en limpio, el que construiste todo el cuatrimestre.</div></div>
+        <div class="point"><span class="point-num">03</span><div>Integra entre bloques, justifica con criterio y administra el tiempo. Lo propio del sabio es ordenar &mdash; primero la cabeza, luego el papel.</div></div>
+      </div>
+      <p>Esta es tu participación de hoy: presentar el examen final. No hay tarea que entregar ni documento que subir &mdash; solo tú, el papel y todo lo que aprendiste a ordenar. Da lo mejor; te lo ganaste durante todo el curso. Y cuando entregues, el curso aún tiene un último acto reservado para ti.</p>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El lunes que viene</div>
+          <p class="say-text">"Nietzsche y el Demo Day. El cierre del curso: presentas y defiendes tu proyecto integrador. Conviértete en quien eres y afirma el valor de tu propio trabajo."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Examen Final · capítulo 27.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // Checklist de síntesis: temas del curso a integrar (accesible, sin calificación)
+  const SYNTH_TOPICS = [
+    { id: 'fund',    name: 'Fundamentos y tipos de sistemas',     desc: 'Componentes, TPS/MIS/DSS/ERP y ciclos de vida del software.' },
+    { id: 'fact',    name: 'Factibilidad y viabilidad',           desc: 'Técnica, económica, operativa: si conviene construir o no.' },
+    { id: 'req',     name: 'Análisis y requerimientos',           desc: 'Stakeholders, levantamiento y la duda: pedir vs. necesitar.' },
+    { id: 'usecase', name: 'Casos de uso y UML',                  desc: 'Actores, flujos y el diagrama de casos de uso.' },
+    { id: 'dfd',     name: 'Diagramas de flujo de datos (DFD)',   desc: 'Procesos, flujos, almacenes y entidades externas.' },
+    { id: 'er',      name: 'Modelo entidad–relación (ER)',        desc: 'Entidades, atributos, relaciones y cardinalidad.' },
+    { id: 'disenio', name: 'Diseño del sistema',                  desc: 'De los modelos a la solución: arquitectura, datos e interfaz.' },
+    { id: 'metodo',  name: 'Metodologías y criterio profesional', desc: 'Cascada, ágil, Scrum, Kanban; roles, ética y uso de IA.' }
+  ];
+
+  (function initSynth() {
+    const list = document.getElementById('synthList');
+    if (!list) return;
+    const fill = document.getElementById('synthFill');
+    const count = document.getElementById('synthCount');
+    const conclusion = document.getElementById('synthConclusion');
+    const resetBtn = document.getElementById('synthReset');
+    const total = SYNTH_TOPICS.length;
+
+    function buildItem(t) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'synth-item';
+      btn.dataset.id = t.id;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.setAttribute('aria-label', t.name + ' — toca para marcar como dominado');
+      btn.innerHTML =
+        '<span class="synth-box" aria-hidden="true"></span>' +
+        '<span><span class="si-name">' + t.name + '</span>' +
+        '<span class="si-desc">' + t.desc + '</span></span>';
+      btn.addEventListener('click', () => {
+        const done = btn.classList.toggle('done');
+        btn.setAttribute('aria-pressed', done ? 'true' : 'false');
+        btn.querySelector('.synth-box').textContent = done ? '✓' : '';
+        update();
+      });
+      return btn;
+    }
+
+    function update() {
+      const ok = list.querySelectorAll('.synth-item.done').length;
+      const pct = Math.round((ok / total) * 100);
+      fill.style.width = pct + '%';
+      count.innerHTML = '<b>' + ok + '</b> de ' + total + ' temas marcados';
+      conclusion.classList.toggle('show', ok === total);
+    }
+
+    function reset() {
+      list.innerHTML = '';
+      SYNTH_TOPICS.forEach(t => list.appendChild(buildItem(t)));
+      update();
+    }
+
+    resetBtn.addEventListener('click', reset);
+    reset();
+  })();
+</script>
+
+</body>
+</html>

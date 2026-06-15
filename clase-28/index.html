@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 28 · Nietzsche · Sistemas de Información</title>
+<meta name="description" content="Demo Day: cierre del curso. Presentación final del proyecto integrador, defensa oral, peer review y entrega del documento. Nietzsche y la afirmación del valor del propio trabajo: conviértete en quien eres. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* reusables heredados */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
+  .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .example p b { color: var(--ink); font-weight: 600; }
+  .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .field-step:first-child { border-top: none; padding-top: 0; }
+  .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .field-step h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+  .field-step p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
+  .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .field-planb b { color: var(--ochre); font-weight: 600; }
+
+  /* ============================================================
+     RECORRIDO POR LOS 28 CAPÍTULOS (s5) — interactivo propio
+  ============================================================ */
+  .jrn { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .jrn-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 18px; }
+  .jrn-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+  @media (max-width: 720px) { .jrn-grid { grid-template-columns: repeat(5, 1fr); } }
+  @media (max-width: 460px) { .jrn-grid { grid-template-columns: repeat(4, 1fr); } }
+  .jrn-cell { position: relative; aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; cursor: pointer; padding: 4px; color: var(--ink-soft); transition: border-color 0.2s, background 0.2s, transform 0.15s, color 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; font-family: var(--sans); }
+  .jrn-cell:hover { border-color: var(--blood); transform: translateY(-2px); color: var(--blood); }
+  .jrn-cell:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .jrn-cell .jc-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; color: var(--ink-faint); }
+  .jrn-cell .jc-name { font-family: var(--serif); font-style: italic; font-size: 14px; line-height: 1.05; text-align: center; color: inherit; }
+  .jrn-cell.active { border-color: var(--blood); border-width: 1.5px; background: var(--paper-elev); color: var(--blood); box-shadow: 0 3px 14px rgba(160,36,24,0.16); }
+  .jrn-cell.seen::after { content: ''; position: absolute; top: 6px; right: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--olive); }
+  .jrn-cell.exam .jc-num { color: var(--ochre); }
+  .jrn-cell.exam .jc-name { color: var(--ochre); }
+  .jrn-cell.exam:hover, .jrn-cell.exam.active { color: var(--ochre); border-color: var(--ochre); }
+  .jrn-cell.holiday { opacity: 0.5; }
+  .jrn-panel { margin-top: 22px; border: 1px solid var(--line-strong); border-top: 3px solid var(--blood); border-radius: 6px; padding: 26px 26px; background: var(--paper); }
+  .jrn-panel .jp-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .jrn-panel .jp-name { font-family: var(--serif); font-style: italic; font-size: 30px; color: var(--blood); line-height: 1.05; margin-bottom: 4px; }
+  .jrn-panel .jp-topic { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ochre); margin-bottom: 16px; }
+  .jrn-panel .jp-idea { font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .jrn-panel .jp-idea b { color: var(--ink); font-weight: 600; }
+  .jrn-progress { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
+  .jrn-count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .jrn-count b { color: var(--olive); font-weight: 600; }
+  .jrn-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 9px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .jrn-reset:hover { background: var(--paper-deep); color: var(--ink); }
+  .jrn-final { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper-deep); border: 1px dashed var(--blood); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .jrn-final.show { opacity: 1; max-height: 600px; }
+  .jrn-final b { color: var(--blood); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 28</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#s1">Demo Day</a></li>
+      <li><a href="#s2">Nietzsche</a></li>
+      <li><a href="#s3">La presentación</a></li>
+      <li><a href="#s4">Qué entregar</a></li>
+      <li><a href="#s5">El recorrido</a></li>
+      <li><a href="#s6">Regla de oro</a></li>
+      <li><a href="#s7">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 28</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Nietzsche</h1>
+      <p class="hero-tagline">Hoy afirmas el valor<br>de <span>tu propio trabajo</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 20 agosto 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">Conviértete en quien eres.</p>
+    <p class="quote-attr">— <b>Friedrich Nietzsche</b> · Así habló Zaratustra · 1883</p>
+  </div>
+</section>
+
+<!-- S1 QUÉ ES EL DEMO DAY -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Hoy es<br>el Demo Day</h2></div>
+          <span class="sec-chip">cierre del curso</span>
+        </div>
+        <p class="sec-objective">No es una lección más. Es el día en que tu proyecto deja de ser un documento y se vuelve algo que defiendes de pie, frente a los demás.</p>
+      </div>
+      <p>Llegamos al capítulo veintiocho. Esta página no te enseña nada nuevo: hoy <em>tú</em> eres la clase. Catorce semanas, veintisiete filósofos y un proyecto que empezó como un problema mal definido hoy se presenta terminado. El Demo Day es la fiesta y el examen a la vez &mdash; la celebración de lo que construiste y la prueba de que de verdad es tuyo.</p>
+      <p>El formato es simple y exigente: cada quien sube al frente, presenta su proyecto integrador en <em>siete u ocho minutos</em>, responde preguntas y se sienta a evaluar a los demás. Sin diapositivas que te escondan, sin equipo detrás del cual desaparecer. Tu trabajo, tu voz, tu defensa. Así cerramos.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Lo que de verdad se evalúa hoy</div>
+          <p class="say-text">"No se mide cuánto código escribiste ni qué tan bonita quedó la pantalla. Se mide si entiendes lo que hiciste, por qué lo hiciste así y qué harías distinto. El proyecto que sabes defender vale más que el proyecto perfecto que no sabes explicar."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ NIETZSCHE -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Nietzsche?</h2></div>
+          <span class="sec-chip">afirmar la vida</span>
+        </div>
+        <p class="sec-objective">Porque dedicó su filosofía a una sola tarea: afirmar el valor de lo propio, crear los propios valores y amar el destino que uno mismo se forjó.</p>
+      </div>
+      <p>Empezamos el curso con Bertalanffy y los sistemas; lo cerramos con Nietzsche y la afirmación. No es casualidad. Nietzsche desconfiaba de quien mendiga la aprobación ajena para sentirse valioso. Su antídoto es la <em>afirmación de la vida</em>: no esperar que alguien te diga que tu obra vale &mdash; declararlo tú, y luego sostenerlo. "Conviértete en quien eres" no es un cliché motivacional: es una orden difícil. Significa dejar de ser el alumno que copia la metodología de moda y convertirte en el analista que <em>elige</em> y carga con su elección.</p>
+      <p>Hay dos ideas suyas que hoy se vuelven literales. La primera: crear los propios valores en lugar de heredarlos sin cuestionar &mdash; eso hiciste cada vez que decidiste cómo modelar, qué metodología usar, qué construir y qué no. La segunda: el <em>amor fati</em>, amar el propio destino, incluso los tropiezos. Tu proyecto tiene cicatrices &mdash; un requisito que cambiaste tarde, un diagrama que rehiciste tres veces. No las escondas: ámalas. Son la prueba de que lo viviste. El Demo Day es subir al frente y afirmar, con orgullo y sin pedir permiso, que tu trabajo vale.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Nietzsche aplicado a tu defensa</div>
+          <p class="say-text">"Quien se disculpa por su proyecto antes de presentarlo ya perdió la mitad. No empieces con 'me faltó tiempo' ni 'no quedó como quería'. Párate, afirma lo que sí lograste y defiéndelo. La modestia falsa es solo otra forma de pedir aprobación &mdash; y tú ya no la necesitas."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 CÓMO SERÁ LA PRESENTACIÓN -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Cómo será<br>la presentación</h2></div>
+          <span class="sec-chip">7–8 min · defensa · peer review</span>
+        </div>
+        <p class="sec-objective">Presentación individual, defensa oral en vivo y evaluación entre compañeros. Tres partes, una sola idea: sostener lo tuyo frente a los demás.</p>
+      </div>
+      <p>El Demo Day tiene una coreografía clara. La conoces de antemano para que el nervio no te tome por sorpresa &mdash; el nervio es bienvenido, la improvisación no. Así corre cada turno:</p>
+      <div class="field">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Presentación individual <span class="fs-time">7–8 min</span></h4>
+            <p>Cada alumno sube al frente con su proyecto integrador. Es individual: nadie te cubre. En siete u ocho minutos cuentas la historia completa &mdash; del problema al prototipo &mdash; sin perderte en detalles que no caben. El reloj corre, y administrarlo es parte de la evaluación.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Defensa oral con preguntas</h4>
+            <p>Al terminar, el profesor y el grupo preguntan. "¿Por qué esta metodología y no otra?" "¿Qué pasa si ese requisito cambia?" "¿Cómo validaste esto?" No son trampas: son la oportunidad de demostrar que el proyecto lo entiendes tú, no solo lo entregaste.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Peer review obligatorio</h4>
+            <p>Cuando no presentas, evalúas. El <b>peer review</b> es obligatorio: escuchas con atención a tus compañeros y das retroalimentación honesta y útil &mdash; lo que funcionó y lo que mejorarías. Evaluar bien a otro es tan parte del oficio como presentar lo tuyo.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Regla del tiempo</b> &mdash; ensaya con cronómetro antes de hoy. Quien se pasa de ocho minutos no demuestra que tiene más que decir; demuestra que no supo elegir qué decir. La síntesis también es criterio profesional.
+        </div>
+      </div>
+      <p>Una nota nietzscheana sobre el peer review: criticar el trabajo ajeno con dureza honesta es un acto de respeto, no de envidia. El compañero que te señala un hueco hoy te ahorra el ridículo de descubrirlo en una junta real mañana. Da y recibe la crítica como lo que es &mdash; un regalo incómodo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4 QUÉ ENTREGAR -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>Qué entregar<br>y qué presentar</h2></div>
+          <span class="sec-chip">documento · 10% evaluación continua</span>
+        </div>
+        <p class="sec-objective">El documento del proyecto integrador es la entrega formal de hoy y cierra tu Evaluación Continua. La presentación es ese mismo documento, contado de pie.</p>
+      </div>
+      <p>Hoy entregas el <em>documento del proyecto integrador</em>: la suma ordenada de todo lo que fuiste construyendo clase a clase. Vale el <b>10% como Evaluación Continua</b> y es el cierre de tu calificación del cuatrimestre. No es un trabajo que se inventa el día anterior: es el expediente de tu viaje, y cada tarea que entregaste fue un capítulo suyo.</p>
+      <p>En tu presentación, recorres cinco piezas. Las reconoces &mdash; son las secciones que el curso te fue pidiendo:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>El problema.</b> Qué problema real (o realista) resuelve tu sistema, con su contexto y su causa raíz. No el síntoma: la raíz.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>La metodología elegida.</b> Qué enfoque usaste para construirlo y, sobre todo, <em>por qué</em> ese y no otro &mdash; anclado en el contexto, no en la moda.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>El modelado completo.</b> La pieza de mayor peso: casos de uso, DFD, modelo de datos, diagramas. El sistema dibujado, nunca en código.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>El prototipo.</b> La forma tangible de tu solución: pantallas, flujo, la idea hecha algo que se puede ver y tocar.</div></div>
+        <div class="point"><span class="point-num">05</span><div><b>La reflexión sobre el uso de IA.</b> Cómo usaste la inteligencia artificial, en qué te ayudó y dónde tuviste que corregirla con tu criterio.</div></div>
+      </div>
+      <div class="example">
+        <div class="example-tag">Cómo se ve una buena presentación</div>
+        <p>No leas tu documento en voz alta: <b>cuéntalo</b>. Empieza por el problema &mdash; engancha en treinta segundos &mdash;, justifica tu metodología en una frase, muestra el modelado como el corazón de tu trabajo, enseña el prototipo en vivo y cierra con honestidad sobre la IA. Si dedicas seis de tus ocho minutos a la pantalla bonita y treinta segundos al modelado, evaluaste mal tus propias prioridades. El modelado es la columna vertebral; el prototipo, su rostro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 EL RECORRIDO INTERACTIVO -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>El recorrido:<br>28 filósofos, un viaje</h2></div>
+          <span class="sec-chip">tócalos todos</span>
+        </div>
+        <p class="sec-objective">Antes de presentar, mira de dónde vienes. Cada capítulo te dejó una idea; juntas, son el criterio con el que hoy defiendes tu proyecto.</p>
+      </div>
+      <p>Empezaste sin saber qué era un sistema de información. Hoy tienes uno modelado, justificado y a punto de defender. Entre un punto y otro hay veintiocho capítulos, cada uno con su filósofo y su idea. <b>Toca cada celda</b> para revivir lo que aportó &mdash; en celular, tócala con el dedo; con teclado, navega con Tab y abre con Enter. Es un cierre celebratorio: ve cuántas ideas ya forman parte de tu manera de pensar.</p>
+
+      <div class="jrn" id="jrn">
+        <div class="jrn-instr">Toca un capítulo para ver la idea que te dejó · márcalos todos para cerrar el viaje</div>
+        <div class="jrn-grid" id="jrnGrid" role="group" aria-label="Los 28 capítulos del curso"></div>
+        <div class="jrn-panel" id="jrnPanel" aria-live="polite">
+          <div class="jp-kicker">Empieza por el principio</div>
+          <div class="jp-name">El viaje completo</div>
+          <div class="jp-topic">capítulo 01 al 28</div>
+          <p class="jp-idea">Toca cualquier capítulo de la cuadrícula para revivir la idea que te dejó. Te recomiendo empezar por <b>Bertalanffy</b>, donde todo arrancó, y terminar aquí, en <b>Nietzsche</b>, donde lo afirmas todo.</p>
+        </div>
+        <div class="jrn-progress">
+          <div class="jrn-count" id="jrnCount"><b>0</b> / 28 capítulos revividos</div>
+          <button class="jrn-reset" id="jrnReset" type="button">Reiniciar recorrido</button>
+        </div>
+        <div class="jrn-final" id="jrnFinal">
+          <b>Recorriste los veintiocho.</b> De los sistemas de Bertalanffy a la afirmación de Nietzsche, cada idea que tocaste sigue contigo &mdash; en cómo dudas, cómo eliges, cómo modelas y cómo defiendes. Ese es el verdadero entregable del curso: no el documento, sino el criterio. Ahora súbete al frente y demuéstralo.
+        </div>
+      </div>
+
+      <p>¿Notaste cuántas de esas ideas usaste sin darte cuenta en tu proyecto? La duda de Descartes al definir el problema, el contrato de Locke en tus casos de uso, la decisión de Kierkegaard al elegir metodología. No memorizaste filósofos: incorporaste formas de pensar. Eso es "convertirte en quien eres".</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 REGLA DE ORO -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>La regla de oro<br>del uso de IA</h2></div>
+          <span class="sec-chip">si la IA lo hizo, tú lo defiendes</span>
+        </div>
+        <p class="sec-objective">La inteligencia artificial fue tu herramienta todo el curso. Hoy se prueba si fue tu herramienta o tu muleta.</p>
+      </div>
+      <p>Lo dijimos desde el primer día y hoy se cobra: <em>"Si la IA lo hizo, tú lo defiendes."</em> Usar IA nunca estuvo prohibido &mdash; al contrario, parte de tu documento es reflexionar sobre cómo la usaste. Lo que no se vale es no entender lo que entregaste. En la defensa oral, una pregunta sencilla sobre cualquier parte de tu proyecto revela en segundos quién comprende su trabajo y quién solo lo copió y pegó.</p>
+      <p>Es la lección más nietzscheana del curso. La IA puede generar diagramas, redactar requisitos, proponer metodologías. Pero el criterio para saber si están bien, el juicio para corregirlos y la voz para defenderlos no se delegan. Esos los creas tú. Un proyecto hecho por la IA y entendido por ti es un excelente proyecto. Un proyecto hecho por la IA y <em>no</em> entendido por ti se desmorona en la primera pregunta &mdash; y todos lo notan.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La prueba de fuego</div>
+          <p class="say-text">"La IA escribe; tú respondes. Cuando alguien señale un diagrama tuyo y pregunte '¿por qué aquí va include y no extend?', no hay prompt que te salve: o lo entiendes, o no. Por eso afirmar tu trabajo y comprenderlo son la misma cosa. Lo que defiendes, te pertenece."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 CIERRE Y AGRADECIMIENTO -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>Cierre del<br>cuatrimestre</h2></div>
+          <span class="sec-chip">gracias · 26-3</span>
+        </div>
+        <p class="sec-objective">No hay próxima clase. Solo queda una cosa: agradecer el viaje y celebrar en quién te convertiste.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>Aprendiste a dudar, a elegir, a modelar y a decidir cuándo no construir. Empezaste con un problema vago; terminas con un sistema que defiendes de pie.</div></div>
+        <div class="point"><span class="point-num">02</span><div>La IA fue herramienta, nunca muleta: lo que entregaste, lo entiendes; lo que entiendes, lo defiendes. Ese es el profesional que el oficio necesita.</div></div>
+        <div class="point"><span class="point-num">03</span><div>El verdadero entregable no es el documento &mdash; es el criterio. Veintiocho ideas que ahora forman parte de cómo piensas y trabajas.</div></div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-eyebrow">Demo Day · participación en clase · cierre del curso</div>
+        <h3>Gracias por el viaje</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">No hay tarea numerada, no hay teaser de la semana que viene: esta es la última. Lo que queda es presentar con orgullo, evaluar a tus compañeros con honestidad y reconocer el camino recorrido. Gracias por catorce semanas de preguntas, dudas y proyectos que crecieron en serio.</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Preséntate de pie, sin disculpas: afirma lo que lograste &mdash; amor fati incluido.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Responde la defensa con criterio propio: lo que la IA hizo, tú lo explicas.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Haz tu peer review en serio: la crítica honesta es un regalo, dalo y recíbelo.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Celebra en quién te convertiste este cuatrimestre. Te lo ganaste.</li>
+        </ul>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La última palabra</div>
+          <p class="say-text">"Empezamos preguntando qué es un sistema. Cerramos afirmando quién eres. No fuiste un alumno que aprobó una materia: te convertiste en alguien que duda con método, decide con criterio y defiende su trabajo de pie. Eso no se borra al final del cuatrimestre. Gracias, y a brillar. &mdash; Daniel Vaca"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Fin del curso. Conviértete en quien eres.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // ============================================================
+  // Recorrido interactivo por los 28 capítulos
+  // ============================================================
+  const JOURNEY = [
+    { n: 1,  name: 'Bertalanffy',     topic: 'Fundamentos y tipos de sistemas',        idea: 'Todo es un sistema: partes que se relacionan y forman un todo con propósito. La <b>teoría general de sistemas</b> fue el cimiento de todo lo demás.' },
+    { n: 2,  name: 'Heráclito',       topic: 'Ciclos de vida del desarrollo',          idea: '"Nadie se baña dos veces en el mismo río." El software también fluye: los <b>ciclos de vida</b> ordenan ese cambio constante en etapas.' },
+    { n: 3,  name: 'Aristóteles',     topic: 'Objetos, UML y requerimientos',          idea: 'Clasificar y categorizar el mundo en <b>objetos</b> con propiedades y relaciones &mdash; y empezar a dibujarlos en UML, con la IA como aprendiz.' },
+    { n: 4,  name: 'Sócrates',        topic: 'Modelos ágiles · vivir un sprint',       idea: 'El diálogo y la pregunta constante: lo <b>ágil</b> es conversar, iterar y entregar pronto. Viviste un sprint de principio a fin.' },
+    { n: 5,  name: 'Maquiavelo',      topic: 'Elección de metodología',                idea: 'El fin y los medios: elegir la metodología según el <b>contexto real</b>, no según el ideal. La estrategia manda sobre el dogma.' },
+    { n: 6,  name: 'Confucio',        topic: 'Estructurado vs. orientado a objetos',   idea: 'Dos tradiciones, dos maneras de ordenar el mundo: el análisis <b>estructurado</b> frente al <b>orientado a objetos</b>, cada uno con su sabiduría.' },
+    { n: 7,  name: 'Descartes',       topic: 'Requerimientos · la duda metódica',      idea: 'Dudar de todo lo que el cliente "dice" que quiere. La <b>duda metódica</b> y los cinco porqués cavan del síntoma a la causa raíz.' },
+    { n: 8,  name: 'Día feriado',     topic: 'Asueto · no hubo clase',                 idea: 'Hasta el viaje más intenso necesita una pausa. Un respiro a mitad del cuatrimestre &mdash; y de vuelta al trabajo.', holiday: true },
+    { n: 9,  name: 'Locke',           topic: 'Usuarios participantes',                 idea: 'Ningún sistema gobierna sin el consentimiento de su gente. Identificar <b>stakeholders</b> y firmar con ellos el contrato: el caso de uso.' },
+    { n: 10, name: 'Platón',          topic: 'Diseño · formas ideales',                idea: 'La Idea perfecta del sistema y sus sombras imperfectas. El <b>diseño</b> es imaginar la forma ideal y bajarla al mundo sin romperla.' },
+    { n: 11, name: 'Kierkegaard',     topic: 'Metodología según contexto',             idea: 'No existe la metodología correcta, solo la que eliges y defiendes. Elegir produce angustia &mdash; "el vértigo de la libertad".' },
+    { n: 12, name: 'Hume',            topic: 'Repaso integrador',                      idea: 'Escepticismo sano: ¿qué de todo lo aprendido resiste una buena pregunta? Repaso para amarrar el primer gran bloque.' },
+    { n: 13, name: 'Kant',            topic: 'Examen parcial · la razón',              idea: 'Los límites y las estructuras de la razón. El <b>examen parcial</b>: poner a prueba lo aprendido bajo las reglas del entendimiento.', exam: true },
+    { n: 14, name: 'Diógenes',        topic: 'Diagnóstico del problema',               idea: 'La lámpara que busca al hombre honesto: <b>diagnosticar</b> el problema sin engaños, ver lo que de verdad falla, sin cinismo cómodo.' },
+    { n: 15, name: 'Spinoza',         topic: 'Modelado de requerimientos',             idea: 'Todo conectado en una sola sustancia: <b>modelar requerimientos</b> como un sistema coherente donde cada pieza se deduce de la anterior.' },
+    { n: 16, name: 'Wittgenstein',    topic: 'Lenguaje de los requisitos',             idea: '"Los límites de mi lenguaje son los límites de mi mundo." Un requisito mal redactado es un requisito mal entendido. Aprobar con claridad.' },
+    { n: 17, name: 'Pitágoras',       topic: 'DFD · modelado de funciones',            idea: 'Todo es número y flujo: el <b>diagrama de flujo de datos</b> modela cómo la información se mueve y se transforma por el sistema.' },
+    { n: 18, name: 'Euclides',        topic: 'Diccionario de datos',                   idea: 'Definiciones precisas como axiomas: el <b>diccionario de datos</b> especifica cada dato sin ambigüedad, base de todo lo que se construye encima.' },
+    { n: 19, name: 'Leibniz',         topic: 'Modelado de datos · ER',                 idea: 'El lenguaje universal de las relaciones: el <b>diagrama entidad-relación</b> modela los datos y cómo se vinculan entre sí.' },
+    { n: 20, name: 'Pascal',          topic: 'Árboles de decisión',                    idea: 'La apuesta y la lógica de decidir: <b>árboles y matrices de decisión</b> ordenan reglas complejas en caminos claros.' },
+    { n: 21, name: 'Vitruvio',        topic: 'Conceptos de diseño',                    idea: 'Firmeza, utilidad y belleza: los <b>principios del diseño</b> que hacen un sistema sólido, útil y agradable a la vez.' },
+    { n: 22, name: 'Hegel',           topic: 'Abstracción y refinamiento',             idea: 'Tesis, antítesis, síntesis: la <b>dialéctica</b> del diseño que abstrae lo esencial y refina por capas hasta el detalle.' },
+    { n: 23, name: 'Da Vinci',        topic: 'Interfaces de usuario',                  idea: 'Arte y técnica unidos: el <b>diseño de interfaces</b> donde la usabilidad se vuelve belleza funcional para quien lo usa.' },
+    { n: 24, name: 'Mies van der Rohe', topic: 'Diseño estructurado · HIPO',           idea: '"Menos es más": el <b>diseño estructurado</b> y HIPO descomponen el sistema en módulos limpios, sin adornos innecesarios.' },
+    { n: 25, name: 'Lévi-Strauss',    topic: 'Módulos · cuplas',                       idea: 'Las estructuras profundas que conectan todo: <b>cohesión y acoplamiento (cuplas)</b> miden qué tan bien o mal se relacionan los módulos.' },
+    { n: 26, name: 'Goethe',          topic: 'Validación de calidad',                  idea: 'El todo es más que la suma de las partes: <b>validar la calidad</b> de un sistema como una totalidad viva, no como piezas sueltas.' },
+    { n: 27, name: 'Tomás de Aquino', topic: 'Examen final · síntesis',                idea: 'La gran síntesis que ordena todo el saber: el <b>examen final</b>, donde cada pieza del curso encuentra su lugar en el conjunto.', exam: true },
+    { n: 28, name: 'Nietzsche',       topic: 'Demo Day · afirmación',                  idea: '"Conviértete en quien eres." El <b>Demo Day</b>: afirmar el valor de tu propio trabajo, defenderlo de pie y celebrar el viaje. Estás aquí.', exam: true }
+  ];
+
+  (function initJourney() {
+    const grid = document.getElementById('jrnGrid');
+    if (!grid) return;
+    const panel = document.getElementById('jrnPanel');
+    const countEl = document.getElementById('jrnCount');
+    const finalEl = document.getElementById('jrnFinal');
+    const resetBtn = document.getElementById('jrnReset');
+    const pad = (x) => x < 10 ? '0' + x : '' + x;
+    const seen = new Set();
+    let activeCell = null;
+
+    function render(item) {
+      let kicker = 'Capítulo ' + pad(item.n) + ' de 28';
+      if (item.exam) kicker += ' · hito';
+      if (item.holiday) kicker = 'Capítulo ' + pad(item.n) + ' · pausa';
+      panel.innerHTML =
+        '<div class="jp-kicker">' + kicker + '</div>' +
+        '<div class="jp-name">' + item.name + '</div>' +
+        '<div class="jp-topic">' + item.topic + '</div>' +
+        '<p class="jp-idea">' + item.idea + '</p>';
+    }
+
+    function updateCount() {
+      countEl.innerHTML = '<b>' + seen.size + '</b> / ' + JOURNEY.length + ' capítulos revividos';
+      finalEl.classList.toggle('show', seen.size === JOURNEY.length);
+    }
+
+    JOURNEY.forEach(item => {
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'jrn-cell' + (item.exam ? ' exam' : '') + (item.holiday ? ' holiday' : '');
+      cell.dataset.n = item.n;
+      cell.setAttribute('aria-label', 'Capítulo ' + pad(item.n) + ': ' + item.name + ' — ' + item.topic);
+      cell.innerHTML = '<span class="jc-num">' + pad(item.n) + '</span><span class="jc-name">' + item.name + '</span>';
+      cell.addEventListener('click', () => {
+        if (activeCell) activeCell.classList.remove('active');
+        cell.classList.add('active');
+        activeCell = cell;
+        cell.classList.add('seen');
+        seen.add(item.n);
+        render(item);
+        updateCount();
+      });
+      grid.appendChild(cell);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      seen.clear();
+      if (activeCell) { activeCell.classList.remove('active'); activeCell = null; }
+      grid.querySelectorAll('.jrn-cell').forEach(c => c.classList.remove('seen'));
+      panel.innerHTML =
+        '<div class="jp-kicker">Empieza por el principio</div>' +
+        '<div class="jp-name">El viaje completo</div>' +
+        '<div class="jp-topic">capítulo 01 al 28</div>' +
+        '<p class="jp-idea">Toca cualquier capítulo de la cuadrícula para revivir la idea que te dejó. Te recomiendo empezar por <b>Bertalanffy</b>, donde todo arrancó, y terminar aquí, en <b>Nietzsche</b>, donde lo afirmas todo.</p>';
+      updateCount();
+    });
+
+    updateCount();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 22 · Hegel · Sistemas de Información</title>
+<meta name="description" content="Clase 22: abstracción y refinamiento sucesivo del diseño. Modularidad, arquitectura de software, estructura de datos, separación de responsabilidades y capas, y conceptos modernos como microservicios y serverless. El refinamiento como dialéctica de Hegel: tesis, antítesis, síntesis. Cuatrimestre 26-3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFE6D2;
+    --paper-deep: #E6DBC2;
+    --paper-elev: #EAE0CA;
+    --ink: #2A1D14;
+    --ink-soft: #4A3A2C;
+    --ink-muted: #7A6552;
+    --ink-faint: #A89278;
+    --blood: #A02418;
+    --blood-dark: #6E1810;
+    --ochre: #B5852A;
+    --olive: #5D6638;
+    --line: rgba(42, 29, 20, 0.18);
+    --line-strong: rgba(42, 29, 20, 0.35);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23a)' opacity='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.32' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23b)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(239, 230, 210, 0.90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .nav-brand b { color: var(--blood); font-weight: 500; }
+  .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
+  @media (max-width: 980px) { .nav-links { display: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .stage { max-width: 760px; margin: 0 auto; }
+  section { padding: 80px 0; position: relative; }
+  @media (max-width: 720px) { .wrap { padding: 0 22px; } section { padding: 56px 0; } }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow b { color: var(--blood); font-weight: 500; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--ochre); display: inline-block; }
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(72px, 11vw, 156px); line-height: 0.92; margin: 24px 0 28px; letter-spacing: -0.035em; color: var(--blood); }
+  h2 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 18px 0 24px; letter-spacing: -0.02em; }
+  h3 { font-size: clamp(26px, 3.5vw, 34px); line-height: 1.15; margin: 32px 0 18px; }
+  h4 { font-size: 21px; line-height: 1.3; margin: 0 0 8px; }
+  p { color: var(--ink-soft); margin: 0 0 1em; }
+  p:last-child { margin-bottom: 0; }
+  em { color: var(--blood); font-style: italic; }
+  .lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.45; color: var(--ink-soft); font-style: italic; }
+  .hero { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 0 60px; }
+  .hero-title { font-family: var(--serif); font-style: italic; }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(24px, 3.4vw, 38px); font-style: italic; line-height: 1.3; color: var(--ink-soft); max-width: 720px; margin: 0 0 48px; }
+  .hero-tagline span { color: var(--blood); }
+  .hero-stats { display: flex; gap: 56px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+  .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
+  .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
+  .quote-attr b { color: var(--ochre); font-weight: 500; }
+  .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
+  .sec-head-row { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .sec-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); padding: 6px 12px; border: 1px solid var(--ochre); border-radius: 2px; white-space: nowrap; align-self: start; }
+  .sec-num { font-family: var(--serif); font-size: 26px; color: var(--ochre); font-style: italic; margin-bottom: 8px; display: block; }
+  .sec-objective { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink-soft); max-width: 680px; line-height: 1.5; }
+  .say { margin: 40px 0; display: grid; gap: 20px; }
+  .say-card { padding: 28px 32px; background: var(--paper-deep); border: 1px solid var(--line); border-radius: 4px; position: relative; transition: box-shadow 0.25s ease; }
+  .say-card:hover { box-shadow: 0 4px 24px rgba(42, 29, 20, 0.08); }
+  .say-card::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--blood), transparent); }
+  .say-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
+  .say-text { font-family: var(--serif); font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
+  .agenda { display: grid; gap: 0; margin: 32px 0; }
+  .agenda-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .agenda-row:last-child { border-bottom: 1px solid var(--line); }
+  .agenda-time { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-muted); }
+  .agenda-title { font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--ink); }
+  .agenda-dur { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--ochre); text-align: right; white-space: nowrap; }
+  @media (max-width: 600px) { .agenda-row { grid-template-columns: 1fr; gap: 6px; } .agenda-dur { text-align: left; } }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .point { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .point-num { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--blood); margin-bottom: 14px; display: block; }
+  .point h4 { font-family: var(--serif); font-size: 22px; margin-bottom: 10px; line-height: 1.2; }
+  .point p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+  .challenge { background: var(--paper-deep); padding: 56px 48px; border-radius: 4px; margin: 32px 0; border: 1px solid var(--line-strong); }
+  .challenge-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blood); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .challenge-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blood); }
+  .challenge h3 { font-size: 32px; margin: 0 0 20px; }
+  .footer { border-top: 1px solid var(--line); padding: 60px 0 80px; margin-top: 80px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: end; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-prof { font-family: var(--serif); font-size: 32px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .footer-role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); }
+  .footer-end { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--blood); text-align: right; }
+  @media (max-width: 720px) { .footer-end { text-align: left; } }
+  .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* tarjetas de conceptos (aparecen al hacer scroll) — reuso del grid de clase 11 */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
+  .card-r { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .cards-grid.go .card-r { opacity: 1; transform: translateY(0); }
+  .cards-grid.go .card-r:nth-child(1) { transition-delay: 0.05s; }
+  .cards-grid.go .card-r:nth-child(2) { transition-delay: 0.13s; }
+  .cards-grid.go .card-r:nth-child(3) { transition-delay: 0.21s; }
+  .cards-grid.go .card-r:nth-child(4) { transition-delay: 0.29s; }
+  .cards-grid.go .card-r:nth-child(5) { transition-delay: 0.37s; }
+  .cards-grid.go .card-r:nth-child(6) { transition-delay: 0.45s; }
+  .card-r h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
+  .card-r .cr-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .card-r p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+
+  /* ============================================================
+     REFINAMIENTO DIALÉCTICO INTERACTIVO (s6)
+     tesis -> antítesis -> síntesis, en rondas, con revelado progresivo
+  ============================================================ */
+  .dia { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .dia-progress { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .dia-round { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.25; margin-bottom: 20px; }
+  .dia-track { display: flex; gap: 8px; margin-bottom: 22px; }
+  .dia-dot { width: 26px; height: 4px; border-radius: 2px; background: var(--line-strong); transition: background 0.3s; }
+  .dia-dot.on { background: var(--blood); }
+  .dia-steps { display: grid; gap: 12px; }
+  .dia-step { border: 1px solid var(--line-strong); border-radius: 6px; padding: 18px 20px; background: var(--paper); opacity: 0; transform: translateY(10px); max-height: 0; overflow: hidden; padding-top: 0; padding-bottom: 0; border-width: 0; transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.5s ease, padding 0.5s ease, border-width 0.5s ease; }
+  .dia-step.show { opacity: 1; transform: translateY(0); max-height: 360px; padding-top: 18px; padding-bottom: 18px; border-width: 1px; }
+  .dia-step .ds-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+  .dia-step .ds-label::before { content: ''; width: 18px; height: 1px; }
+  .dia-step.is-tesis { border-top: 3px solid var(--olive); }
+  .dia-step.is-tesis .ds-label { color: var(--olive); }
+  .dia-step.is-tesis .ds-label::before { background: var(--olive); }
+  .dia-step.is-anti { border-top: 3px solid var(--blood); }
+  .dia-step.is-anti .ds-label { color: var(--blood); }
+  .dia-step.is-anti .ds-label::before { background: var(--blood); }
+  .dia-step.is-sint { border-top: 3px solid var(--ochre); }
+  .dia-step.is-sint .ds-label { color: var(--ochre); }
+  .dia-step.is-sint .ds-label::before { background: var(--ochre); }
+  .dia-step .ds-text { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
+  .dia-step .ds-text b { color: var(--ink); font-weight: 600; }
+  .dia-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
+  .dia-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; background: var(--blood); color: var(--paper); border: 1px solid var(--blood); border-radius: 4px; cursor: pointer; transition: background 0.2s, transform 0.15s, opacity 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .dia-btn:hover:not(:disabled) { background: var(--blood-dark); transform: translateY(-1px); }
+  .dia-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .dia-btn:disabled { opacity: 0.4; cursor: default; }
+  .dia-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .dia-reset:hover { background: var(--paper); color: var(--ink); }
+  .dia-reset:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .dia-conclusion { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .dia-conclusion.show { opacity: 1; max-height: 600px; }
+  .dia-conclusion b { color: var(--blood); font-weight: 600; }
+
+  /* diagrama de capas (s4) — SVG estático con revelado al hacer scroll */
+  .layers-box { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 28px 24px 18px; margin: 32px 0; }
+  .layers-svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
+  .ly-band { stroke: var(--ink-soft); stroke-width: 1.4; }
+  .ly-pres { fill: var(--paper-elev); }
+  .ly-logic { fill: var(--paper); }
+  .ly-data { fill: var(--paper-elev); }
+  .ly-name { font-family: var(--serif); font-style: italic; font-size: 19px; fill: var(--ink); }
+  .ly-tag { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.1em; }
+  .ly-arrow { stroke: var(--ochre); stroke-width: 1.4; }
+  .ly-note { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-top: 14px; letter-spacing: 0.04em; text-align: center; }
+  .ly-note b { color: var(--blood); font-weight: 500; }
+  @media (max-width: 560px) { .layers-box { padding: 18px 10px 12px; } }
+
+  /* ejemplo y taller (reuso) */
+  .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
+  .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
+  .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .example p b { color: var(--ink); font-weight: 600; }
+  .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .field-step:first-child { border-top: none; padding-top: 0; }
+  .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .field-step h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+  .field-step p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
+  .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .field-planb b { color: var(--ochre); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sistemas de información · <a href="../index.html">Capítulo 22</a></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#s1">Repaso</a></li>
+      <li><a href="#s2">Hegel</a></li>
+      <li><a href="#s3">Abstracción</a></li>
+      <li><a href="#s4">Modularidad</a></li>
+      <li><a href="#s5">Hoy en la nube</a></li>
+      <li><a href="#s6">Refinamiento</a></li>
+      <li><a href="#s7">Taller</a></li>
+      <li><a href="#s8">Cierre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="wrap reveal-hero">
+    <div class="stage">
+      <div class="eyebrow"><b>Capítulo 22</b> &nbsp;/&nbsp; 28</div>
+      <h1 class="hero-title">Hegel</h1>
+      <p class="hero-tagline">Diseñar es refinar:<br>tesis, antítesis, <span>síntesis</span>.</p>
+      <div class="hero-stats">
+        <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 30 julio 2026</div></div>
+        <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
+        <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
+        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="quote-text">Lo verdadero es el todo.</p>
+    <p class="quote-attr">— <b>G. W. F. Hegel</b> · Fenomenología del espíritu · 1807</p>
+  </div>
+</section>
+
+<section id="agenda">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
+          <span class="sec-chip">119 min · el diseño se refina</span>
+        </div>
+        <p class="sec-objective">Hoy bajamos al interior del sistema. Aprenderás a abstraer &mdash; quedarte con lo esencial &mdash; y a refinar el diseño en rondas, como una dialéctica: una idea, los problemas que revela, y una versión mejor que los supera.</p>
+      </div>
+      <div class="agenda">
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes la metodología; ahora, ¿qué construyes por dentro?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Hegel?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Abstracción: quedarse con lo esencial</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:32</span><span class="agenda-title">Modularidad, arquitectura y estructura de datos</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:50</span><span class="agenda-title">Conceptos modernos: microservicios y serverless</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:06</span><span class="agenda-title">El refinamiento dialéctico, paso a paso</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:24</span><span class="agenda-title">Taller: refina tu diseño en dos rondas</span><span class="agenda-dur">24 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 9</span><span class="agenda-dur">11 min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 REPASO -->
+<section id="s1">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">i.</span><h2>Tienes el cómo.<br>¿Qué construyes por dentro?</h2></div>
+          <span class="sec-chip">8 min · 20:00</span>
+        </div>
+        <p class="sec-objective">Elegiste metodología y aprendiste a leer el contexto. Falta lo que vive bajo la superficie: la forma interna del sistema &mdash; y esa forma no nace perfecta.</p>
+      </div>
+      <p>En las clases anteriores construiste el esqueleto de tu proyecto: los stakeholders, el contrato de los casos de uso, la metodología con la que vas a trabajar. Ya sabes <em>qué</em> debe hacer tu sistema y <em>cómo</em> lo vas a desarrollar. Hoy abrimos la caja y miramos su interior: cómo se organiza por dentro para que sea entendible, mantenible y no se derrumbe a la primera modificación.</p>
+      <p>Y aquí aparece una verdad incómoda que casi nadie te dice: el buen diseño no se inventa de un golpe. Nadie dibuja la arquitectura definitiva en la primera servilleta. El diseño nace tosco, se topa con problemas, y se rehace mejor &mdash; una y otra vez. A ese proceso lo llamamos <em>refinamiento sucesivo</em>, y tiene la misma forma que el motor del pensamiento de Hegel: tesis, antítesis, síntesis. Por eso hoy nos acompaña él.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El dato que duele</div>
+          <p class="say-text">"El diseño que entregas en la versión 1 casi nunca es el bueno: es el que te enseña cuál era el bueno. Quien se enamora de su primer boceto y se niega a romperlo construye sistemas rígidos que se quiebran al primer cambio del cliente."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 POR QUÉ HEGEL -->
+<section id="s2">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Hegel?</h2></div>
+          <span class="sec-chip">8 min · 20:08</span>
+        </div>
+        <p class="sec-objective">Porque describió, mejor que nadie, cómo una idea se vuelve verdadera: no de un salto, sino superando sus propias contradicciones.</p>
+      </div>
+      <p>A Hegel se le atribuye el esquema más famoso de la filosofía: <em>tesis, antítesis, síntesis</em>. Una idea se afirma (tesis); de ella brota su contradicción, lo que le falta o lo que la pone en aprietos (antítesis); y de esa tensión surge una idea superior que conserva lo bueno de la primera y resuelve el conflicto (síntesis). A ese movimiento Hegel lo llama <em>dialéctica</em>, y para él no es un truco de retórica: es la forma misma en que avanza el conocimiento.</p>
+      <p>La segunda idea, la de la cita de hoy: "lo verdadero es el todo". Para Hegel ninguna verdad está completa en su primer momento; solo se entiende cuando recorres el proceso entero, con sus contradicciones incluidas. Trasládalo a tu diseño: tu primer boceto no es "falso" &mdash; es la tesis, el primer momento de una verdad que aún no se completa. El diseño verdadero es el todo: el recorrido completo de versiones, no la primera ni la última aislada.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Hegel aplicado al diseño</div>
+          <p class="say-text">"Cuando tu revisor encuentra un agujero en tu arquitectura, no te está humillando: te está regalando la antítesis. Sin ese golpe, tu diseño se quedaría en la tesis para siempre. El conflicto no es el enemigo del diseño &mdash; es su motor."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 ABSTRACCIÓN -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Abstracción:<br>quedarse con lo esencial</h2></div>
+          <span class="sec-chip">16 min · 20:16</span>
+        </div>
+        <p class="sec-objective">Abstraer es decidir qué ignorar. Un buen diseño no captura toda la realidad: captura solo lo que importa para el problema que resuelve.</p>
+      </div>
+      <p>Abstraer es el primer acto de todo diseño: separar lo esencial de lo accidental. Un mapa del metro no muestra las calles reales, ni las distancias exactas, ni el color de los edificios &mdash; y precisamente por eso es útil. Si dibujara <em>todo</em>, sería la ciudad misma y no serviría para orientarte. La abstracción es el arte de tirar información a propósito para que lo importante resalte.</p>
+      <p>En el diseño de sistemas pasa lo mismo. Cuando modelas a un "cliente", no guardas su estatura ni su color favorito: guardas su nombre, su identificación y su saldo, porque eso es lo que el sistema necesita. Lo demás es ruido. Tres principios para abstraer con criterio:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Abstraer es elegir qué ocultar.</b> Una buena abstracción esconde la complejidad por debajo y ofrece arriba una idea simple: "guardar pedido" oculta validaciones, base de datos y mil detalles. Quien usa la abstracción no necesita saber cómo funciona por dentro.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>El nivel de abstracción correcto depende del problema.</b> Demasiado abstracto y el diseño no dice nada útil; demasiado concreto y te ahogas en detalles antes de entender el conjunto. El oficio está en elegir la altura justa para cada decisión.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Se refina de lo general a lo particular.</b> Primero las grandes piezas y cómo se hablan; luego, dentro de cada una, los detalles. Bajar de nivel demasiado pronto es la causa número uno de diseños que nadie entiende.</div></div>
+      </div>
+      <p>Aquí enlaza Hegel: tu primera abstracción &mdash; la tesis &mdash; siempre oculta de más o de menos. Diseñar es ir ajustando ese velo en rondas, descubriendo en cada una qué dejaste fuera que sí importaba. La abstracción no se acierta a la primera; se <em>refina</em>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4 MODULARIDAD / ARQUITECTURA / DATOS -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>Modularidad,<br>arquitectura y datos</h2></div>
+          <span class="sec-chip">18 min · 20:32</span>
+        </div>
+        <p class="sec-objective">Tres caras de la misma virtud: descomponer el todo en partes con responsabilidades claras, que se puedan entender y cambiar por separado.</p>
+      </div>
+      <p>Si la abstracción decide <em>qué</em> mostrar, la <em>modularidad</em> decide cómo partir el sistema en piezas. Un sistema modular es un conjunto de módulos &mdash; partes con una responsabilidad bien definida &mdash; que se comunican por interfaces claras. La regla de oro tiene dos lados: <em>alta cohesión</em> (cada módulo hace una sola cosa y la hace completa) y <em>bajo acoplamiento</em> (los módulos dependen lo menos posible entre sí). Así, cambiar uno no obliga a tocar a los demás.</p>
+      <p>La <em>separación de responsabilidades</em> es el principio detrás de todo esto: cada parte se ocupa de un asunto y no se mete en los ajenos. Su expresión más clásica es la arquitectura en <em>capas</em>: lo que el usuario ve, las reglas del negocio y el manejo de los datos viven en estratos separados que solo se hablan por sus bordes.</p>
+
+      <div class="layers-box" data-animate>
+        <svg class="layers-svg" viewBox="0 0 520 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de arquitectura en tres capas: presentación, lógica de negocio y datos">
+          <rect class="ly-band ly-pres" x="120" y="20" width="300" height="58" rx="6"/>
+          <text class="ly-name" x="270" y="46" text-anchor="middle">Capa de presentación</text>
+          <text class="ly-tag" x="270" y="66" text-anchor="middle">LO QUE EL USUARIO VE Y TOCA</text>
+
+          <rect class="ly-band ly-logic" x="120" y="106" width="300" height="58" rx="6"/>
+          <text class="ly-name" x="270" y="132" text-anchor="middle">Capa de lógica de negocio</text>
+          <text class="ly-tag" x="270" y="152" text-anchor="middle">LAS REGLAS Y DECISIONES DEL SISTEMA</text>
+
+          <rect class="ly-band ly-data" x="120" y="192" width="300" height="58" rx="6"/>
+          <text class="ly-name" x="270" y="218" text-anchor="middle">Capa de datos</text>
+          <text class="ly-tag" x="270" y="238" text-anchor="middle">CÓMO SE GUARDA Y RECUPERA LA INFORMACIÓN</text>
+
+          <line class="ly-arrow" x1="270" y1="78" x2="270" y2="106"/>
+          <line class="ly-arrow" x1="270" y1="164" x2="270" y2="192"/>
+          <polygon points="270,106 265,98 275,98" fill="var(--ochre)"/>
+          <polygon points="270,192 265,184 275,184" fill="var(--ochre)"/>
+          <polygon points="270,78 265,86 275,86" fill="var(--ochre)"/>
+          <polygon points="270,164 265,172 275,172" fill="var(--ochre)"/>
+        </svg>
+        <div class="ly-note"><b>Cada capa solo habla con su vecina.</b> Si cambias la base de datos, la presentación ni se entera: ese aislamiento es justo lo que te regala la separación de responsabilidades.</div>
+      </div>
+
+      <p>La tercera cara es la <em>estructura de datos</em>: cómo organizas la información para que el sistema la encuentre, la relacione y la conserve sin contradicciones. Una estructura mal diseñada arrastra al sistema entero; una bien pensada hace que todo lo demás fluya. Aquí cabe recordar Hegel: la frontera entre dos módulos &mdash; o entre dos capas &mdash; suele ser donde se esconde la próxima antítesis. Cuando un módulo necesita saber demasiado del otro, ese roce te está avisando que la división aún no es la buena, y que toca refinar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5 CONCEPTOS MODERNOS -->
+<section id="s5">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">v.</span><h2>Conceptos modernos:<br>microservicios y serverless</h2></div>
+          <span class="sec-chip">16 min · 20:50</span>
+        </div>
+        <p class="sec-objective">La modularidad llevada a la nube. No son modas: son la misma idea de separar responsabilidades, aplicada a sistemas que viven en internet.</p>
+      </div>
+      <p>Estas palabras suenan a último grito tecnológico, pero por dentro son hijas directas de la modularidad que acabamos de ver. Son <em>maneras de empacar y desplegar</em> esos módulos. Conócelas para que sepas de qué hablan en una entrevista &mdash; y para que entiendas que también son etapas de un refinamiento histórico, una respuesta dialéctica a los límites de lo anterior:</p>
+
+      <div class="cards-grid" data-animate>
+        <div class="card-r">
+          <h4>Monolito</h4>
+          <div class="cr-when">la tesis · todo en un bloque</div>
+          <p>Un solo programa que lo hace todo. Simple de arrancar; pero al crecer, cualquier cambio obliga a redesplegar el bloque entero. Su rigidez es la antítesis que vino después.</p>
+        </div>
+        <div class="card-r">
+          <h4>Microservicios</h4>
+          <div class="cr-when">la síntesis · piezas independientes</div>
+          <p>El sistema se parte en servicios pequeños y autónomos &mdash; pagos, usuarios, inventario &mdash; que se despliegan por separado y se hablan por la red. Modularidad extrema; a cambio, más complejidad para coordinarlos.</p>
+        </div>
+        <div class="card-r">
+          <h4>Serverless</h4>
+          <div class="cr-when">olvídate del servidor</div>
+          <p>Subes funciones sueltas a la nube y el proveedor decide dónde y cuándo correrlas; pagas solo por el uso real. El servidor sigue existiendo &mdash; solo dejó de ser tu problema.</p>
+        </div>
+        <div class="card-r">
+          <h4>API</h4>
+          <div class="cr-when">la interfaz entre piezas</div>
+          <p>El contrato por el que un módulo le pide algo a otro sin saber cómo lo hace por dentro. Es la abstracción de la clase de hoy, hecha frontera entre servicios.</p>
+        </div>
+        <div class="card-r">
+          <h4>La nube</h4>
+          <div class="cr-when">infraestructura a demanda</div>
+          <p>Cómputo, almacenamiento y red que rentas en vez de comprar. Permite crecer o encoger según la demanda &mdash; el terreno donde lo anterior cobra sentido.</p>
+        </div>
+        <div class="card-r">
+          <h4>Ojo: no siempre conviene</h4>
+          <div class="cr-when">la madurez de elegir</div>
+          <p>Cortar en microservicios un sistema pequeño es matar una mosca a cañonazos: añade complejidad sin beneficio. La elección, como en cada clase, depende del contexto.</p>
+        </div>
+      </div>
+
+      <p>Fíjate en la lectura hegeliana de toda esta historia: el monolito (tesis) reveló su rigidez al crecer (antítesis), y los microservicios surgieron como síntesis. Pero esa síntesis trajo su propia complejidad &mdash; una nueva antítesis &mdash; que herramientas como serverless intentan superar. La tecnología no avanza en línea recta: avanza resolviendo las contradicciones que ella misma genera. Igual que tu diseño.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 INTERACTIVO: REFINAMIENTO DIALÉCTICO -->
+<section id="s6">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vi.</span><h2>El refinamiento<br>dialéctico, paso a paso</h2></div>
+          <span class="sec-chip">18 min · 21:06</span>
+        </div>
+        <p class="sec-objective">Veamos el refinamiento en cámara lenta. Un diseño abstracto, el problema que esconde, y la versión que lo supera &mdash; en varias rondas, para que el ciclo se te grabe.</p>
+      </div>
+      <p>Vamos a refinar juntos el diseño de un sistema sencillo: una <em>app de pedidos a domicilio</em>. Avanza con el botón. En cada paso verás aparecer la <span style="color:var(--olive); font-style:italic;">tesis</span> (el diseño actual), luego la <span style="color:var(--blood); font-style:italic;">antítesis</span> (el problema que revela) y por fin la <span style="color:var(--ochre); font-style:italic;">síntesis</span> (la versión refinada) &mdash; que se convierte en la tesis de la ronda siguiente. Esa es la dialéctica del diseño, en vivo.</p>
+
+      <div class="dia" id="dia">
+        <div class="dia-progress" id="diaProgress">Ronda 1 de 3 · el motor del refinamiento</div>
+        <div class="dia-round" id="diaRound"></div>
+        <div class="dia-track" id="diaTrack" aria-hidden="true">
+          <span class="dia-dot on"></span><span class="dia-dot"></span><span class="dia-dot"></span>
+        </div>
+        <div class="dia-steps" id="diaSteps" aria-live="polite"></div>
+        <div class="dia-bar">
+          <button class="dia-btn" id="diaNext" type="button">Revelar el siguiente paso</button>
+          <button class="dia-reset" id="diaReset" type="button">Volver a empezar</button>
+        </div>
+        <div class="dia-conclusion" id="diaConclusion">
+          ¿Ves el patrón? <b>Cada síntesis se volvió la tesis de la siguiente ronda</b> &mdash; y cada una escondía un problema nuevo. El diseño no llegó a "terminado": llegó a "suficientemente bueno por ahora". Eso es lo que Hegel quería decir con "lo verdadero es el todo": el diseño bueno no es ninguna de estas versiones aislada, sino el recorrido completo que las une. Tu trabajo no es acertar a la primera, sino saber leer cada antítesis sin tomarla como un fracaso.
+        </div>
+      </div>
+
+      <p>Lo importante no son los detalles de esta app, sino el ritmo: afirmar, encontrar la grieta, superarla, y volver a empezar con la mirada más alta. Ese ritmo es el que vas a practicar ahora con tu propio proyecto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S7 TALLER -->
+<section id="s7">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">vii.</span><h2>Taller: refina tu<br>diseño en dos rondas</h2></div>
+          <span class="sec-chip">24 min · 21:24</span>
+        </div>
+        <p class="sec-objective">Aplica la dialéctica a tu proyecto: parte de un diseño tosco a propósito, deja que un compañero le encuentre la grieta y refínalo. Dos rondas, sin enamorarte de tu primer boceto.</p>
+      </div>
+      <p>Hegel diría que un diseño que nunca enfrentó su contradicción no es del todo verdadero: es solo una opinión que aún no se probó. Así que hoy dibujas el diseño interno de tu proyecto, lo sometes a la antítesis de un colega y lo refinas. Esto alimenta directamente la sección de arquitectura y diseño de tu documento.</p>
+
+      <div class="field">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Dibuja la tesis: tu diseño en módulos o capas <span class="fs-time">7 min</span></h4>
+            <p>Boceta el interior de tu sistema: sus <b>módulos principales</b> o sus <b>capas</b> (presentación, lógica, datos), con una línea por cada parte que dice qué responsabilidad tiene. A mano o en una herramienta. No busques que sea perfecto &mdash; busca que esté completo.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Intercambia: tu colega encuentra la antítesis <span class="fs-time">5 min</span></h4>
+            <p>Pásale tu diagrama a un compañero. Su misión es señalar <b>una grieta</b>: un módulo que hace demasiado, dos piezas que se necesitan de más (alto acoplamiento), una responsabilidad que vive en la capa equivocada o un dato sin lugar claro. Una grieta concreta, no "está bien".</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Refina: dibuja la síntesis <span class="fs-time">7 min</span></h4>
+            <p>Rehaz tu diseño superando esa grieta: divide el módulo que hacía demasiado, baja el acoplamiento, recoloca la responsabilidad. La síntesis conserva lo bueno de tu tesis y resuelve el conflicto &mdash; no es empezar de cero.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">4</div>
+          <div>
+            <h4>Segunda ronda y firma <span class="fs-time">5 min</span></h4>
+            <p>Una grieta más sobre tu versión refinada &mdash; ahora vista con tu propia mirada &mdash; y un último ajuste. Guarda <b>las tres versiones</b>: tesis, antítesis anotada y síntesis. Ese recorrido, no solo el dibujo final, es lo que va a tu documento del proyecto.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Regla de la antítesis</b> &mdash; señalar grietas no es presumir ni ofender: es el regalo más valioso que un colega te puede dar. El que más huecos le encuentra hoy a tu diseño es el que te ahorra rehacerlo cuando ya esté construido. Y recuerda: no defiendas tu boceto a muerte &mdash; defiende tu sistema, que es distinto.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 CIERRE -->
+<section id="s8">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">viii.</span><h2>Cierre y Tarea 9</h2></div>
+          <span class="sec-chip">11 min · 21:48</span>
+        </div>
+        <p class="sec-objective">Abstraer es quedarse con lo esencial; refinar es tener el valor de rehacerlo. El diseño verdadero es el todo: el recorrido, no el primer boceto.</p>
+      </div>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div>Abstraer es decidir qué ignorar para que lo esencial resalte. Se refina de lo general a lo particular, eligiendo en cada decisión la altura justa.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Modularidad, capas y estructura de datos son tres caras de una misma virtud: alta cohesión, bajo acoplamiento, cada parte en su responsabilidad. Microservicios y serverless son esa idea llevada a la nube &mdash; cuando el contexto lo justifica.</div></div>
+        <div class="point"><span class="point-num">03</span><div>El diseño avanza como una dialéctica: tesis, antítesis, síntesis. Cada grieta que tu revisor encuentra es el motor de la siguiente versión, no un fracaso.</div></div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-eyebrow">Tarea 9 · valor 1 punto · entrega: lunes 10 de agosto</div>
+        <h3>Infografía de abstracción y refinamiento</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Crea una infografía que muestre cómo aplicas abstracción y refinamiento al diseño de tu proyecto. En Miro, Notion o la herramienta que prefieras &mdash; formato libre. Es insumo directo de la sección de diseño y arquitectura de tu documento:</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Muestra tu <b>abstracción</b>: las grandes piezas de tu sistema (módulos o capas) y qué decidiste ocultar o dejar fuera, y por qué.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Muestra tu <b>refinamiento</b> como dialéctica: al menos una ronda tesis &rarr; antítesis &rarr; síntesis (parte del taller de hoy si quieres).</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Que sea <b>visual</b>: diagramas de módulos o capas, flechas, antes y después. Nada de muros de texto &mdash; es una infografía, no un ensayo.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Cierra señalando qué grieta superó tu refinamiento. Si usaste IA, agrega tu sección "Cómo usé IA".</li>
+        </ul>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">El lunes que viene</div>
+          <p class="say-text">"Da Vinci y el diseño de interfaces. De la arquitectura interna pasamos a lo que ve el usuario: la simplicidad como la máxima sofisticación."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-prof">Daniel Vaca</div>
+        <div class="footer-role">Profesor · Sistemas de Información · TL0215 · 26-3</div>
+      </div>
+      <div class="footer-end">Fin del capítulo 22.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateActive() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(sec => {
+      if (scrollY >= sec.offsetTop && scrollY < sec.offsetTop + sec.offsetHeight) {
+        navLinks.forEach(link => { link.style.color = link.getAttribute('href') === '#' + sec.id ? 'var(--blood)' : ''; });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+  // ============================================================
+  // Refinamiento dialéctico: revelado progresivo en rondas
+  // ============================================================
+  const DIA_ROUNDS = [
+    {
+      round: 'Primer boceto: lo más simple que podría funcionar.',
+      steps: [
+        { kind: 'tesis', label: 'Tesis · el diseño actual', html: '<b>Un solo módulo "Pedido"</b> que lo hace todo: recibe el platillo elegido, calcula el total, cobra la tarjeta y avisa al repartidor. Una sola pieza, fácil de entender de un vistazo.' },
+        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'El módulo <b>hace demasiado</b> (baja cohesión). El día que cambie la forma de cobrar, hay que tocar el mismo bloque donde vive el cálculo del total y el aviso al repartidor. Un cambio pequeño arriesga todo.' },
+        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Separamos responsabilidades: <b>"Carrito"</b> (qué se pide y cuánto suma), <b>"Cobro"</b> (el pago) y <b>"Reparto"</b> (la entrega). Tres módulos cohesivos. Ahora cambiar el pago no toca nada más.' }
+      ]
+    },
+    {
+      round: 'La síntesis anterior es ahora nuestra tesis. ¿Qué grieta esconde?',
+      steps: [
+        { kind: 'tesis', label: 'Tesis · el diseño actual', html: 'Tres módulos &mdash; <b>Carrito, Cobro y Reparto</b> &mdash; pero <b>Cobro</b> lee directamente la base de datos de pedidos para saber el total, y <b>Reparto</b> también la consulta a su manera.' },
+        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'Hay <b>alto acoplamiento</b> con los datos: cada módulo conoce por dentro cómo se guarda un pedido. Si cambia la estructura de datos, se rompen los tres a la vez. La frontera está mal puesta.' },
+        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Metemos una <b>capa de datos</b> en medio: nadie toca la base directamente, todos piden por una interfaz común ("dame el total del pedido N"). Cambiar cómo se guarda ya no afecta a Cobro ni a Reparto.' }
+      ]
+    },
+    {
+      round: 'Última ronda. El sistema creció; la tesis vuelve a tensionarse.',
+      steps: [
+        { kind: 'tesis', label: 'Tesis · el diseño actual', html: 'El sistema funciona y la app se hizo popular. A la hora de la comida, <b>miles de pedidos al mismo tiempo</b> saturan el módulo de Reparto, que tarda en asignar repartidores.' },
+        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'Todo vive en <b>un solo bloque desplegado junto</b>: para aguantar el pico de Reparto hay que escalar también Carrito y Cobro, aunque esos no estén saturados. Se paga de más y la rigidez vuelve.' },
+        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Convertimos cada módulo en un <b>microservicio independiente</b> en la nube. Reparto escala solo cuando se satura, sin tocar a los demás. La modularidad de antes, ahora también en el despliegue &mdash; pero con su propia complejidad nueva por gestionar.' }
+      ]
+    }
+  ];
+
+  (function initDia() {
+    const box = document.getElementById('dia');
+    if (!box) return;
+    const stepsEl = document.getElementById('diaSteps');
+    const roundEl = document.getElementById('diaRound');
+    const progressEl = document.getElementById('diaProgress');
+    const trackEl = document.getElementById('diaTrack');
+    const nextBtn = document.getElementById('diaNext');
+    const resetBtn = document.getElementById('diaReset');
+    const conclusion = document.getElementById('diaConclusion');
+    const dots = trackEl.querySelectorAll('.dia-dot');
+
+    let round = 0;   // ronda actual (0..2)
+    let shown = 0;   // pasos revelados de la ronda actual (0..3)
+
+    function renderRound() {
+      const r = DIA_ROUNDS[round];
+      roundEl.textContent = r.round;
+      progressEl.textContent = 'Ronda ' + (round + 1) + ' de ' + DIA_ROUNDS.length + ' · el motor del refinamiento';
+      dots.forEach((d, i) => d.classList.toggle('on', i <= round));
+      stepsEl.innerHTML = '';
+      r.steps.forEach((s) => {
+        const div = document.createElement('div');
+        div.className = 'dia-step is-' + s.kind;
+        div.innerHTML = '<div class="ds-label">' + s.label + '</div><div class="ds-text">' + s.html + '</div>';
+        stepsEl.appendChild(div);
+      });
+    }
+
+    function revealNext() {
+      const r = DIA_ROUNDS[round];
+      if (shown < r.steps.length) {
+        const el = stepsEl.children[shown];
+        requestAnimationFrame(() => el.classList.add('show'));
+        shown++;
+        // Botón cambia según dónde estamos
+        if (shown < r.steps.length) {
+          const nextKind = r.steps[shown].kind;
+          nextBtn.textContent = nextKind === 'anti' ? 'Revelar la antítesis' : 'Revelar la síntesis';
+        } else if (round < DIA_ROUNDS.length - 1) {
+          nextBtn.textContent = 'Siguiente ronda →';
+        } else {
+          nextBtn.textContent = 'Cerrar el ciclo';
+        }
+        return;
+      }
+      // Ya se reveló toda la ronda: avanzar de ronda o terminar
+      if (round < DIA_ROUNDS.length - 1) {
+        round++;
+        shown = 0;
+        renderRound();
+        nextBtn.textContent = 'Revelar la tesis';
+      } else {
+        conclusion.classList.add('show');
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Ciclo completo';
+      }
+    }
+
+    function reset() {
+      round = 0;
+      shown = 0;
+      conclusion.classList.remove('show');
+      nextBtn.disabled = false;
+      renderRound();
+      nextBtn.textContent = 'Revelar la tesis';
+    }
+
+    nextBtn.addEventListener('click', revealNext);
+    resetBtn.addEventListener('click', reset);
+    reset();
+  })();
+</script>
+
+</body>
+</html>
