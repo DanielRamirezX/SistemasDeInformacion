@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 11 · Kierkegaard · Sistemas de Información</title>
-<meta name="description" content="Clase 11: elegir metodología según el contexto. Cascada, ágil, Scrum, XP, Kanban e híbridos; los criterios de decisión y cuándo conviene automatizar (o no). La angustia de elegir, según Kierkegaard. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 11: aplicar todo lo aprendido analizando un software real —Spotify— para identificar necesidades, stakeholders, paradigma (POO o estructurado), metodología y maquetación. A partir de ahí, generar con IA el primer entregable de ejemplo del proyecto integrador. La vida se comprende hacia atrás, según Kierkegaard. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -127,7 +127,14 @@
   .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* tarjetas de metodologías (aparecen al hacer scroll) */
+  /* repaso de los capítulos previos */
+  .recap { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0; margin: 32px 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .recap-cell { padding: 20px 22px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .recap-cap { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .recap-name { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+  .recap-cell p { font-size: 13px; color: var(--ink-muted); line-height: 1.45; margin: 0; }
+
+  /* tarjetas (aparecen al hacer scroll) */
   .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
   @media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
@@ -138,32 +145,113 @@
   .cards-grid.go .card-r:nth-child(3) { transition-delay: 0.21s; }
   .cards-grid.go .card-r:nth-child(4) { transition-delay: 0.29s; }
   .cards-grid.go .card-r:nth-child(5) { transition-delay: 0.37s; }
-  .cards-grid.go .card-r:nth-child(6) { transition-delay: 0.45s; }
   .card-r h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
   .card-r .cr-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
   .card-r p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
 
-  /* selector de metodología (asistente interactivo) */
-  .wiz { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
-  .wiz-progress { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
-  .wiz-q { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.25; margin-bottom: 20px; }
-  .wiz-opts { display: grid; gap: 10px; }
-  .wiz-opt { text-align: left; font-family: var(--sans); font-size: 14.5px; color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; padding: 15px 18px; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.4; }
-  .wiz-opt:hover { border-color: var(--blood); transform: translateY(-1px); }
-  .wiz-opt:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
-  .wiz-track { display: flex; gap: 8px; margin-bottom: 22px; }
-  .wiz-dot { width: 26px; height: 4px; border-radius: 2px; background: var(--line-strong); transition: background 0.3s; }
-  .wiz-dot.on { background: var(--blood); }
-  .wiz-result { border: 1px solid var(--line-strong); border-top: 3px solid var(--blood); border-radius: 6px; padding: 26px 24px; background: var(--paper); }
-  .wiz-result .wr-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
-  .wiz-result .wr-name { font-family: var(--serif); font-style: italic; font-size: 30px; color: var(--blood); margin-bottom: 14px; line-height: 1.1; }
-  .wiz-result .wr-why { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 16px; }
-  .wiz-result .wr-note { font-size: 13px; color: var(--ink-muted); line-height: 1.55; border-top: 1px dashed var(--line-strong); padding-top: 14px; }
-  .wiz-result .wr-note b { color: var(--blood); font-weight: 600; }
-  .wiz-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 9px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; margin-top: 18px; touch-action: manipulation; }
-  .wiz-reset:hover { background: var(--paper); color: var(--ink); }
+  /* stakeholders: el consejo aplicado a Spotify */
+  .roles { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 28px 0; }
+  .roles-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
+  .roles-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .roles-chip { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; padding: 9px 15px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 20px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s, background 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; }
+  .roles-chip:hover:not(.done) { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
+  .roles-chip:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .roles-chip.done { border-color: var(--olive); color: var(--olive); background: rgba(93,102,56,0.10); }
+  .roles-chip .rc-mark { font-weight: 700; }
+  .roles-chip .rc-mark:empty { display: none; }
+  .roles-chip .rc-mark:not(:empty) { margin-right: 6px; }
+  .roles-detail { padding: 20px 22px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .roles-detail b { color: var(--ink); font-weight: 600; }
+  .roles-detail .rd-name { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-bottom: 8px; display: block; }
+  .roles-detail .rd-need { margin: 8px 0; }
+  .roles-detail .rd-story { font-family: var(--mono); font-size: 11.5px; line-height: 1.55; color: var(--ink-muted); background: var(--paper-deep); border: 1px dashed var(--line-strong); border-radius: 3px; padding: 8px 12px; margin: 8px 0; }
+  .roles-detail .rd-story b { color: var(--blood); font-weight: 600; }
+  .roles-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .roles-score { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .roles-score b { color: var(--olive); font-weight: 600; }
+  .roles-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 9px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .roles-reset:hover { background: var(--paper); color: var(--ink); }
+  .roles-conclusion { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--olive); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+  .roles-conclusion.show { opacity: 1; max-height: 600px; }
+  .roles-conclusion b { color: var(--olive); font-weight: 600; }
 
-  /* ejemplo y taller (reuso) */
+  /* modelo de clases (POO) */
+  .classes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 28px 0; }
+  .cls-card { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 5px; overflow: hidden; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .classes.go .cls-card { opacity: 1; transform: translateY(0); }
+  .classes.go .cls-card:nth-child(1) { transition-delay: 0.05s; }
+  .classes.go .cls-card:nth-child(2) { transition-delay: 0.11s; }
+  .classes.go .cls-card:nth-child(3) { transition-delay: 0.17s; }
+  .classes.go .cls-card:nth-child(4) { transition-delay: 0.23s; }
+  .classes.go .cls-card:nth-child(5) { transition-delay: 0.29s; }
+  .cls-head { padding: 10px 14px; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .cls-head::before { content: '◉'; color: var(--ochre); font-size: 10px; }
+  .cls-body { padding: 8px 14px 12px; }
+  .cls-attr, .cls-method { font-family: var(--mono); font-size: 11px; line-height: 1.55; }
+  .cls-attr { color: var(--ink-soft); }
+  .cls-method { color: var(--blood); font-style: italic; }
+  .cls-sep { border: none; border-top: 1px dashed var(--line-strong); margin: 6px 0; }
+
+  /* prompt para copiar */
+  .prompt { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 6px; margin: 22px 0; overflow: hidden; }
+  .prompt-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 16px; background: var(--paper-deep); border-bottom: 1px solid var(--line); }
+  .prompt-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+  .prompt-copy { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 14px; background: var(--blood); color: var(--paper); border: none; border-radius: 3px; cursor: pointer; transition: background 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; white-space: nowrap; font-weight: 500; }
+  .prompt-copy:hover { background: var(--blood-dark); }
+  .prompt-copy.done { background: var(--olive); }
+  .prompt-copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .prompt-body { padding: 17px 18px; font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color: var(--ink-soft); }
+  .prompt-body .ph { color: var(--blood); font-weight: 500; }
+
+  /* tip */
+  .tip { background: var(--paper-deep); border: 1px solid var(--line); border-left: 3px solid var(--ochre); border-radius: 4px; padding: 16px 20px; margin: 22px 0; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .tip .tip-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ochre); display: block; margin-bottom: 6px; }
+  .tip b { color: var(--ink); font-weight: 600; }
+
+  /* entregable de ejemplo (documento estilizado) */
+  .doc { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 8px; margin: 28px 0; overflow: hidden; box-shadow: 0 8px 28px rgba(42, 29, 20, 0.06); }
+  .doc-head { padding: 22px 28px; background: var(--ink); color: var(--paper); }
+  .doc-head .dh-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .doc-head .dh-title { font-family: var(--serif); font-style: italic; font-size: 28px; line-height: 1.15; color: var(--paper); }
+  .doc-head .dh-sub { font-family: var(--mono); font-size: 11px; color: rgba(239,230,210,0.65); margin-top: 6px; letter-spacing: 0.04em; }
+  .doc-body { padding: 8px 28px 24px; }
+  .doc-sec { padding: 22px 0; border-top: 1px solid var(--line); }
+  .doc-sec:first-child { border-top: none; }
+  .doc-sec-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blood); margin-bottom: 4px; }
+  .doc-sec-title { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-bottom: 10px; line-height: 1.15; }
+  .doc-sec p { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 8px; }
+  .doc-sec p b { color: var(--ink); font-weight: 600; }
+  .doc-list { padding: 0; margin: 6px 0; list-style: none; }
+  .doc-list li { font-size: 14px; line-height: 1.55; color: var(--ink-soft); padding: 4px 0 4px 20px; position: relative; }
+  .doc-list li::before { content: '·'; position: absolute; left: 8px; color: var(--blood); font-weight: 700; font-size: 18px; line-height: 1; top: 3px; }
+  .doc-list li b { color: var(--ink); font-weight: 600; }
+  .doc-story { font-family: var(--mono); font-size: 12px; line-height: 1.55; color: var(--ink-soft); background: var(--paper); border: 1px dashed var(--line-strong); border-radius: 3px; padding: 8px 12px; margin: 6px 0; }
+  .doc-story b { color: var(--blood); font-weight: 600; }
+  .doc-ia { background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--olive); border-radius: 4px; padding: 14px 18px; margin: 10px 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+  .doc-ia b { color: var(--olive); font-weight: 600; }
+
+  /* diagrama de secuencia UML */
+  .seq-wrap { margin: 14px 0 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 5px; padding: 16px 14px 10px; }
+  .seq-caption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ochre); margin-bottom: 4px; }
+  .seq-svg { width: 100%; height: auto; display: block; }
+  .seq-note { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-muted); margin-top: 6px; line-height: 1.45; }
+  .seq-note b { color: var(--ink); font-weight: 600; font-style: normal; }
+
+  /* animación: generación progresiva del entregable con IA */
+  .doc-controls { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 20px; background: var(--paper); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .doc-gen-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 18px; background: var(--blood); color: var(--paper); border: none; border-radius: 3px; cursor: pointer; transition: background 0.2s; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .doc-gen-btn:hover { background: var(--blood-dark); }
+  .doc-gen-btn:disabled { background: var(--ink-faint); cursor: progress; }
+  .doc-gen-btn .play-arrow { font-size: 10px; }
+  .doc-gen-status { font-family: var(--mono); font-size: 10.5px; color: var(--ink-muted); letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 8px; }
+  .doc-gen-status .dot { display: inline-block; width: 7px; height: 7px; background: var(--olive); border-radius: 50%; flex-shrink: 0; }
+  .doc-gen-status.gen .dot { background: var(--blood); animation: dotPulse 1.1s ease infinite; }
+  @keyframes dotPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.75); } }
+  .doc-sec { transition: opacity 0.55s ease, transform 0.55s ease; }
+  .doc-body.gen-active .doc-sec { opacity: 0; transform: translateY(12px); }
+  .doc-body.gen-active .doc-sec.shown { opacity: 1; transform: translateY(0); }
+
+  /* example y taller (reuso) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
@@ -189,12 +277,12 @@
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#s1">Repaso</a></li>
       <li><a href="#s2">Kierkegaard</a></li>
-      <li><a href="#s3">Sin bala de plata</a></li>
-      <li><a href="#s4">Metodologías</a></li>
-      <li><a href="#s5">Criterios</a></li>
-      <li><a href="#s6">Selector</a></li>
-      <li><a href="#s7">¿Automatizar?</a></li>
-      <li><a href="#s8">Taller</a></li>
+      <li><a href="#s3">Spotify</a></li>
+      <li><a href="#s4">Stakeholders</a></li>
+      <li><a href="#s5">Sistema</a></li>
+      <li><a href="#s6">POO</a></li>
+      <li><a href="#s7">Método y maquetas</a></li>
+      <li><a href="#s8">Entregable</a></li>
       <li><a href="#s9">Cierre</a></li>
     </ul>
   </div>
@@ -205,12 +293,12 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 11</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Kierkegaard</h1>
-      <p class="hero-tagline">No existe la metodología correcta.<br>Solo la que <span>eliges y defiendes</span>.</p>
+      <p class="hero-tagline">Comprendemos hacia atrás<br>lo que <span>vivirás hacia adelante</span>.</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 22 junio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
         <div><div class="stat-label">Duración</div><div class="stat-value">119 min</div></div>
-        <div><div class="stat-label">Materia</div><div class="stat-value">TL0215</div></div>
+        <div><div class="stat-label">Caso</div><div class="stat-value">Spotify</div></div>
       </div>
     </div>
   </div>
@@ -218,8 +306,8 @@
 
 <section class="quote">
   <div class="wrap">
-    <p class="quote-text">La angustia es el vértigo de la libertad.</p>
-    <p class="quote-attr">— <b>Søren Kierkegaard</b> · El concepto de la angustia · 1844</p>
+    <p class="quote-text">La vida sólo se comprende hacia atrás;<br>pero se vive hacia adelante.</p>
+    <p class="quote-attr">— <b>Søren Kierkegaard</b> · Diarios · 1843</p>
   </div>
 </section>
 
@@ -229,20 +317,20 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · el vértigo de elegir</span>
+          <span class="sec-chip">119 min · ingeniería inversa</span>
         </div>
-        <p class="sec-objective">Hoy no hay respuesta única. Aprenderás a elegir cómo trabajar &mdash; cascada, ágil, Scrum, Kanban, híbrido &mdash; según el contexto, y a cargar con la decisión: a defenderla.</p>
+        <p class="sec-objective">Hoy no hay idea nueva: hay <em>integración</em>. Tomamos todo lo aprendido en diez capítulos y lo aplicamos a un sistema que ya existe, que ya usas &mdash; Spotify &mdash; para identificar sus necesidades, stakeholders, paradigma y maquetas. Al final, generamos con IA el primer entregable de ejemplo: el mismo que tendrás que construir para tu proyecto.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes el diseño; ¿cómo lo construyes?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Kierkegaard?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">No hay bala de plata</span><span class="agenda-dur">12 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:28</span><span class="agenda-title">Las metodologías en la mesa</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">Los criterios de decisión</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:58</span><span class="agenda-title">El selector de metodología</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:16</span><span class="agenda-title">¿Toda empresa necesita un sistema?</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: defiende tu elección</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 5</span><span class="agenda-dur">11 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes todas las piezas</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Kierkegaard? Comprender hacia atrás</span><span class="agenda-dur">7 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:15</span><span class="agenda-title">El paciente sobre la mesa: Spotify</span><span class="agenda-dur">12 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:27</span><span class="agenda-title">Stakeholders y necesidades</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:43</span><span class="agenda-title">Tipo de sistema y requerimientos</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:59</span><span class="agenda-title">¿POO o estructurado? El paradigma</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:17</span><span class="agenda-title">Metodología y maquetación</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:31</span><span class="agenda-title">Demo: el entregable de ejemplo con IA</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:49</span><span class="agenda-title">Cierre · Tarea 5 · aviso del jueves</span><span class="agenda-dur">10 min</span></div>
       </div>
     </div>
   </div>
@@ -254,19 +342,23 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Tienes el diseño.<br>¿Cómo lo construyes?</h2></div>
+          <div><span class="sec-num">i.</span><h2>Tienes todas<br>las piezas</h2></div>
           <span class="sec-chip">8 min · 20:00</span>
         </div>
-        <p class="sec-objective">Platón te dio la forma ideal del sistema. Falta decidir el camino para construirlo &mdash; y no hay un camino correcto para todos.</p>
+        <p class="sec-objective">Diez capítulos. Diez herramientas. Hoy las ensamblas &mdash; no añades nada nuevo, aprendes a usar lo que ya tienes.</p>
       </div>
-      <p>Con Platón diseñaste la Idea de tu sistema y reconociste sus sombras. Pero entre la Idea y la sombra hay un trayecto, y ese trayecto se puede recorrer de muchas formas: en una larga marcha planeada de principio a fin, o en pasos cortos que se corrigen sobre la marcha. Eso es lo que llamamos <em>metodología</em>.</p>
-      <p>Aquí viene la parte incómoda: no existe la metodología perfecta. Cada una acierta en un contexto y fracasa en otro. Elegir es, por tanto, un acto de criterio &mdash; y de valentía, porque te haces responsable de la elección. Por eso hoy nos acompaña Kierkegaard, el filósofo de la decisión y de la angustia que la acompaña.</p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">El dato que duele</div>
-          <p class="say-text">"Aplicar Scrum a un proyecto que necesitaba cascada &mdash; o cascada a uno que pedía agilidad &mdash; ha hundido más proyectos que cualquier error de código. La metodología equivocada no se nota el primer día: se cobra al final, cuando ya no hay vuelta atrás."</p>
-        </div>
+      <p>Antes de avanzar, miremos las herramientas que ya cargas en el morral. Cada filósofo te dejó una:</p>
+      <div class="recap">
+        <div class="recap-cell"><div class="recap-cap">Cap. 1 · Bertalanffy</div><div class="recap-name">Tipos de sistema</div><p>Sabes distinguir un sistema transaccional de uno de soporte a decisiones o estratégico.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 2 · Heráclito</div><div class="recap-name">Ciclos de vida</div><p>Conoces las fases: análisis, diseño, construcción, pruebas, operación.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 3 · Aristóteles</div><div class="recap-name">Objetos y UML</div><p>Ves el mundo como objetos que colaboran, y los dibujas en UML.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 5 · Maquiavelo</div><div class="recap-name">Metodologías</div><p>Sabes elegir entre cascada, ágil, híbrido &mdash; según el contexto.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 6 · Confucio</div><div class="recap-name">Estructurado vs OO</div><p>Distingues los dos grandes paradigmas de análisis.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 7 · Descartes</div><div class="recap-name">Requerimientos</div><p>Sabes dudar, preguntar y separar funcional de no funcional.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 9 · Locke</div><div class="recap-name">Stakeholders</div><p>Identificas a todos los participantes y sus intereses.</p></div>
+        <div class="recap-cell"><div class="recap-cap">Cap. 10 · Platón</div><div class="recap-name">Diseño con IA</div><p>Diriges a la IA, dudas de lo que produce, recuperas la Idea.</p></div>
       </div>
+      <p>Hoy no sumamos una herramienta más. Hoy <em>abres el morral</em> y usas todas &mdash; de un solo golpe &mdash; contra un sistema real. Y el sistema, ¿cuál? Uno que tienes en el celular y cuyas decisiones de diseño podemos inspeccionar de viva voz: Spotify.</p>
     </div>
   </div>
 </section>
@@ -278,209 +370,400 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Kierkegaard?</h2></div>
-          <span class="sec-chip">8 min · 20:08</span>
+          <span class="sec-chip">7 min · 20:08</span>
         </div>
-        <p class="sec-objective">Porque dedicó su obra a algo que ningún manual te resuelve: el peso de elegir cuando no hay una respuesta dada.</p>
+        <p class="sec-objective">Porque "comprender hacia atrás" es justo lo que hace un analista frente a un sistema ya construido.</p>
       </div>
-      <p>Kierkegaard, padre del existencialismo, tituló uno de sus libros <em>O lo uno o lo otro</em>. Su idea central: la vida está hecha de elecciones genuinas que ninguna fórmula decide por ti. Y elegir produce <em>angustia</em> &mdash; pero no por debilidad: la angustia es, en sus palabras, "el vértigo de la libertad". Sientes vértigo justamente porque eres libre de elegir, y nadie cargará la decisión por ti.</p>
-      <p>Trasládalo a tu proyecto: no hay una autoridad que te diga "tu caso es Scrum". Hay criterios, hay contexto&hellip; y al final, una decisión tuya que tendrás que defender. Esa pequeña angustia que sientes al elegir metodología no es que te falte saber: es la señal de que la decisión es real y es tuya. Madurar como profesional es aprender a decidir <em>con</em> esa angustia, no a esperar que desaparezca.</p>
+      <p>La frase del filósofo danés es el mejor lema de la <em>ingeniería inversa</em>: la vida &mdash; o, en nuestro caso, un sistema &mdash; "sólo se comprende hacia atrás". Cuando un software ya está en marcha, podemos diseccionarlo con calma: ver qué decisiones tomaron sus diseñadores, qué necesidades atendieron, qué paradigma eligieron y por qué. Eso es <em>comprender hacia atrás</em>.</p>
+      <p>Pero la frase tiene una segunda mitad: "pero se vive hacia adelante". Y ahí estás tú: el análisis de Spotify no es un ejercicio académico. Es el ensayo que prepara tu propio proyecto. Lo que aprendas a ver en este sistema, lo verás luego en el tuyo &mdash; y lo escribirás en tu entregable.</p>
       <div class="say">
         <div class="say-card">
-          <div class="say-label">Kierkegaard aplicado a la decisión</div>
-          <p class="say-text">"Quien busca la metodología 'objetivamente correcta' para no tener que decidir, ya falló: delegó su criterio en una moda. Elige tú, con argumentos, y hazte dueño de la elección. Si la IA o el libro lo sugirieron, tú lo defiendes."</p>
+          <div class="say-label">La angustia de Kierkegaard, hoy</div>
+          <p class="say-text">"Sentirás un vértigo nuevo al ver Spotify destripado: descubrirás que muchas de sus decisiones no son 'la única correcta', sino <em>defendibles</em>. Esa será, dentro de tu proyecto, tu propia angustia &mdash; y también tu libertad."</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S3 SIN BALA DE PLATA -->
+<!-- S3 SPOTIFY -->
 <section id="s3">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>No hay<br>bala de plata</h2></div>
-          <span class="sec-chip">12 min · 20:16</span>
+          <div><span class="sec-num">iii.</span><h2>El paciente<br>sobre la mesa</h2></div>
+          <span class="sec-chip">12 min · 20:15</span>
         </div>
-        <p class="sec-objective">La industria lleva décadas buscando la metodología que sirva para todo. No existe &mdash; y creer que existe es el error.</p>
+        <p class="sec-objective">Spotify, el sistema de música en streaming más usado del mundo. Hoy lo analizamos &mdash; no para admirarlo, sino para entender cómo fue decidido.</p>
       </div>
-      <p>Hay una tentación constante en este oficio: pensar que ya se descubrió la forma definitiva de hacer software, y que basta aplicarla siempre. Primero fue la cascada; luego, cuando llegó lo ágil, muchos creyeron que Scrum era la respuesta universal. No lo es. Tres ideas para vacunarte contra la bala de plata:</p>
+      <p>Trescientos millones de personas lo usan a diario. Pero Spotify no es una sola cosa: es un sistema transaccional (cobra suscripciones, paga regalías), un sistema de soporte a decisiones (recomienda con base en tu historial) y un sistema de comunicación social (sigues artistas, compartes playlists). Ya con eso, <em>clasificaste el sistema</em> &mdash; lo que aprendiste con Bertalanffy.</p>
+      <p>¿Por qué Spotify y no otro? Tres razones:</p>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Scrum no siempre es la respuesta.</b> En proyectos muy regulados, con requisitos fijos y auditoría estricta, el ritual de sprints puede estorbar más que ayudar. Lo ágil no es automáticamente superior; es superior <em>en su contexto</em>.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>La cascada no está muerta.</b> Cuando rehacer es carísimo y todo debe documentarse &mdash; un sistema bancario central, un dispositivo médico &mdash; planear a fondo antes de construir sigue siendo lo sensato.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Lo que se elige es un punto en un espectro.</b> No es "ágil o cascada" como bandos. Casi todas las empresas reales viven en algún híbrido, mezclando lo que cada parte del proyecto necesita.</div></div>
+        <div class="point"><span class="point-num">01</span><div><b>Lo conoces.</b> Lo has usado cientos de horas. Tienes intuiciones sobre cómo funciona que, hoy, vamos a volver explícitas.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Lo puedes inspeccionar.</b> Abre la app ahora mismo: cada pantalla es evidencia de una decisión de diseño que podemos leer.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Dominio rico.</b> Oyentes, artistas, discográficas, anunciantes, empleados: cinco stakeholders con intereses encontrados. Justo lo que pide un buen análisis.</div></div>
       </div>
-      <p>La madurez profesional no es dominar una metodología, sino tener <em>criterio</em> para elegir entre varias. Y el criterio se construye conociendo las opciones y los factores que inclinan la balanza. Vamos con ambos.</p>
+      <div class="example">
+        <div class="example-tag">Regla del analista</div>
+        <p>No adivinamos. <b>Observamos.</b> Tres niveles: lo que se <em>ve</em> (la interfaz), lo que se <em>infiere</em> (el modelo de datos y los objetos detrás) y lo que se <em>conjetura</em> (la metodología y la arquitectura). En cada nivel marcamos qué es hecho y qué es hipótesis &mdash; como un buen analista.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S4 METODOLOGÍAS -->
+<!-- S4 STAKEHOLDERS -->
 <section id="s4">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>Las metodologías<br>en la mesa</h2></div>
-          <span class="sec-chip">16 min · 20:28</span>
+          <div><span class="sec-num">iv.</span><h2>Stakeholders<br>y necesidades</h2></div>
+          <span class="sec-chip">16 min · 20:27</span>
         </div>
-        <p class="sec-objective">Estas son tus cartas. No para memorizarlas, sino para saber qué pone cada una sobre la mesa &mdash; y cuándo conviene jugarla.</p>
+        <p class="sec-objective">Aplicamos a Locke (Cap. 9): identificar a todos los participantes y sus intereses. En Spotify hay cinco, no uno &mdash; y no todos quieren lo mismo.</p>
       </div>
-      <p>Conoce a los seis jugadores principales. Algunos son metodologías completas; otros, conjuntos de prácticas o marcos. Lo que importa es para qué brilla cada uno:</p>
+      <p>El error de novato es pensar que Spotify tiene un solo usuario: "el que escucha música". Falso. Hay cinco actores cuyas necesidades <em>chocan</em> entre sí, y el sistema las equilibra. Toca cada uno para ver su retrato y su historia de usuario típica:</p>
 
-      <div class="cards-grid" data-animate>
-        <div class="card-r">
-          <h4>Cascada</h4>
-          <div class="cr-when">requisitos fijos · alta regulación</div>
-          <p>Fases en fila: análisis, diseño, construcción, pruebas. Da control y trazabilidad; cuesta caro cambiar a mitad de camino.</p>
+      <div class="roles" id="roles">
+        <div class="roles-instr">Toca cada stakeholder para ver su retrato · aplica lo que vimos con Locke</div>
+        <div class="roles-chips" id="rolesChips">
+          <button class="roles-chip" type="button" data-id="oyente">Oyente</button>
+          <button class="roles-chip" type="button" data-id="artista">Artista</button>
+          <button class="roles-chip" type="button" data-id="discografica">Discográfica</button>
+          <button class="roles-chip" type="button" data-id="anunciante">Anunciante</button>
+          <button class="roles-chip" type="button" data-id="empleado">Empleado Spotify</button>
         </div>
-        <div class="card-r">
-          <h4>Ágil</h4>
-          <div class="cr-when">el requisito va a cambiar</div>
-          <p>Más que un método, un conjunto de valores: iterar, entregar pronto y adaptarse. Scrum, XP y Kanban son formas concretas de practicarlo.</p>
+        <div class="roles-detail" id="rolesDetail">Aún no convocas a nadie. Toca el primer stakeholder para ver sus necesidades y su historia de usuario.</div>
+        <div class="roles-bar">
+          <div class="roles-score" id="rolesScore"><b>0</b> / 5 stakeholders convocados</div>
+          <button class="roles-reset" id="rolesReset" type="button">Reiniciar</button>
         </div>
-        <div class="card-r">
-          <h4>Scrum</h4>
-          <div class="cr-when">quieres ritmo e inspección</div>
-          <p>Sprints, roles (PO, SM, equipo) y ceremonias. Estructura lo ágil para inspeccionar y adaptar cada pocas semanas, con el cliente cerca.</p>
-        </div>
-        <div class="card-r">
-          <h4>XP</h4>
-          <div class="cr-when">la calidad técnica es crítica</div>
-          <p>Extreme Programming: prácticas de ingeniería como programación en parejas, pruebas antes que código e integración continua.</p>
-        </div>
-        <div class="card-r">
-          <h4>Kanban</h4>
-          <div class="cr-when">el trabajo llega a demanda</div>
-          <p>Flujo continuo en un tablero y límite de trabajo en curso (WIP). Sin sprints fijos. Brilla en soporte, mantenimiento y operación.</p>
-        </div>
-        <div class="card-r">
-          <h4>Híbrido</h4>
-          <div class="cr-when">conviven lo fijo y lo cambiante</div>
-          <p>Combina cascada y ágil según la parte del proyecto: lo regulado se planea a fondo, lo que evoluciona se itera. Lo que de verdad usan muchas empresas.</p>
+        <div class="roles-conclusion" id="rolesConclusion">
+          <b>Viste a los cinco.</b> Y notaste, quizá por primera vez, que sus intereses no son el mismo: el oyente quiere menos anuncios; el anunciante, más. El artista quiere más regalías; la discográfica, más control del catálogo. El sistema no resuelve un problema &mdash; equilibra varios. Eso es analizar.
         </div>
       </div>
 
-      <p>Con las cartas sobre la mesa, falta lo difícil: saber cuál jugar. Y eso depende de unos pocos factores de tu contexto.</p>
+      <div class="tip">
+        <span class="tip-label">Aplica a tu proyecto</span>
+        <b>Pregunta de oro de Locke:</b> ¿quiénes se benefician, quiénes deciden, quiénes pagan, quiénes sufren si falla? Si en tu proyecto solo aparece un stakeholder, casi siempre te falta uno. Las apps que fracasan suelen ignorar a alguno.
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S5 CRITERIOS -->
+<!-- S5 TIPO DE SISTEMA Y REQUERIMIENTOS -->
 <section id="s5">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>Los criterios<br>de decisión</h2></div>
-          <span class="sec-chip">14 min · 20:44</span>
+          <div><span class="sec-num">v.</span><h2>Tipo de sistema<br>y requerimientos</h2></div>
+          <span class="sec-chip">16 min · 20:43</span>
         </div>
-        <p class="sec-objective">No elijas por moda ni por costumbre. Elige leyendo estos cinco factores de tu proyecto.</p>
+        <p class="sec-objective">Aplicamos a Bertalanffy (Cap. 1) y a Descartes (Cap. 7): clasificamos el sistema y separamos requerimientos funcionales de no funcionales.</p>
       </div>
-      <p>La elección no sale de una corazonada, sino de leer el contexto. Estos son los cinco factores que más inclinan la balanza entre planear a fondo (cascada) o iterar y adaptar (ágil):</p>
+      <p>Spotify no es un solo tipo de sistema. Es una composición &mdash; como casi todo sistema real:</p>
+      <div class="cards-grid" data-animate>
+        <div class="card-r"><h4>Transaccional</h4><div class="cr-when">procesa pagos y regalías</div><p>Cada reproducción genera un evento que se cobra y reparte. Cada suscripción, una transacción. Núcleo del negocio.</p></div>
+        <div class="card-r"><h4>Soporte a decisiones</h4><div class="cr-when">recomendaciones</div><p>Los algoritmos de "Descubrimiento semanal" analizan tu historial y deciden qué mostrarte. Tu dato se vuelve decisión.</p></div>
+        <div class="card-r"><h4>Colaborativo / social</h4><div class="cr-when">playlists compartidas</div><p>Sigues artistas, amigos comparten contigo, hay playlists colaborativas. El sistema conecta personas, no sólo archivos.</p></div>
+      </div>
+      <p>Ahora los requerimientos. La duda metódica de Descartes: <em>¿qué debe hacer</em> (funcional) <em>y cómo debe hacerlo</em> (no funcional)?</p>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Volatilidad de los requisitos.</b> ¿Están claros y fijos, o van a cambiar? Requisitos estables favorecen cascada; requisitos que evolucionan, lo ágil.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Criticidad y regulación.</b> ¿Hay vidas, dinero o ley de por medio, con auditorías? A mayor criticidad, más peso para el control y la documentación.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Tamaño y madurez del equipo.</b> Equipos pequeños y autoorganizados se mueven bien en ágil; equipos grandes o nuevos a veces necesitan más estructura.</div></div>
-        <div class="point"><span class="point-num">04</span><div><b>Disponibilidad del cliente.</b> Lo ágil exige un cliente presente que dé retroalimentación seguido. Si el cliente desaparece por meses, ese modelo se rompe.</div></div>
-        <div class="point"><span class="point-num">05</span><div><b>Velocidad del mercado.</b> Si la competencia corre y hay que entregar valor pronto, las entregas frecuentes ganan. Si el ritmo es pausado, hay margen para planear.</div></div>
+        <div class="point"><span class="point-num">F</span><div><b>Funcionales &mdash; qué hace.</b> Reproducir pistas, buscar por título/artista/género, crear y editar playlists, seguir artistas, recibir recomendaciones, descargar offline, mostrar letras, mezclar con amigos.</div></div>
+        <div class="point"><span class="point-num">NF</span><div><b>No funcionales &mdash; cómo lo hace.</b> Latencia de inicio de reproducción &lt; 300 ms, disponibilidad 99.99%, escalabilidad a 500M+ usuarios, personalización algorítmica, multiplataforma (web, móvil, TV, auto), cifrado del streaming.</div></div>
       </div>
-      <p>Ningún factor decide solo; se leen en conjunto. Para sentir cómo se combinan, hagamos una decisión real &mdash; la tuya.</p>
+      <div class="example">
+        <div class="example-tag">La trampa del no funcional</div>
+        <p>Los requerimientos no funcionales son los que <b>se notan cuando fallan</b>: que la música tarde tres segundos en arrancar, que la app se caiga un domingo, que no cargue en el metro sin señal. Ahí se decide si el usuario se queda o se va. Por eso pesan tanto en la rúbrica de tu proyecto.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S6 SELECTOR -->
+<!-- S6 POO O ESTRUCTURADO -->
 <section id="s6">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>El selector<br>de metodología</h2></div>
-          <span class="sec-chip">18 min · 20:58</span>
+          <div><span class="sec-num">vi.</span><h2>¿POO o estructurado?<br>El paradigma</h2></div>
+          <span class="sec-chip">18 min · 20:59</span>
         </div>
-        <p class="sec-objective">Responde tres preguntas sobre tu proyecto y la herramienta te sugerirá un camino &mdash; con su razón. Pero ojo: sugerir no es decidir.</p>
+        <p class="sec-objective">Aplicamos a Confucio (Cap. 6) y a Aristóteles (Cap. 3): miramos el paradigma con el que Spotify fue modelado. Pista: sus objetos están a la vista.</p>
       </div>
-      <p>Piensa en tu proyecto integrador (o en uno real que conozcas) y responde con honestidad. Al final verás una recomendación razonada. No la tomes como verdad revelada: tómala como una segunda opinión que tú vas a confirmar o rebatir.</p>
+      <p>¿Spotify es estructurado (funciones y procesos) u orientado a objetos? Basta mirar las palabras con las que hablamos de él de forma natural: <em>"oyente", "artista", "pista", "álbum", "playlist"</em>. Cada una es un <em>objeto</em> con atributos y comportamientos. Esa es la firma del paradigma OO: el dominio se modela como objetos que colaboran.</p>
+      <p>Si fuera estructurado, lo describiríamos en términos de flujos de datos y procesos: <em>"proceso de reproducción", "flujo de cobro"</em>. Spotify tiene procesos así, pero su columna vertebral es OO. Aquí el modelo simplificado, como lo dibujarías en UML:</p>
 
-      <div class="wiz" id="wiz">
-        <div class="wiz-track" id="wizTrack" aria-hidden="true">
-          <span class="wiz-dot on"></span><span class="wiz-dot"></span><span class="wiz-dot"></span>
+      <div class="classes" data-animate>
+        <div class="cls-card">
+          <div class="cls-head">Usuario</div>
+          <div class="cls-body">
+            <div class="cls-attr">+ id, nombre, país</div>
+            <div class="cls-attr">+ plan: free | premium</div>
+            <hr class="cls-sep">
+            <div class="cls-method">+ registrarse()</div>
+            <div class="cls-method">+ iniciarSesion()</div>
+            <div class="cls-method">+ crearPlaylist()</div>
+          </div>
         </div>
-        <div id="wizStage"></div>
+        <div class="cls-card">
+          <div class="cls-head">Artista</div>
+          <div class="cls-body">
+            <div class="cls-attr">+ id, nombre, biografía</div>
+            <div class="cls-attr">+ seguidores, géneros</div>
+            <hr class="cls-sep">
+            <div class="cls-method">+ publicarTrack()</div>
+            <div class="cls-method">+ verEstadísticas()</div>
+            <div class="cls-method">+ cobrarRegalías()</div>
+          </div>
+        </div>
+        <div class="cls-card">
+          <div class="cls-head">Track</div>
+          <div class="cls-body">
+            <div class="cls-attr">+ id, título, duración</div>
+            <div class="cls-attr">+ audioUrl, reprods</div>
+            <hr class="cls-sep">
+            <div class="cls-method">+ reproducir()</div>
+            <div class="cls-method">+ pausar()</div>
+            <div class="cls-method">+ marcarFavorito()</div>
+          </div>
+        </div>
+        <div class="cls-card">
+          <div class="cls-head">Álbum</div>
+          <div class="cls-body">
+            <div class="cls-attr">+ id, título, año</div>
+            <div class="cls-attr">+ portada, tracks[]</div>
+            <hr class="cls-sep">
+            <div class="cls-method">+ agregarTrack()</div>
+            <div class="cls-method">+ ordenar()</div>
+          </div>
+        </div>
+        <div class="cls-card">
+          <div class="cls-head">Playlist</div>
+          <div class="cls-body">
+            <div class="cls-attr">+ id, nombre</div>
+            <div class="cls-attr">+ propietario, tracks[]</div>
+            <hr class="cls-sep">
+            <div class="cls-method">+ agregar()</div>
+            <div class="cls-method">+ quitar()</div>
+            <div class="cls-method">+ mezclar()</div>
+          </div>
+        </div>
       </div>
 
-      <p>¿Notaste lo que pasó? La herramienta te dio una recomendación, pero la decisión sigue siendo tuya: tú conoces matices que ninguna pregunta capturó. Eso es exactamente el punto de Kierkegaard &mdash; la sugerencia no carga con tu proyecto; tú sí.</p>
+      <p>Cinco clases, relaciones claras: un <b>Usuario</b> crea muchas <b>Playlists</b>, cada Playlist contiene muchos <b>Tracks</b>, un Track pertenece a un <b>Álbum</b>, el Álbum pertenece a un <b>Artista</b>. Ese es el modelo &mdash; la Idea, en palabras de Platón &mdash; detrás de la app. Y tú puedes dibujar el equivalente para tu propio proyecto.</p>
+
+      <div class="tip">
+        <span class="tip-label">¿Por qué OO encaja aquí?</span>
+        <b>Dominio rico que cambia seguido.</b> Spotify agrega objetos nuevos (Podcast, Historia, Sesión colaborativa) sin reescribir los demás. Esa flexibilidad es la ventaja de OO que viste con Aristóteles: objetos que colaboran sin acoplarse demasiado.
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S7 ¿AUTOMATIZAR? -->
+<!-- S7 METODOLOGÍA Y MAQUETACIÓN -->
 <section id="s7">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vii.</span><h2>¿Toda empresa<br>necesita un sistema?</h2></div>
-          <span class="sec-chip">14 min · 21:16</span>
+          <div><span class="sec-num">vii.</span><h2>Metodología<br>y maquetación</h2></div>
+          <span class="sec-chip">14 min · 21:17</span>
         </div>
-        <p class="sec-objective">La decisión más madura no es qué metodología usar, sino si conviene construir algo. A veces, la mejor respuesta es "no".</p>
+        <p class="sec-objective">Aplicamos a Maquiavelo (Cap. 5) y a Platón (Cap. 10): qué metodología usaron y cómo prototiparon las maquetas que hoy ves en la app.</p>
       </div>
-      <p>Antes de elegir cómo construir, hay una decisión anterior y más valiente: <em>si</em> construir. No todo problema se resuelve con software, y no toda empresa necesita un sistema a la medida. A veces un buen proceso manual, una hoja de cálculo bien hecha o una herramienta que ya existe resuelven mejor &mdash; y más barato &mdash; que un desarrollo propio.</p>
-      <p>La herramienta para decidirlo es el análisis de <em>costo-beneficio</em>: ¿lo que ahorro o gano con el sistema supera lo que cuesta construirlo, mantenerlo y enseñar a usarlo? Si el proceso ocurre tres veces al año, automatizarlo puede ser un capricho caro. Si ocurre mil veces al día, no automatizarlo es negligencia.</p>
-      <div class="example">
-        <div class="example-tag">La decisión que ahorra fortunas</div>
-        <p>Un analista junior siempre quiere construir &mdash; es lo emocionante. Un analista maduro a veces recomienda <b>no construir</b>, y eso también es un excelente análisis. Recomendar "con un proceso ordenado y una plantilla resuelven esto sin sistema" puede ahorrarle a un cliente una fortuna&hellip; y ganarte su confianza para siempre. Decir "no" a tiempo es, otra vez, una decisión kierkegaardiana: incómoda, valiente y tuya.</p>
+      <p>Spotify es famoso en el mundo de software por una metodología que, estrictamente, ya no usan: el <em>"modelo Spotify"</em> con squads, tribes, chapters y guilds. Pequeños equipos autónomos (squads) que se organizan en tribus, con capítulos por especialidad y gremios transversales de interés. Era ágil puro, adaptado a su escala.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Maquiavelo, hoy</div>
+          <p class="say-text">"Lo útil del caso Spotify no es copiar su modelo &mdash; ya ni ellos lo usan igual. Lo útil es ver que <em>lo adaptaron a su contexto</em>: una empresa joven, productos que cambian rápido, equipos pequeños. Esa es la lección de Maquiavelo: la metodología sirve al contexto, no al revés."</p>
+        </div>
+      </div>
+      <p>Y la <em>maquetación</em>. Spotify prototipa cada pantalla antes de programarla, y hace algo que pocos hacen a esa escala: pruebas A/B masivas. Dos variantes de una pantalla se muestran a millones de usuarios, se mide cuál funciona mejor, y se queda esa. Es la Idea de Platón perfeccionada con datos: las sombras, una vez medidas, se vuelven evidencia. Hoy no te piden A/B testing en tu proyecto &mdash; pero sí que tengas una maqueta clara, generada con IA, que comunique tu solución. La herramienta es Google Stitch.</p>
+
+      <div class="field" style="border-left-color: var(--blood);">
+        <div class="field-step">
+          <div class="field-step-num" style="background: var(--blood);">1</div>
+          <div>
+            <h4>Abre Spotify en tu celular, ahora mismo</h4>
+            <p>Toma una pantalla cualquiera &mdash; la de inicio, una playlist, el reproductor. Identifica, en 30 segundos: <b>qué stakeholder</b> atiende esa pantalla y <b>qué requerimiento</b> cumple. La "Biblioteca" es del oyente; las "Estadísticas" del artista.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num" style="background: var(--blood);">2</div>
+          <div>
+            <h4>Imagina la maqueta que la originó</h4>
+            <p>Antes de esa pantalla existir, alguien la dibujó. Pregúntate: ¿qué decisiones de diseño tomó? ¿Qué dejó fuera? Cada botón que ves es un requerimiento; cada botón que no ves, una decisión de alcance.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Mira con ojos de analista</b> &mdash; esta es la diferencia entre usar una app y entenderla. Cuando puedas abrir cualquier app y "leerla" así, habrás cambiado de nivel. Esa es la habilidad que evalúa el Demo Day.
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S8 TALLER -->
+<!-- S8 DEMO: EL ENTREGABLE DE EJEMPLO -->
 <section id="s8">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Taller:<br>defiende tu elección</h2></div>
-          <span class="sec-chip">18 min · 21:30</span>
+          <div><span class="sec-num">viii.</span><h2>Demo: el entregable<br>de ejemplo con IA</h2></div>
+          <span class="sec-chip">18 min · 21:31</span>
         </div>
-        <p class="sec-objective">Elegir es fácil; defender la elección frente a alguien que la ataca es lo que demuestra criterio. Eso practicamos hoy.</p>
+        <p class="sec-objective">Todo lo anterior, en un documento. Generamos con IA lo que será el primer entregable de ejemplo del proyecto &mdash; el mismo que tendrás que producir para tu caso, pero aplicado a Spotify.</p>
       </div>
-      <p>Kierkegaard diría que una elección que no eres capaz de defender no es del todo tuya. Así que hoy eliges la metodología de tu proyecto&hellip; y la sostienes frente a un compañero que hará de abogado del diablo. Insumo directo para la sección "Metodología y enfoque" de tu documento.</p>
+      <p>Imagina que Spotify fuera tu proyecto integrador: ¿cómo lo entregarías? Aquí no vamos a imaginarlo, vamos a <em>generarlo</em>. Usamos un prompt sobre todo lo que ya analizamos, y la IA nos devuelve el documento &mdash; depurable, criticable, tuyo:</p>
+
+      <div class="prompt">
+        <div class="prompt-head"><span class="prompt-label">Prompt · Genera el entregable</span><button class="prompt-copy" type="button">Copiar</button></div>
+        <div class="prompt-body">Actúa como analista de sistemas senior. Redacta el primer entregable de un proyecto integrador sobre <span class="ph">SPOTIFY</span>, en formato de documento breve (máx. 2 páginas) con estas 7 secciones, cada una en 3-5 líneas:<br><br>1) <b>Problema y contexto</b> — qué problema real resuelve.<br>2) <b>Tipo de sistema y alcance</b> — clasifícalo (transaccional, soporte a decisiones, etc.) y delimita qué hace y qué no.<br>3) <b>Metodología y paradigma</b> — qué metodología y paradigma de análisis usarías, justificados.<br>4) <b>Requerimientos</b> — 5 funcionales y 3 no funcionales, con 2 historias de usuario.<br>5) <b>Modelado</b> — lista las 5 clases principales con sus atributos y métodos.<br>6) <b>Prototipo y maquetas</b> — describe las 3 pantallas clave.<br>7) <b>Cómo usé IA</b> — qué le pediste, qué te sirvió, qué corregiste.<br><br>Usa tono profesional, directo. No inventes datos; si algo es hipótesis, márcalo.</div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-label">Aprende de prompting</span>
+        <b>Una sección = un párrafo.</b> Pedir "documento breve, cada sección en 3-5 líneas" es la forma de evitar que la IA te devuelva diez páginas que no vas a leer. Lo breve, si está bien pensado, comunica mejor.
+      </div>
+
+      <p>Aquí abajo está el resultado, ya depurado &mdash; la versión que yo, como profesor, te mostraría como referencia. Léela con cuidado: es la <em>forma</em> que debe tener tu propio entregable. El contenido, claro, será el de tu proyecto:</p>
+
+      <div class="doc">
+        <div class="doc-head">
+          <div class="dh-tag">Entregable de ejemplo · referencia del profesor</div>
+          <div class="dh-title">Spotify — Análisis como sistema de información</div>
+          <div class="dh-sub">Generado con IA, depurado por el profesor · ~2 páginas</div>
+        </div>
+        <div class="doc-controls">
+          <button id="docGenBtn" class="doc-gen-btn" type="button"><span class="play-arrow">▶</span> Generar con IA</button>
+          <span id="docGenStatus" class="doc-gen-status"><span class="dot"></span>Pulsa para ver la generación en vivo</span>
+        </div>
+        <div class="doc-body" id="docBody">
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">01 · Problema y contexto</div>
+            <div class="doc-sec-title">El problema que resuelve</div>
+            <p>La industria musical vivía una crisis de piratería: Napster, Ares, eMule. La música era gratis pero ilegal y los artistas no cobraban. Spotify propone una solución simple: <b>ofrecer toda la música del mundo, gratis y legal</b>, financiada con anuncios y una suscripción premium. El problema, entonces, no es técnico: es de modelo &mdash; alinear a oyentes, artistas y discográficas en un mismo sistema.</p>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">02 · Tipo de sistema y alcance</div>
+            <div class="doc-sec-title">Clasificación y límites</div>
+            <p>Sistema compuesto: <b>transaccional</b> (cobra suscripciones y reparte regalías por reproducción), <b>de soporte a decisiones</b> (algoritmos de recomendación basados en el historial) y <b>colaborativo/social</b> (playlists compartidas, seguimiento de artistas). <b>Alcance:</b> distribución legal de audio y podcast, descubrimiento personalizado, gestión de biblioteca personal. <b>Fuera de alcance:</b> venta de conciertos, gestión de derechos de autor (los licencia, no los administra).</p>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">03 · Metodología y paradigma</div>
+            <div class="doc-sec-title">Cómo se construye</div>
+            <p><b>Metodología ágil</b>, organizada históricamente en squads autónomos (el "modelo Spotify"). Se justifica por un dominio volátil: las preferencias musicales y el mercado cambian en semanas, no en años. <b>Paradigma orientado a objetos</b>: el dominio se modela de forma natural como objetos (Usuario, Artista, Track, Álbum, Playlist) que colaboran entre sí, lo cual permite agregar nuevas entidades (Podcast, Historia) sin reescribir el resto.</p>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">04 · Requerimientos</div>
+            <div class="doc-sec-title">Funcionales y no funcionales</div>
+            <p><b>Funcionales:</b></p>
+            <ul class="doc-list">
+              <li><b>RF1</b> Reproducir pistas en streaming desde cualquier dispositivo del usuario.</li>
+              <li><b>RF2</b> Buscar contenido por título, artista, álbum, género o letra.</li>
+              <li><b>RF3</b> Crear, editar y compartir playlists, individuales o colaborativas.</li>
+              <li><b>RF4</b> Generar recomendaciones personalizadas a partir del historial.</li>
+              <li><b>RF5</b> Descargar contenido para reproducción sin conexión (plan premium).</li>
+            </ul>
+            <p style="margin-top:10px;"><b>No funcionales:</b></p>
+            <ul class="doc-list">
+              <li><b>RNF1</b> El inicio de reproducción debe ser perceptualmente inmediato (&lt; 300 ms).</li>
+              <li><b>RNF2</b> Disponibilidad del servicio de 99.99%, incluso en picos de demanda.</li>
+              <li><b>RNF3</b> El streaming debe cifrarse para impedir extracción no autorizada del audio.</li>
+            </ul>
+            <div class="doc-story"><b>Historia:</b> Como <b>oyente</b> quiero <b>descubrir música nueva cada semana</b> para <b>ampliar mis gustos sin tener que buscar manualmente</b>.</div>
+            <div class="doc-story"><b>Historia:</b> Como <b>artista</b> quiero <b>ver en qué países me escuchan</b> para <b>decidir dónde agendar conciertos</b>.</div>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">05 · Modelado</div>
+            <div class="doc-sec-title">Clases principales del dominio</div>
+            <p><b>Usuario</b> (id, nombre, plan, país) — registrarse(), crearPlaylist(). <b>Artista</b> (id, nombre, bio, seguidores) — publicarTrack(), verEstadísticas(). <b>Track</b> (id, título, duración, audioUrl) — reproducir(), pausar(). <b>Álbum</b> (id, título, año, portada, tracks[]) — agregarTrack(). <b>Playlist</b> (id, nombre, propietario, tracks[]) — agregar(), mezclar(). Relaciones: un Usuario crea muchas Playlists; una Playlist contiene muchos Tracks; un Track pertenece a un Álbum; un Álbum pertenece a un Artista.</p>
+            <p style="margin-top:10px;">Y el diagrama de secuencia del flujo más común — cuando alguien le da <em>play</em> a una pista:</p>
+            <div class="seq-wrap">
+              <div class="seq-caption">Diagrama de secuencia UML · reproducción de una pista</div>
+              <svg class="seq-svg" viewBox="0 0 720 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de secuencia: un usuario reproduce una pista; la app pide el stream al servidor, que verifica la suscripción, devuelve la URL, y registra la reproducción en el sistema recomendador para actualizar el perfil del usuario.">
+                <defs>
+                  <marker id="seqAh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                    <path d="M0,0 L10,5 L0,10 z" fill="#A02418"/>
+                  </marker>
+                  <marker id="seqAhR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M0,0 L10,5 L0,10 z" fill="#7A6552"/>
+                  </marker>
+                </defs>
+                <g font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="0.08em">
+                  <rect x="25" y="14" width="130" height="38" rx="3" fill="#2A1D14"/>
+                  <text x="90" y="38" fill="#EFE6D2" text-anchor="middle">USUARIO</text>
+                  <rect x="205" y="14" width="130" height="38" rx="3" fill="#2A1D14"/>
+                  <text x="270" y="38" fill="#EFE6D2" text-anchor="middle">APP SPOTIFY</text>
+                  <rect x="385" y="14" width="130" height="38" rx="3" fill="#2A1D14"/>
+                  <text x="450" y="38" fill="#EFE6D2" text-anchor="middle">SERVIDOR</text>
+                  <rect x="565" y="14" width="130" height="38" rx="3" fill="#2A1D14"/>
+                  <text x="630" y="38" fill="#EFE6D2" text-anchor="middle">RECOMENDADOR</text>
+                </g>
+                <g stroke="rgba(42,29,20,0.35)" stroke-width="1" stroke-dasharray="4 5">
+                  <line x1="90" y1="52" x2="90" y2="410"/>
+                  <line x1="270" y1="52" x2="270" y2="410"/>
+                  <line x1="450" y1="52" x2="450" y2="410"/>
+                  <line x1="630" y1="52" x2="630" y2="410"/>
+                </g>
+                <g font-family="'JetBrains Mono', monospace" font-size="10">
+                  <text x="180" y="80" text-anchor="middle" fill="#2A1D14">1: clickPlay(trackId)</text>
+                  <line x1="94" y1="90" x2="263" y2="90" stroke="#A02418" stroke-width="1.5" marker-end="url(#seqAh)"/>
+                  <text x="360" y="125" text-anchor="middle" fill="#2A1D14">2: solicitarStream(trackId, userId)</text>
+                  <line x1="274" y1="135" x2="443" y2="135" stroke="#A02418" stroke-width="1.5" marker-end="url(#seqAh)"/>
+                  <text x="510" y="172" text-anchor="start" fill="#2A1D14">3: verificarSuscripción()</text>
+                  <path d="M454,182 L505,182 L505,202 L458,202" fill="none" stroke="#A02418" stroke-width="1.5" marker-end="url(#seqAh)"/>
+                  <text x="360" y="227" text-anchor="middle" fill="#2A1D14">4: streamUrl + metadatos</text>
+                  <line x1="446" y1="237" x2="277" y2="237" stroke="#7A6552" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#seqAhR)"/>
+                  <text x="180" y="272" text-anchor="middle" fill="#2A1D14">5: reproducir(audio)</text>
+                  <line x1="266" y1="282" x2="97" y2="282" stroke="#7A6552" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#seqAhR)"/>
+                  <text x="540" y="322" text-anchor="middle" fill="#2A1D14">6: registrarReproducción()</text>
+                  <line x1="454" y1="332" x2="623" y2="332" stroke="#A02418" stroke-width="1.5" marker-end="url(#seqAh)"/>
+                  <text x="540" y="367" text-anchor="middle" fill="#2A1D14">7: actualizarPerfil(userId)</text>
+                  <line x1="626" y1="377" x2="457" y2="377" stroke="#7A6552" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#seqAhR)"/>
+                </g>
+                <g>
+                  <rect x="25" y="400" width="670" height="26" rx="3" fill="rgba(181,133,42,0.12)" stroke="rgba(181,133,42,0.4)" stroke-width="1"/>
+                  <text x="360" y="417" text-anchor="middle" font-family="'Manrope', sans-serif" font-size="10.5" font-style="italic" fill="#4A3A2C">Los pasos 6 y 7 alimentan el recomendador &mdash; el componente de soporte a decisiones.</text>
+                </g>
+              </svg>
+              <p class="seq-note"><b>Lectura:</b> líneas sólidas = invocaciones (de izquierda a derecha); líneas discontinuas = respuestas. El bucle sobre el Servidor es un mensaje <em>self</em>: verifica la suscripción antes de devolver el audio. Siete mensajes, cuatro objetos &mdash; así se ve la colaboración.</p>
+            </div>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">06 · Prototipo y maquetas</div>
+            <div class="doc-sec-title">Pantallas clave</div>
+            <p><b>Inicio</b> (Home): saludo al usuario, accesos directos a playlists recientes, secciones "Hecho para ti" y "Nuevos lanzamientos". <b>Reproductor</b>: portada del álbum, controles de play/pausa/skip, barra de progreso, letras sincronizadas, cola. <b>Biblioteca</b>: lista vertical de playlists, álbumes y artistas guardados, con filtros por tipo. Las tres pantallas comunican el flujo principal: descubrir → reproducir → guardar.</p>
+          </div>
+
+          <div class="doc-sec">
+            <div class="doc-sec-num">07 · Cómo usé IA</div>
+            <div class="doc-sec-title">Sección obligatoria</div>
+            <div class="doc-ia"><b>Herramienta:</b> Gemini. <b>Le pedí:</b> redactar el entregable sobre Spotify con las 7 secciones del proyecto. <b>Me sirvió tal cual:</b> la clasificación del sistema y la estructura de clases. <b>Tuve que corregir:</b> la IA sobreestimó el "modelo Spotify" como metodología actual &mdash; lo matizado a "histórico, ya evolucionado". <b>Decidí no usar:</b> su sugerencia de un módulo de "red social de fans" porque no está en el alcance real de la app.</div>
+          </div>
+
+        </div>
+      </div>
 
       <div class="field">
         <div class="field-step">
-          <div class="field-step-num">1</div>
+          <div class="field-step-num">★</div>
           <div>
-            <h4>Elige y escribe tres razones <span class="fs-time">6 min</span></h4>
-            <p>Para tu proyecto, elige una metodología (puede ser la del selector o una distinta) y escribe <b>tres razones</b> ancladas en los criterios de hoy: volatilidad, criticidad, equipo, cliente, mercado. Sin "porque es la más moderna".</p>
-          </div>
-        </div>
-        <div class="field-step">
-          <div class="field-step-num">2</div>
-          <div>
-            <h4>Confiesa lo que sacrificas <span class="fs-time">3 min</span></h4>
-            <p>Toda elección renuncia a algo. Anota <b>un costo honesto</b> de tu decisión: qué pierdes por no haber elegido otra. Quien solo ve ventajas, no entendió la decisión.</p>
-          </div>
-        </div>
-        <div class="field-step">
-          <div class="field-step-num">3</div>
-          <div>
-            <h4>Defiéndela ante el abogado del diablo <span class="fs-time">6 min</span></h4>
-            <p>Con un compañero, por turnos. El otro ataca tu elección ("¿y si los requisitos cambian?", "¿y la auditoría?"). Tu trabajo no es ganar, sino sostener tus razones o reconocer cuándo un argumento las vence.</p>
-          </div>
-        </div>
-        <div class="field-step">
-          <div class="field-step-num">4</div>
-          <div>
-            <h4>Ajusta y firma <span class="fs-time">3 min</span></h4>
-            <p>Si la defensa reveló un hueco, ajusta tu elección o tus razones. Esa versión &mdash; metodología, tres razones y un costo asumido &mdash; va a tu documento del proyecto.</p>
+            <h4>Tu entregable es el mismo ejercicio, con tu sistema</h4>
+            <p>Lo que viste no es un caso aparte: es la <b>forma</b> que tendrá tu documento. Las siete secciones, el orden, el nivel de detalle, la sección obligatoria "Cómo usé IA". Solo cambia el sistema &mdash; ya no Spotify, sino el tuyo.</p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Regla del abogado del diablo</b> &mdash; atacar con dureza es un favor, no una grosería. El compañero que más agujeros le encuentra hoy a tu elección es el que evita que los descubras tarde, cuando ya no puedas cambiar de método.
+          <b>El jueves es la prueba.</b> En la sesión 12 presentas el <em>avance</em> de tu proyecto. Trae lo que tengas &mdash; aunque sea un borrador. Lo evaluarás defendiendo los conceptos que vimos hasta hoy, no por la pulidez del diseño.
         </div>
       </div>
     </div>
@@ -493,33 +776,45 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">ix.</span><h2>Cierre y Tarea 5</h2></div>
-          <span class="sec-chip">11 min · 21:48</span>
+          <div><span class="sec-num">ix.</span><h2>Cierre · Tarea 5<br>· aviso del jueves</h2></div>
+          <span class="sec-chip">10 min · 21:49</span>
         </div>
-        <p class="sec-objective">Elegir con criterio y cargar con la elección: eso es pensar como profesional, no como seguidor de modas.</p>
+        <p class="sec-objective">Hoy no aprendiste nada nuevo: aprendiste a usar lo que ya sabías. Esa es la diferencia entre tener herramientas y saber oficiar.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>No hay bala de plata. Scrum no siempre es la respuesta y la cascada no está muerta: cada metodología brilla en su contexto.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Elige leyendo cinco factores &mdash; volatilidad, criticidad, equipo, cliente, mercado &mdash; y acepta que casi todo proyecto real vive en un híbrido.</div></div>
-        <div class="point"><span class="point-num">03</span><div>La decisión más madura puede ser no construir. Y toda elección se hace con algo de angustia: es el vértigo de ser tú quien decide.</div></div>
+        <div class="point"><span class="point-num">01</span><div>Comprendimos hacia atrás. Diseccionamos un sistema real (Spotify) con las diez herramientas de los capítulos previos &mdash; sin añadir una nueva.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Vimos cinco stakeholders, tres tipos de sistema, dos paradigmas y un modelo de cinco clases. Cada decisión de Spotify es <em>defendible</em>, no única.</div></div>
+        <div class="point"><span class="point-num">03</span><div>Generamos con IA el entregable de ejemplo. Esa &mdash; misma forma, mismo orden, mismo nivel &mdash; es la que tendrá tu propio documento.</div></div>
+      </div>
+
+      <div class="challenge" style="border-left: 4px solid var(--blood);">
+        <div class="challenge-eyebrow">Aviso · Sesión 12 · jueves 25 de junio</div>
+        <h3>Avance del proyecto &mdash; defensa de conceptos</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">El jueves presentas el <em>avance</em> de tu proyecto integrador. No se evalúa la pulidez del diseño ni el largo del documento: se evalúa que <b>defiendas los conceptos</b> que vimos hasta esta fecha. Vas a explicar, frente al grupo y al profesor:</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Tu problema y por qué es realista.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Tus stakeholders (los cinco de Locke, no uno) y qué necesidad tiene cada uno.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>El tipo de sistema que propones y tu metodología &mdash; <em>justificada</em>, no por moda.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>El paradigma (estructurado u OO) y por qué encaja &mdash; como hicimos hoy con Spotify.</li>
+        </ul>
+        <p style="margin-top:16px; font-family:var(--serif); font-size:18px; font-style:italic; color:var(--blood);">Si la IA lo escribió, tú lo defiendes.</p>
       </div>
 
       <div class="challenge">
         <div class="challenge-eyebrow">Tarea 5 · valor 1 punto · entrega: jueves 25 de junio</div>
-        <h3>El mapa de empresas y sus sistemas</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Para decidir bien qué y cómo construir, primero hay que entender qué necesita cada tipo de empresa. Identifica varios tipos de empresas y sus requerimientos típicos de sistema de información, en formato de <b>historias de usuario estilo Jira</b>. Formato libre &mdash; recomendado: Notion u otra herramienta. Esto afina el criterio que usaste hoy:</p>
+        <h3>Tu propio entregable de ejemplo</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Aplica lo que hicimos hoy con Spotify &mdash; pero a tu proyecto. Es el primer borrador del documento final y, al mismo tiempo, insumo de tu defensa del jueves. Formato libre (Notion, Word); máx. 2 páginas.</p>
         <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Elige al menos tres tipos de empresa distintos (p. ej. una clínica, una tienda, una escuela).</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Para cada una, escribe sus requerimientos típicos como historias de usuario: "Como [rol] quiero [acción] para [beneficio]".</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Para cada empresa, sugiere qué metodología le convendría y por qué &mdash; aplicando los criterios de hoy.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Marca al menos un caso donde quizá <b>no</b> convenga construir un sistema, y di por qué. Si usaste IA, cierra con tu sección "Cómo usé IA".</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Completa las <b>7 secciones</b> del entregable de ejemplo, aplicadas a tu sistema. Usa el prompt que te dejé en clase y depura lo que la IA te devuelva.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Incluye la sección obligatoria <b>"Cómo usé IA"</b>: qué le pediste, qué te sirvió, qué corregiste.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Márcalo con honestidad: si una sección aún no la tienes, di qué te falta. Una hipótesis clara vale más que un relleno.</li>
         </ul>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El jueves que viene</div>
-          <p class="say-text">"Hume y el repaso integrador. Cerramos el primer gran bloque con escepticismo sano: ¿qué de todo lo aprendido &mdash; ciclos de vida, análisis, diseño, metodologías, roles, factibilidad &mdash; resiste una buena pregunta? Repaso y preparación para el examen parcial del 29."</p>
+          <p class="say-text">"Sesión 12: presentas el avance de tu proyecto, y la evaluación es la <em>defensa</em> de los conceptos. No esperes tener todo resuelto &mdash; espera poder explicar por qué elegiste lo que elegiste. La angustia de hoy se vuelve confianza cuando la decisión es tuya."</p>
         </div>
       </div>
     </div>
@@ -557,109 +852,160 @@
   }, { threshold: 0.2 });
   document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
 
-  // Selector de metodología (asistente)
-  const WIZ_Q = [
-    {
-      key: 'req',
-      text: '¿Qué tan claros y estables son los requisitos de tu sistema?',
-      opts: [
-        { val: 'fijos',   label: 'Claros y fijos desde el inicio: sé bien qué hay que construir.' },
-        { val: 'cambian', label: 'Cambian seguido o los iré descubriendo sobre la marcha.' }
-      ]
-    },
-    {
-      key: 'crit',
-      text: '¿Qué tan crítico o regulado es el sistema?',
-      opts: [
-        { val: 'alta',   label: 'Alto: dinero, salud, ley o auditoría de por medio. Equivocarse tarde es muy caro.' },
-        { val: 'normal', label: 'Normal: puedo iterar y corregir sin un gran riesgo.' }
-      ]
-    },
-    {
-      key: 'entrega',
-      text: '¿Cómo necesitas entregar el valor?',
-      opts: [
-        { val: 'final',     label: 'Un gran entregable completo al final.' },
-        { val: 'frecuente', label: 'En entregas pequeñas y frecuentes.' },
-        { val: 'continuo',  label: 'Como flujo continuo de tareas, sin sprints fijos.' }
-      ]
+  // Copiar prompts
+  function flashCopy(btn) {
+    const original = btn.textContent;
+    btn.textContent = '¡Copiado!';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('done'); }, 1500);
+  }
+  function legacyCopy(text, btn) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); flashCopy(btn); } catch (e) { /* sin soporte */ }
+    document.body.removeChild(ta);
+  }
+  function copyText(text, btn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => flashCopy(btn)).catch(() => legacyCopy(text, btn));
+    } else {
+      legacyCopy(text, btn);
     }
-  ];
-  const WIZ_RESULT = {
-    cascada: {
-      name: 'Cascada (Waterfall)',
-      why: 'Con requisitos estables y un entorno donde rehacer es caro o todo debe documentarse, la cascada te da control y trazabilidad. No es "anticuada": es la elección correcta cuando el costo de equivocarse tarde es altísimo &mdash; banca central, salud, aviónica.'
+  }
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.prompt-copy');
+    if (!btn) return;
+    const card = btn.closest('.prompt');
+    const body = card && card.querySelector('.prompt-body');
+    if (body) copyText(body.innerText, btn);
+  });
+
+  // Stakeholders de Spotify: cada chip revela su retrato
+  const STAKEHOLDERS = {
+    oyente: {
+      name: 'Oyente (el usuario final)',
+      need: 'Descubrir música nueva, organizar lo que le gusta y escucharla donde sea, sin fricción.',
+      story: 'Como <b>oyente</b> quiero <b>descubrir música nueva cada semana</b> para <b>ampliar mis gustos sin tener que buscar manualmente</b>.',
+      detail: 'Es quien paga (en plan premium) o quien "paga" viendo anuncios (en plan free). Sus intereses: catálogo enorme, sin anuncios si paga, recomendaciones acertadas, poder escuchar offline, interfaz simple.'
     },
-    scrum: {
-      name: 'Ágil con Scrum',
-      why: 'Requisitos que evolucionan más entregas frecuentes piden inspeccionar y adaptar. Scrum te da ritmo con sprints, roles y ceremonias para corregir el rumbo cada pocas semanas, con el cliente cerca.'
+    artista: {
+      name: 'Artista (el creador)',
+      need: 'Llegar a audiencias globales, saber quién y dónde lo escucha, y cobrar justamente por ello.',
+      story: 'Como <b>artista</b> quiero <b>ver en qué países me escuchan</b> para <b>decidir dónde agendar conciertos</b>.',
+      detail: 'Usa Spotify for Artists para ver métricas, programar lanzamientos, hablar a sus fans. Su ingreso viene de regalías por reproducción &mdash; tema espinoso, casi siempre discutido.'
     },
-    kanban: {
-      name: 'Kanban',
-      why: 'Si el trabajo llega a demanda y no en lotes, Kanban visualiza el flujo en un tablero y limita el trabajo en curso (WIP). Brilla en soporte, mantenimiento y operación, donde planear sprints fijos estorba.'
+    discografica: {
+      name: 'Discográfica (la dueña del catálogo)',
+      need: 'Controlar cómo se distribuye su catálogo, medir el consumo y cobrar las regalías mayores.',
+      story: 'Como <b>discográfica</b> quiero <b>retirar o promover cualquier pista de mi catálogo</b> para <b>proteger mis activos y decidir su explotación</b>.',
+      detail: 'Universal, Sony y Warner son las tres grandes. Spotify no existiría sin sus licencias. Tienen poder de negociación enorme y han peleado (y peleando) por mejor reparto.'
     },
-    hibrido: {
-      name: 'Híbrido (cascada + ágil)',
-      why: 'Tienes lo mejor &mdash; y lo más difícil &mdash; de dos mundos: una parte regulada que exige documentación (cascada) conviviendo con otra que cambia rápido (ágil). Es lo que de verdad usan muchas empresas grandes, sobre todo en el sector financiero.'
+    anunciante: {
+      name: 'Anunciante (en el plan free)',
+      need: 'Llegar a un público segmentado por gustos, edad y contexto, midiendo el impacto real.',
+      story: 'Como <b>anunciante</b> quiero <b>segmentar mis anuncios por género musical y edad</b> para <b>no desperdiciar presupuesto en público irrelevante</b>.',
+      detail: 'Solo aplica a usuarios free, pero es la mitad del ingreso de Spotify. Interesa targeting fino, formatos atractivos (audio, video, branded playlists) y reportes claros.'
+    },
+    empleado: {
+      name: 'Empleado de Spotify (PO, dev, datos)',
+      need: 'Construir y mantener la plataforma, escalarla sin que se caiga y lanzar features que enamoren.',
+      story: 'Como <b>product owner de Spotify</b> quiero <b>probar dos variantes de una pantalla con millones de usuarios</b> para <b>decidir con datos cuál queda</b>.',
+      detail: 'Squad, tribe, chapter, guild. En la vida real ya no se organizan exactamente así, pero el principio sigue: equipos pequeños autónomos con métricas claras. Son los que toman las decisiones técnicas de fondo.'
     }
   };
-  function recommend(a) {
-    if (a.entrega === 'continuo') return 'kanban';
-    if (a.crit === 'alta' && a.req === 'cambian') return 'hibrido';
-    if (a.crit === 'alta' && a.req === 'fijos') return 'cascada';
-    if (a.req === 'fijos' && a.entrega === 'final') return 'cascada';
-    return 'scrum';
-  }
 
-  (function initWiz() {
-    const stage = document.getElementById('wizStage');
-    const track = document.getElementById('wizTrack');
-    if (!stage) return;
-    const dots = track.querySelectorAll('.wiz-dot');
-    const answers = {};
-    let step = 0;
+  (function initStakeholders() {
+    const chips = document.querySelectorAll('#rolesChips .roles-chip');
+    const detail = document.getElementById('rolesDetail');
+    const score = document.getElementById('rolesScore');
+    const reset = document.getElementById('rolesReset');
+    const conclusion = document.getElementById('rolesConclusion');
+    if (!chips.length) return;
+    const seen = new Set();
 
-    function renderQuestion() {
-      const q = WIZ_Q[step];
-      dots.forEach((d, i) => d.classList.toggle('on', i <= step));
-      let html = '<div class="wiz-progress">Pregunta ' + (step + 1) + ' de ' + WIZ_Q.length + '</div>';
-      html += '<div class="wiz-q">' + q.text + '</div>';
-      html += '<div class="wiz-opts">';
-      q.opts.forEach(o => {
-        html += '<button class="wiz-opt" type="button" data-val="' + o.val + '">' + o.label + '</button>';
-      });
-      html += '</div>';
-      stage.innerHTML = html;
-      stage.querySelectorAll('.wiz-opt').forEach(btn => {
-        btn.addEventListener('click', () => {
-          answers[q.key] = btn.dataset.val;
-          step++;
-          if (step < WIZ_Q.length) renderQuestion();
-          else renderResult();
-        });
-      });
+    function updateScore() {
+      score.innerHTML = '<b>' + seen.size + '</b> / 5 stakeholders convocados';
+      if (seen.size === 5) conclusion.classList.add('show');
     }
 
-    function renderResult() {
-      dots.forEach(d => d.classList.add('on'));
-      const key = recommend(answers);
-      const r = WIZ_RESULT[key];
-      stage.innerHTML =
-        '<div class="wiz-result">' +
-          '<div class="wr-kicker">Sugerencia según tus respuestas</div>' +
-          '<div class="wr-name">' + r.name + '</div>' +
-          '<div class="wr-why">' + r.why + '</div>' +
-          '<div class="wr-note"><b>Recuerda:</b> esto es una sugerencia, no un veredicto. La herramienta no conoce los matices de tu proyecto ni carga con él &mdash; tú sí. Úsala como segunda opinión, decide tú y prepárate para defender por qué.</div>' +
-        '</div>' +
-        '<button class="wiz-reset" id="wizReset" type="button">Volver a empezar</button>';
-      document.getElementById('wizReset').addEventListener('click', () => {
-        step = 0;
-        for (const k in answers) delete answers[k];
-        renderQuestion();
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const id = chip.dataset.id;
+        const s = STAKEHOLDERS[id];
+        if (!s) return;
+        seen.add(id);
+        chip.classList.add('done');
+        chip.querySelector('.rc-mark') || chip.insertAdjacentHTML('afterbegin', '<span class="rc-mark">✓</span>');
+        detail.innerHTML =
+          '<span class="rd-name">' + s.name + '</span>' +
+          '<div class="rd-need"><b>Necesita:</b> ' + s.need + '</div>' +
+          '<div class="rd-story">' + s.story + '</div>' +
+          '<div class="rd-need" style="margin-top:10px;">' + s.detail + '</div>';
+        updateScore();
       });
+    });
+
+    reset.addEventListener('click', () => {
+      seen.clear();
+      chips.forEach(c => { c.classList.remove('done'); const m = c.querySelector('.rc-mark'); if (m) m.remove(); });
+      detail.innerHTML = 'Aún no convocas a nadie. Toca el primer stakeholder para ver sus necesidades y su historia de usuario.';
+      conclusion.classList.remove('show');
+      updateScore();
+    });
+  })();
+
+  // Animación: generación progresiva del entregable con IA
+  (function initDocGen() {
+    const btn = document.getElementById('docGenBtn');
+    const status = document.getElementById('docGenStatus');
+    const body = document.getElementById('docBody');
+    if (!btn || !body) return;
+    const sections = Array.from(body.querySelectorAll('.doc-sec'));
+    let playing = false;
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function play() {
+      if (playing) return;
+      playing = true;
+      btn.disabled = true;
+      body.classList.add('gen-active');
+      sections.forEach(s => s.classList.remove('shown'));
+      status.classList.add('gen');
+
+      for (let i = 0; i < sections.length; i++) {
+        status.innerHTML = '<span class="dot"></span>Generando sección ' + (i + 1) + ' / ' + sections.length + '…';
+        await sleep(450);
+        sections[i].classList.add('shown');
+        await sleep(950);
+      }
+      status.classList.remove('gen');
+      status.innerHTML = '<span class="dot"></span>Documento generado · ' + sections.length + ' secciones';
+      btn.disabled = false;
+      btn.innerHTML = '<span class="play-arrow">↻</span> Volver a generar';
+      playing = false;
     }
 
-    renderQuestion();
+    btn.addEventListener('click', play);
+
+    // Auto-play una vez al hacer scroll
+    let autoPlayed = false;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !autoPlayed) {
+          autoPlayed = true;
+          setTimeout(play, 500);
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.35 });
+    obs.observe(body.closest('.doc'));
   })();
 </script>
 
