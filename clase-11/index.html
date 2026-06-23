@@ -251,6 +251,54 @@
   .doc-body.gen-active .doc-sec { opacity: 0; transform: translateY(12px); }
   .doc-body.gen-active .doc-sec.shown { opacity: 1; transform: translateY(0); }
 
+  /* mini examen · autoevaluación */
+  .quiz { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 8px; padding: 32px; margin: 32px 0; }
+  @media (max-width: 600px) { .quiz { padding: 22px 18px; } }
+  .quiz-bar { display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 8px; flex-wrap: wrap; }
+  .quiz-score { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); white-space: nowrap; }
+  .quiz-score b { color: var(--blood); font-weight: 500; }
+  .quiz-score .total { color: var(--ink-muted); font-size: 17px; }
+  .quiz-progress-wrap { flex: 1; min-width: 150px; }
+  .quiz-progress-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .quiz-progress { height: 6px; background: var(--paper-deep); border-radius: 3px; overflow: hidden; border: 1px solid var(--line); }
+  .quiz-progress-fill { height: 100%; background: var(--olive); border-radius: 3px; transition: width 0.45s ease; width: 0%; }
+  .quiz-q { padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .quiz-q:last-child { border-bottom: none; }
+  .quiz-q-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+  .quiz-q-num { font-family: var(--mono); font-size: 11px; color: var(--blood); font-weight: 500; letter-spacing: 0.06em; }
+  .quiz-q-topic { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ochre); }
+  .quiz-q-text { font-family: var(--serif); font-size: 20px; color: var(--ink); line-height: 1.3; margin-bottom: 14px; }
+  .quiz-opts { display: grid; gap: 8px; }
+  .quiz-opt { text-align: left; font-family: var(--sans); font-size: 14.5px; color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 5px; padding: 12px 16px; cursor: pointer; transition: border-color 0.18s, background 0.18s, transform 0.12s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.4; display: flex; align-items: flex-start; gap: 10px; }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--blood); transform: translateY(-1px); }
+  .quiz-opt:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-opt .qo-letter { font-family: var(--mono); font-size: 11px; color: var(--ink-muted); flex-shrink: 0; padding-top: 2px; }
+  .quiz-opt .qo-text { flex: 1; }
+  .quiz-q.answered .quiz-opt { opacity: 0.5; }
+  .quiz-q.answered .quiz-opt.correct { opacity: 1; border-color: var(--olive); background: rgba(93,102,56,0.13); }
+  .quiz-q.answered .quiz-opt.correct .qo-letter { color: var(--olive); font-weight: 600; }
+  .quiz-q.answered .quiz-opt.correct .qo-mark { color: var(--olive); font-weight: 700; margin-left: auto; padding-left: 8px; }
+  .quiz-q.answered .quiz-opt.wrong { opacity: 1; border-color: var(--blood); background: rgba(160,36,24,0.10); }
+  .quiz-q.answered .quiz-opt.wrong .qo-letter { color: var(--blood); font-weight: 600; }
+  .quiz-q.answered .quiz-opt.wrong .qo-mark { color: var(--blood); font-weight: 700; margin-left: auto; padding-left: 8px; }
+  .qo-mark:empty { display: none; }
+  .quiz-fb { margin-top: 12px; padding: 14px 16px; border-radius: 4px; font-size: 13.5px; line-height: 1.55; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease; padding-top: 0; padding-bottom: 0; margin-top: 0; }
+  .quiz-fb.show { max-height: 300px; opacity: 1; padding-top: 14px; padding-bottom: 14px; margin-top: 12px; }
+  .quiz-fb.ok { background: rgba(93,102,56,0.10); border-left: 3px solid var(--olive); color: var(--ink-soft); }
+  .quiz-fb.no { background: rgba(160,36,24,0.08); border-left: 3px solid var(--blood); color: var(--ink-soft); }
+  .quiz-fb b { font-weight: 600; }
+  .quiz-fb.ok b { color: var(--olive); }
+  .quiz-fb.no b { color: var(--blood); }
+  .quiz-result { margin-top: 28px; padding: 32px 28px; border-radius: 6px; background: var(--ink); color: var(--paper); text-align: center; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.6s ease, opacity 0.5s ease, padding 0.5s ease, margin 0.5s ease; padding-top: 0; padding-bottom: 0; margin-top: 0; }
+  .quiz-result.show { max-height: 500px; opacity: 1; padding-top: 32px; padding-bottom: 32px; margin-top: 28px; }
+  .quiz-result-score { font-family: var(--serif); font-style: italic; font-size: 52px; line-height: 1; color: var(--ochre); margin-bottom: 10px; }
+  .quiz-result-score .small { font-size: 28px; color: rgba(239,230,210,0.55); }
+  .quiz-result-msg { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--paper); max-width: 500px; margin: 0 auto 20px; line-height: 1.35; }
+  .quiz-result-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 22px; background: transparent; color: var(--paper); border: 1px solid rgba(239,230,210,0.4); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .quiz-result-reset:hover { background: var(--paper); color: var(--ink); }
+  .quiz-note { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 18px; text-align: center; }
+
   /* example y taller (reuso) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
@@ -284,6 +332,7 @@
       <li><a href="#s7">Método y maquetas</a></li>
       <li><a href="#s8">Entregable</a></li>
       <li><a href="#s9">Cierre</a></li>
+      <li><a href="#s10">Mini examen</a></li>
     </ul>
   </div>
 </nav>
@@ -821,6 +870,39 @@
   </div>
 </section>
 
+<!-- S10 MINI EXAMEN -->
+<section id="s10">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">x.</span><h2>Mini examen<br>· 15 preguntas</h2></div>
+          <span class="sec-chip">autoevaluación · no se guarda</span>
+        </div>
+        <p class="sec-objective">Quince preguntas sobre los diez capítulos previos. No se envía ni se califica oficialmente: es tuyo, para que midas qué te falta reforzar antes del repaso del jueves. Marca una opción y recibe la retroalimentación al instante.</p>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-bar">
+          <div class="quiz-score"><b id="quizScoreVal">0</b><span class="total"> / 15 acertadas</span></div>
+          <div class="quiz-progress-wrap">
+            <div class="quiz-progress-label">Respondidas <span id="quizAnswered">0</span> / 15</div>
+            <div class="quiz-progress"><div class="quiz-progress-fill" id="quizFill"></div></div>
+          </div>
+          <button class="roles-reset" id="quizResetTop" type="button">Reiniciar</button>
+        </div>
+        <div id="quizQs"></div>
+        <div class="quiz-result" id="quizResult">
+          <div class="quiz-result-score" id="quizResultScore"></div>
+          <div class="quiz-result-msg" id="quizResultMsg"></div>
+          <button class="quiz-result-reset" id="quizResultReset" type="button">Intentar de nuevo</button>
+        </div>
+        <div class="quiz-note">Tus respuestas se quedan en este navegador · no se envían a ningún lado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -1006,6 +1088,214 @@
       });
     }, { threshold: 0.35 });
     obs.observe(body.closest('.doc'));
+  })();
+
+  // Mini examen · 15 preguntas con retroalimentación inmediata
+  (function initQuiz() {
+    const QUIZ = [
+      {
+        topic: 'Cap. 1 · Tipos de sistema',
+        q: '¿Qué tipo de sistema es principalmente un cajero automático?',
+        opts: ['Transaccional', 'De soporte a decisiones', 'Estratégico', 'Colaborativo'],
+        correct: 0,
+        why: 'Un cajero procesa transacciones (retiros, transferencias) en tiempo real. Ese es el sello del sistema transaccional.'
+      },
+      {
+        topic: 'Cap. 2 · Ciclos de vida',
+        q: 'En el ciclo de vida del desarrollo, ¿en qué fase se levantan y especifican los requerimientos?',
+        opts: ['Diseño', 'Análisis', 'Construcción', 'Pruebas'],
+        correct: 1,
+        why: 'En el análisis se entiende el problema y se definen los requerimientos. El diseño viene después, sobre ese entendimiento.'
+      },
+      {
+        topic: 'Cap. 3 · UML',
+        q: 'En UML, un rectángulo dividido en tres compartimientos (nombre, atributos, métodos) representa:',
+        opts: ['Un actor', 'Un caso de uso', 'Una clase', 'Un módulo'],
+        correct: 2,
+        why: 'Esa notación es el diagrama de clases: nombre arriba, atributos en medio, métodos abajo.'
+      },
+      {
+        topic: 'Cap. 4 · Scrum',
+        q: '¿Cuál de los siguientes NO es un rol oficial de Scrum?',
+        opts: ['Product Owner', 'Scrum Master', 'Equipo de desarrollo', 'Project Manager'],
+        correct: 3,
+        why: 'Scrum define tres roles: PO, Scrum Master y equipo de desarrollo. "Project Manager" viene de metodologías tradicionales, no de la Guía Scrum.'
+      },
+      {
+        topic: 'Cap. 4 · Scrum',
+        q: 'Según la Guía Scrum 2020, la duración máxima de un sprint es de:',
+        opts: ['Una semana', 'Un mes', 'Tres meses', 'Lo que decida el cliente'],
+        correct: 1,
+        why: 'Los sprints son de un mes o menos, para mantener el ritmo de inspección y adaptación.'
+      },
+      {
+        topic: 'Cap. 5 · Metodología',
+        q: '¿En qué contexto conviene más la metodología cascada?',
+        opts: ['Cuando los requisitos cambian cada semana', 'Cuando los requisitos son estables y la criticidad es alta', 'Cuando el equipo prefiere no documentar', 'Siempre; es la metodología universal'],
+        correct: 1,
+        why: 'Cascada brilla con requisitos fijos y alto costo de equivocarse (banca, salud, aviónica), donde se necesita control y trazabilidad.'
+      },
+      {
+        topic: 'Cap. 5 · Metodología',
+        q: 'Kanban brilla especialmente en:',
+        opts: ['Proyectos con requisitos fijos y auditados', 'Sistemas bancarios centrales', 'Soporte, mantenimiento y operación', 'Equipos que necesitan ceremonias frecuentes'],
+        correct: 2,
+        why: 'Kanban maneja trabajo que llega a demanda, sin sprints fijos. Ideal para soporte, donde no se puede planear por lotes.'
+      },
+      {
+        topic: 'Cap. 6 · Paradigma',
+        q: 'El análisis estructurado modela el sistema principalmente usando:',
+        opts: ['Objetos y clases', 'Procesos y flujos de datos (DFD)', 'Historias de usuario', 'Diagramas de caso de uso'],
+        correct: 1,
+        why: 'El estructurado descompone de arriba hacia abajo en funciones y procesos; su herramienta gráfica es el DFD.'
+      },
+      {
+        topic: 'Cap. 6 · Paradigma',
+        q: '¿Qué paradigma encaja mejor en un dominio rico, con entidades que colaboran y van a cambiar?',
+        opts: ['Estructurado', 'Orientado a objetos', 'Procedural puro', 'Todos sirven igual'],
+        correct: 1,
+        why: 'OO modela el mundo como objetos que colaboran: flexible para dominios ricos y cambiantes, como vimos hoy con Spotify.'
+      },
+      {
+        topic: 'Cap. 7 · Requerimientos',
+        q: '"El sistema debe responder en menos de 2 segundos" es un requerimiento:',
+        opts: ['Funcional', 'No funcional', 'De negocio', 'De implementación'],
+        correct: 1,
+        why: 'Los no funcionales describen CÓMO (rendimiento, seguridad, disponibilidad), no QUÉ hace el sistema.'
+      },
+      {
+        topic: 'Cap. 7 · Requerimientos',
+        q: '¿Cuál de los siguientes es un requerimiento funcional?',
+        opts: ['La app debe estar disponible 99.99% del tiempo', 'El sistema debe permitir crear y editar playlists', 'La interfaz debe ser responsiva', 'Los datos deben cifrarse en reposo'],
+        correct: 1,
+        why: '"Permitir crear playlists" describe una función concreta. Los demás son no funcionales: disponibilidad, usabilidad y seguridad.'
+      },
+      {
+        topic: 'Cap. 7 · Historias de usuario',
+        q: '¿Cuál es el formato canónico de una historia de usuario?',
+        opts: ['"El sistema debe permitir..."', '"Como [rol], quiero [acción], para [beneficio]"', '"Si el usuario hace X, entonces el sistema hace Y"', '"Módulo: X · Submódulo: Y"'],
+        correct: 1,
+        why: 'Ese formato pone el foco en quién, qué quiere y por qué. Es el que practicaremos con Locke y Descartes.'
+      },
+      {
+        topic: 'Cap. 9 · Stakeholders',
+        q: 'En el análisis de un sistema, ¿quién típicamente NO es un stakeholder?',
+        opts: ['El usuario final', 'El cliente que paga', 'El competidor directo', 'El equipo de desarrollo'],
+        correct: 2,
+        why: 'Stakeholder es quien se beneficia, decide, paga o sufre si el sistema falla. El competidor no participa en tu proyecto.'
+      },
+      {
+        topic: 'Cap. 10 · IA',
+        q: 'Según la regla de oro del curso, "si la IA lo hizo":',
+        opts: ['Se puede entregar sin más', 'Está prohibido usar IA', 'Tú lo defiendes', 'Basta con citar la fuente'],
+        correct: 2,
+        why: 'La IA propone; tú decides y respondes. Si no puedes explicar por qué está ahí, no te pertenece.'
+      },
+      {
+        topic: 'Cap. 1 · Tipos de sistema',
+        q: 'Un sistema que analiza datos históricos de ventas para ayudar a la gerencia a decidir la estrategia del próximo trimestre es:',
+        opts: ['Transaccional', 'De soporte a decisiones / ejecutivo', 'De procesamiento de texto', 'Colaborativo puro'],
+        correct: 1,
+        why: 'Su propósito es apoyar decisiones de la dirección analizando datos: justo la definición de un sistema de soporte a decisiones (o EIS).'
+      }
+    ];
+
+    const LETTERS = ['A', 'B', 'C', 'D'];
+    const qs = document.getElementById('quizQs');
+    if (!qs) return;
+    let score = 0;
+    let answered = 0;
+
+    function render() {
+      qs.innerHTML = QUIZ.map((item, i) =>
+        '<div class="quiz-q" data-i="' + i + '">' +
+          '<div class="quiz-q-head">' +
+            '<span class="quiz-q-num">P' + String(i + 1).padStart(2, '0') + '</span>' +
+            '<span class="quiz-q-topic">' + item.topic + '</span>' +
+          '</div>' +
+          '<div class="quiz-q-text">' + item.q + '</div>' +
+          '<div class="quiz-opts">' +
+            item.opts.map((o, j) =>
+              '<button class="quiz-opt" type="button" data-j="' + j + '">' +
+                '<span class="qo-letter">' + LETTERS[j] + '</span>' +
+                '<span class="qo-text">' + o + '</span>' +
+                '<span class="qo-mark"></span>' +
+              '</button>'
+            ).join('') +
+          '</div>' +
+          '<div class="quiz-fb"></div>' +
+        '</div>'
+      ).join('');
+      qs.querySelectorAll('.quiz-q').forEach(qEl => {
+        const i = parseInt(qEl.dataset.i, 10);
+        qEl.querySelectorAll('.quiz-opt').forEach(opt => {
+          opt.addEventListener('click', () => answer(qEl, i, parseInt(opt.dataset.j, 10)));
+        });
+      });
+    }
+
+    function answer(qEl, i, j) {
+      if (qEl.classList.contains('answered')) return;
+      qEl.classList.add('answered');
+      const item = QUIZ[i];
+      const opts = qEl.querySelectorAll('.quiz-opt');
+      opts.forEach((o, idx) => {
+        o.disabled = true;
+        if (idx === item.correct) { o.classList.add('correct'); o.querySelector('.qo-mark').textContent = '✓'; }
+        if (idx === j && j !== item.correct) { o.classList.add('wrong'); o.querySelector('.qo-mark').textContent = '✗'; }
+      });
+      const fb = qEl.querySelector('.quiz-fb');
+      const ok = j === item.correct;
+      fb.classList.add('show', ok ? 'ok' : 'no');
+      fb.innerHTML = (ok ? '<b>✓ Correcto.</b> ' : '<b>✗ Incorrecto.</b> ') + item.why;
+      if (ok) score++;
+      answered++;
+      updateBar();
+      if (answered === QUIZ.length) showResult();
+    }
+
+    function updateBar() {
+      document.getElementById('quizScoreVal').textContent = score;
+      document.getElementById('quizAnswered').textContent = answered;
+      document.getElementById('quizFill').style.width = (answered / QUIZ.length * 100) + '%';
+    }
+
+    function showResult() {
+      const r = document.getElementById('quizResult');
+      let msg;
+      if (score >= 14) msg = 'Dominas el bloque. El examen parcial está a tu alcance.';
+      else if (score >= 11) msg = 'Bien. Repasa los capítulos donde fallaste antes del jueves.';
+      else if (score >= 8) msg = 'Suficiente, pero con huecos. El repaso de la sesión 12 te viene como anillo al dedo.';
+      else msg = 'Insuficiente. Aprovecha el repaso del jueves y vuelve a los capítulos marcados en cada pregunta.';
+      document.getElementById('quizResultScore').innerHTML = score + ' <span class="small">/ ' + QUIZ.length + '</span>';
+      document.getElementById('quizResultMsg').textContent = msg;
+      r.classList.add('show');
+      setTimeout(() => { r.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 200);
+    }
+
+    function reset() {
+      score = 0;
+      answered = 0;
+      qs.querySelectorAll('.quiz-q').forEach(q => {
+        q.classList.remove('answered');
+        q.querySelectorAll('.quiz-opt').forEach(o => {
+          o.disabled = false;
+          o.classList.remove('correct', 'wrong');
+          o.querySelector('.qo-mark').textContent = '';
+        });
+        const fb = q.querySelector('.quiz-fb');
+        fb.classList.remove('show', 'ok', 'no');
+        fb.innerHTML = '';
+      });
+      document.getElementById('quizResult').classList.remove('show');
+      updateBar();
+      qs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    render();
+    updateBar();
+    document.getElementById('quizResetTop').addEventListener('click', reset);
+    document.getElementById('quizResultReset').addEventListener('click', reset);
   })();
 </script>
 
