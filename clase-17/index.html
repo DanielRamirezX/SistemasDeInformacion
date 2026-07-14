@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 17 · Pitágoras · Sistemas de Información</title>
-<meta name="description" content="Clase 17: modelado de funciones con Diagramas de Flujo de Datos (DFD). Clasificación de técnicas de especificación, niveles del DFD —contexto, nivel 1 y detalle— y su simbología estándar. El orden numérico oculto, según Pitágoras. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 17: modelado de datos con el diagrama entidad-relación. Entidades, atributos, llaves y cardinalidades — y la IA que traduce tu diagrama a SQL. Las proporciones exactas de Pitágoras. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -128,7 +128,7 @@
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
   /* ============================================================
-     TARJETAS: TÉCNICAS DE ESPECIFICACIÓN (s3) — reuso del grid
+     TARJETAS: LA TRADUCCIÓN E-R → SQL (s6) — reuso del grid
   ============================================================ */
   .techs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
   @media (max-width: 720px) { .techs-grid { grid-template-columns: 1fr 1fr; } }
@@ -147,7 +147,7 @@
   .tech-card.hl { border-color: var(--blood); border-top: 3px solid var(--blood); }
 
   /* ============================================================
-     SIMBOLOGÍA DEL DFD (s4) — leyenda de cuatro símbolos
+     LOS TRES BLOQUES DEL MODELO E-R (s3) — leyenda de símbolos
   ============================================================ */
   .sym-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
   @media (max-width: 560px) { .sym-grid { grid-template-columns: 1fr; } }
@@ -157,15 +157,16 @@
   .sym-body h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 3px; }
   .sym-body .sym-kind { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 8px; }
   .sym-body p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
-  .dfd-proc { fill: var(--paper-elev); stroke: var(--blood); stroke-width: 1.6; }
-  .dfd-ext { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.6; }
-  .dfd-store-line { stroke: var(--olive); stroke-width: 1.6; }
-  .dfd-store-fill { fill: var(--paper-elev); }
-  .dfd-flow { stroke: var(--ink-muted); stroke-width: 1.6; fill: none; }
-  .dfd-glyph { font-family: var(--mono); font-size: 11px; fill: var(--ink-muted); letter-spacing: 0.04em; }
+  .er-ent { fill: var(--paper-elev); stroke: var(--blood); stroke-width: 1.6; }
+  .er-div { stroke: var(--blood); stroke-width: 1; }
+  .er-rel { stroke: var(--ink-muted); stroke-width: 1.6; fill: none; }
+  .er-glyph { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.04em; }
+  .er-glyph-title { font-family: var(--mono); font-size: 10px; fill: var(--ink); letter-spacing: 0.06em; font-weight: 500; }
+  .er-glyph-pk { font-family: var(--mono); font-size: 10px; fill: var(--blood); letter-spacing: 0.04em; }
+  .er-card-lbl { font-family: var(--mono); font-size: 11px; fill: var(--blood); font-weight: 500; }
 
   /* ============================================================
-     EXPLORADOR DE DFD INTERACTIVO (s5)
+     EXPLORADOR E-R INTERACTIVO (s5)
   ============================================================ */
   .dfx { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
   .dfx-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
@@ -180,17 +181,20 @@
   .dfx-title { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.15; margin-bottom: 14px; }
   .dfx-svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; }
   /* símbolos dentro del lienzo del explorador */
-  .dfx-svg .x-proc { fill: var(--paper-elev); stroke: var(--blood); stroke-width: 1.7; }
-  .dfx-svg .x-ext { fill: var(--paper-deep); stroke: var(--ink-soft); stroke-width: 1.6; }
-  .dfx-svg .x-store-line { stroke: var(--olive); stroke-width: 1.7; }
-  .dfx-svg .x-store-fill { fill: var(--paper-deep); }
-  .dfx-svg .x-flow { stroke: var(--ink-muted); stroke-width: 1.5; fill: none; }
-  .dfx-svg .x-num { font-family: var(--mono); font-size: 13px; fill: var(--blood); font-weight: 500; }
-  .dfx-svg .x-name { font-family: var(--serif); font-style: italic; font-size: 16px; fill: var(--ink); }
-  .dfx-svg .x-ext-name { font-family: var(--mono); font-size: 11px; fill: var(--ink-soft); letter-spacing: 0.04em; }
-  .dfx-svg .x-store-name { font-family: var(--mono); font-size: 11px; fill: var(--olive); letter-spacing: 0.04em; }
-  .dfx-svg .x-flow-lbl { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.02em; }
-  /* aparición suave de cada nivel */
+  .dfx-svg .x-ent { fill: var(--paper-elev); stroke: var(--blood); stroke-width: 1.7; }
+  .dfx-svg .x-ent-div { stroke: var(--blood); stroke-width: 1; }
+  .dfx-svg .x-ent-title { font-family: var(--mono); font-size: 12px; fill: var(--ink); letter-spacing: 0.08em; font-weight: 500; }
+  .dfx-svg .x-attr { font-family: var(--mono); font-size: 11px; fill: var(--ink-soft); letter-spacing: 0.02em; }
+  .dfx-svg .x-pk { fill: var(--blood); font-weight: 500; }
+  .dfx-svg .x-fk { fill: var(--ochre); }
+  .dfx-svg .x-rel { stroke: var(--ink-muted); stroke-width: 1.5; fill: none; }
+  .dfx-svg .x-card { font-family: var(--mono); font-size: 13px; fill: var(--blood); font-weight: 500; }
+  .dfx-svg .x-rel-lbl { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.02em; }
+  .dfx-svg .x-dead { stroke: var(--blood); stroke-width: 1.3; stroke-dasharray: 5 4; fill: none; opacity: 0.7; }
+  .dfx-svg .x-dead-lbl { font-family: var(--mono); font-size: 10px; fill: var(--blood); opacity: 0.85; }
+  .dfx-svg .x-ghost { font-family: var(--mono); font-size: 11px; fill: var(--ink-faint); }
+  .dfx-svg .x-ghost-strike { stroke: var(--ink-faint); stroke-width: 1.2; }
+  /* aparición suave de cada paso */
   .dfx-fig { opacity: 0; transform: translateY(8px); transition: opacity 0.45s ease, transform 0.45s ease; }
   .dfx-fig.show { opacity: 1; transform: translateY(0); }
   .dfx-read { margin-top: 16px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); }
@@ -203,6 +207,11 @@
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
   .example p b { color: var(--ink); font-weight: 600; }
+
+  /* bloque de prompt (taller) */
+  .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
+  .prompt-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
+  .prompt-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; word-break: break-word; margin: 0; }
 
   /* taller (reuso) */
   .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
@@ -226,10 +235,10 @@
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#s1">Repaso</a></li>
       <li><a href="#s2">Pitágoras</a></li>
-      <li><a href="#s3">Técnicas</a></li>
-      <li><a href="#s4">Simbología</a></li>
+      <li><a href="#s3">Bloques</a></li>
+      <li><a href="#s4">Cardinalidad</a></li>
       <li><a href="#s5">Explorador</a></li>
-      <li><a href="#s6">Niveles</a></li>
+      <li><a href="#s6">Traducción</a></li>
       <li><a href="#s7">Errores</a></li>
       <li><a href="#s8">Taller</a></li>
       <li><a href="#s9">Cierre</a></li>
@@ -242,7 +251,7 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 17</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Pitágoras</h1>
-      <p class="hero-tagline">Detrás de cada proceso,<br>un <span>flujo que se puede dibujar</span>.</p>
+      <p class="hero-tagline">Detrás de cada dato,<br>una <span>proporción que se puede dibujar</span>.</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 13 julio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
@@ -266,19 +275,19 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · el orden oculto del flujo</span>
+          <span class="sec-chip">119 min · las proporciones del dato</span>
         </div>
-        <p class="sec-objective">Hoy dejamos de hablar de <em>qué</em> hace el sistema en palabras y empezamos a dibujarlo: cómo entra, fluye, se transforma y sale la información. El Diagrama de Flujo de Datos &mdash; en sus tres niveles &mdash; es el plano de las funciones de tu sistema.</p>
+        <p class="sec-objective">Hoy dejamos de describir <em>qué hace</em> el sistema y dibujamos <em>qué recuerda</em>: qué cosas guarda, cómo se identifican y en qué proporción se relacionan entre sí. El diagrama entidad&ndash;relación es el plano de la memoria de tu sistema &mdash; y al final, una IA lo convertirá en una base de datos real.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes los requisitos; ¿cómo modelas lo que hacen?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes los requisitos; ¿dónde viven los datos?</span><span class="agenda-dur">8 min</span></div>
         <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Pitágoras?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Las técnicas de especificación, clasificadas</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">La simbología del DFD: cuatro figuras</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">El explorador: del contexto al detalle</span><span class="agenda-dur">20 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:04</span><span class="agenda-title">Los niveles y el balanceo del DFD</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Los tres bloques del modelo E-R</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">La cardinalidad: la proporción entre entidades</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">El explorador: de la papelería al diagrama</span><span class="agenda-dur">20 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:04</span><span class="agenda-title">Del diagrama a la base de datos: la traducción</span><span class="agenda-dur">14 min</span></div>
         <div class="agenda-row"><span class="agenda-time">21:18</span><span class="agenda-title">Los errores que delatan a un novato</span><span class="agenda-dur">12 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: el DFD de contexto de tu proyecto</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: tu diagrama E-R → prompt → SQL</span><span class="agenda-dur">18 min</span></div>
         <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 6</span><span class="agenda-dur">11 min</span></div>
       </div>
     </div>
@@ -291,17 +300,17 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Tienes los requisitos.<br>¿Cómo modelas<br>lo que hacen?</h2></div>
+          <div><span class="sec-num">i.</span><h2>Tienes los requisitos.<br>¿Dónde viven<br>los datos?</h2></div>
           <span class="sec-chip">8 min · 20:00</span>
         </div>
-        <p class="sec-objective">Ya sabes quién usa el sistema y qué metas persigue. Falta dibujar la maquinaria por dentro: por dónde entra cada dato, qué lo transforma y dónde termina.</p>
+        <p class="sec-objective">Ya sabes qué debe hacer el sistema y para quién. Falta la otra mitad del plano: qué información necesita recordar para poder hacerlo &mdash; y cómo se organiza esa memoria.</p>
       </div>
-      <p>Hasta aquí construiste el <em>qué</em>: stakeholders, casos de uso, el contrato entre negocio y desarrollo. Sabes que el cliente quiere "retirar efectivo" o "agendar una cita". Pero un caso de uso cuenta la historia en prosa numerada &mdash; no muestra cómo viaja la información por dentro del sistema, qué la procesa ni dónde se guarda. Eso es el <em>modelado de funciones</em>, y su herramienta clásica es el Diagrama de Flujo de Datos, el DFD.</p>
-      <p>Atención a una confusión que cuesta puntos en el examen: un DFD <b>no</b> es un diagrama de flujo de programa. El diagrama de flujo que quizá conociste muestra la secuencia de instrucciones &mdash; "si esto, entonces aquello". El DFD ignora la secuencia y el tiempo: solo le importa <em>qué dato fluye de dónde a dónde y qué lo transforma</em>. No es el guion paso a paso; es el mapa de tuberías por donde corre la información.</p>
+      <p>Hasta aquí construiste el <em>qué hace</em>: stakeholders, requisitos funcionales, el contrato entre negocio y desarrollo. Sabes que el sistema debe "registrar una venta" o "alertar el stock bajo". Pero detente en cualquiera de esas frases y pregúntale: ¿registrar la venta <b>dónde</b>? ¿Alertar el stock <b>de qué</b>? Todo requisito funcional presupone datos que el sistema guarda y recuerda. Modelar esa memoria es el <em>modelado de datos</em>, y su herramienta clásica es el diagrama entidad&ndash;relación: el E-R.</p>
+      <p>Piensa en la papelería que analizaron en el laboratorio. Cuando registrabas una venta y días después el historial seguía ahí, con su folio y su total exacto, algo la estaba recordando. Ese "algo" es una base de datos &mdash; y antes de que exista, alguien tuvo que decidir <em>qué</em> se guarda, <em>cómo</em> se identifica y <em>cómo</em> se conecta con lo demás. Hoy aprendes a ser ese alguien.</p>
       <div class="say">
         <div class="say-card">
           <div class="say-label">El dato que duele</div>
-          <p class="say-text">"Un caso de uso describe; un DFD radiografía. Muchos proyectos se aprueban con casos de uso preciosos y truenan al construir, porque nadie se preguntó de dónde sale ese dato, quién lo calcula y en qué almacén vive. El DFD te obliga a responderlo antes de que cueste caro."</p>
+          <p class="say-text">"Los programas pasan; los datos se quedan. Una empresa cambia de sistema cada cinco años, pero sus clientes, sus ventas y sus deudas la acompañan décadas. Por eso el modelo de datos es la decisión más cara de corregir después: equivócate en una pantalla y la rediseñas; equivócate en el modelo y lo arrastras años."</p>
         </div>
       </div>
     </div>
@@ -317,149 +326,134 @@
           <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Pitágoras?</h2></div>
           <span class="sec-chip">8 min · 20:08</span>
         </div>
-        <p class="sec-objective">Porque fue el primero en sostener que bajo el caos del mundo hay un orden exacto &mdash; y que ese orden se puede dibujar. El DFD es esa misma fe, aplicada a tu sistema.</p>
+        <p class="sec-objective">Porque descubrió que la armonía no es magia: es proporción exacta entre cosas distintas. El diagrama E-R afirma lo mismo de un negocio &mdash; sus datos se relacionan en proporciones que se pueden escribir con números.</p>
       </div>
-      <p>Pitágoras de Samos no era solo el del teorema. Fundó una escuela entera sobre una idea vertiginosa: que detrás de todo &mdash; la música, los astros, los procesos de la naturaleza &mdash; hay un orden numérico oculto. "Todas las cosas son números", decía: lo que parece desorden es en realidad una proporción que aún no has sabido leer. Descubrió que una cuerda dividida en razones simples produce armonía; convirtió el ruido en estructura.</p>
-      <p>Esa es exactamente la apuesta del DFD. Una empresa, vista de lejos, es un caos de papeles, correos, juntas y gente corriendo. El modelado de funciones afirma lo mismo que Pitágoras: bajo ese caos hay un orden que se puede dibujar &mdash; cómo entra la información, qué procesos la transforman, en qué almacenes reposa y cómo sale convertida en valor. Dibujar el DFD de un sistema es encontrar la armonía pitagórica de un negocio: revelar el número detrás del ruido.</p>
+      <p>Pitágoras de Samos no era solo el del teorema. Su descubrimiento más vertiginoso fue musical: al dividir una cuerda en razones simples &mdash; 1:2, 2:3, 3:4 &mdash; el sonido deja de ser ruido y se vuelve armonía. La belleza, concluyó, no está en las cosas sino en la <em>proporción entre</em> las cosas. "Todas las cosas son números": lo que parece caos es una relación exacta que aún no has sabido leer.</p>
+      <p>El modelado de datos es esa misma idea aplicada a un negocio. Una papelería, vista de lejos, es un mostrador con tickets, cajas de bolígrafos y un cuaderno de apuntes. Pero mírala con ojos pitagóricos y aparecen las proporciones: <em>una</em> venta contiene <em>muchos</em> productos; <em>un</em> producto aparece en <em>muchas</em> ventas; <em>una</em> categoría agrupa <em>muchos</em> artículos. Uno a muchos, muchos a muchos: las cardinalidades del E-R son, literalmente, las razones de la cuerda de Pitágoras. Dibujar el diagrama es encontrar la armonía numérica del negocio.</p>
       <div class="say">
         <div class="say-card">
           <div class="say-label">Pitágoras aplicado al modelado</div>
-          <p class="say-text">"Si no puedes dibujar el flujo de tu sistema, es que todavía no lo entiendes &mdash; solo lo intuyes. El DFD es la prueba pitagórica de tu análisis: o el orden está y lo trazas, o no está y entonces no tienes sistema, tienes un deseo."</p>
+          <p class="say-text">"Si no puedes decir en qué proporción se relacionan dos datos de tu sistema &mdash; ¿un cliente cuántas ventas? ¿una venta cuántos productos? &mdash; todavía no entiendes tu negocio; solo lo intuyes. El E-R es la prueba pitagórica del análisis: o la proporción está y la escribes, o no está y entonces no tienes modelo, tienes un deseo."</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S3 TÉCNICAS DE ESPECIFICACIÓN -->
+<!-- S3 LOS TRES BLOQUES -->
 <section id="s3">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>Las técnicas de<br>especificación,<br>clasificadas</h2></div>
+          <div><span class="sec-num">iii.</span><h2>Los tres bloques<br>del modelo E-R</h2></div>
           <span class="sec-chip">14 min · 20:16</span>
         </div>
-        <p class="sec-objective">El DFD no está solo: es una de varias técnicas para especificar un sistema. Conocer el mapa completo te dice cuándo usar cada una &mdash; y por qué hoy toca el flujo de datos.</p>
+        <p class="sec-objective">Todo el lenguaje del diagrama cabe en tres piezas: la entidad, el atributo y la relación &mdash; más una regla de identidad: la llave primaria. Con eso se modela cualquier negocio.</p>
       </div>
-      <p>Especificar un sistema es describirlo con la precisión suficiente para que se pueda construir sin adivinar. Las técnicas se clasifican según <em>qué</em> dimensión del sistema modelan. Pitágoras lo aprobaría: cada técnica mira el sistema desde un número distinto. Tres grandes familias y sus representantes:</p>
-
-      <div class="techs-grid" data-animate>
-        <div class="tech-card">
-          <h4>Lenguaje natural</h4>
-          <div class="tc-when">técnica informal</div>
-          <p>Prosa estructurada: historias de usuario, casos de uso, reglas de negocio. Cualquiera la lee, pero la ambigüedad acecha. Es con la que veníamos trabajando.</p>
-        </div>
-        <div class="tech-card hl">
-          <h4>Modelado de funciones</h4>
-          <div class="tc-when">qué procesos transforman el dato</div>
-          <p>El <b>DFD</b>: muestra procesos, flujos de datos, almacenes y entidades externas. Responde "¿qué hace el sistema con la información?". Es la técnica de hoy.</p>
-        </div>
-        <div class="tech-card">
-          <h4>Modelado de datos</h4>
-          <div class="tc-when">qué información se guarda</div>
-          <p>El diagrama entidad&ndash;relación (E-R) y el diccionario de datos. Responde "¿qué datos existen y cómo se relacionan?". Es a donde vamos la próxima clase.</p>
-        </div>
-        <div class="tech-card">
-          <h4>Modelado de comportamiento</h4>
-          <div class="tc-when">cómo reacciona en el tiempo</div>
-          <p>Diagramas de estados y de secuencia. Responden "¿cómo cambia el sistema según los eventos?". El tiempo, que el DFD ignora a propósito.</p>
-        </div>
-        <div class="tech-card">
-          <h4>Modelado de objetos</h4>
-          <div class="tc-when">visión orientada a objetos</div>
-          <p>Diagramas de clases de UML: junta datos y comportamiento en una sola estructura. La lengua moderna; convive con el DFD, no lo borra.</p>
-        </div>
-        <div class="tech-card">
-          <h4>Prototipos</h4>
-          <div class="tc-when">cuando el requisito es difuso</div>
-          <p>Una maqueta que el usuario toca para descubrir qué quería de verdad. No reemplaza al modelo: lo alimenta con lo que la conversación no sacó.</p>
-        </div>
-      </div>
-
-      <p>Ninguna técnica cuenta toda la historia: un sistema serio se especifica con varias, como una pieza musical necesita melodía, ritmo y armonía a la vez. Hoy nos concentramos en el modelado de funciones &mdash; el DFD &mdash; porque es el que revela el <em>flujo</em>: el movimiento del dato por la máquina. Y para dibujar ese flujo, primero necesitas el alfabeto.</p>
-    </div>
-  </div>
-</section>
-
-<!-- S4 SIMBOLOGÍA -->
-<section id="s4">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>La simbología<br>del DFD:<br>cuatro figuras</h2></div>
-          <span class="sec-chip">14 min · 20:30</span>
-        </div>
-        <p class="sec-objective">Todo el lenguaje del DFD cabe en cuatro símbolos. Cuatro &mdash; un número que a Pitágoras le habría gustado: con él se construye todo lo demás.</p>
-      </div>
-      <p>La belleza del DFD es su economía: con solo cuatro figuras describes el flujo de información de cualquier sistema, por grande que sea. Existen dos notaciones casi iguales &mdash; la de Yourdon/DeMarco (círculos) y la de Gane&ndash;Sarson (rectángulos redondeados) &mdash; pero significan lo mismo. Esta es la gramática completa:</p>
+      <p>La economía del E-R es pitagórica: con tres bloques describes la memoria de cualquier sistema, por grande que sea. Una <b>entidad</b> es un sustantivo del negocio que vale la pena recordar; un <b>atributo</b> es una propiedad que la describe; una <b>relación</b> es el verbo que une dos entidades. Y dentro de los atributos hay uno con rango especial: la <b>llave primaria</b>, el dato que identifica a cada ejemplar sin confusión posible. Esta es la gramática completa:</p>
 
       <div class="sym-grid" data-animate>
         <div class="sym-card">
           <div class="sym-icon">
-            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de proceso: rectángulo redondeado">
-              <rect class="dfd-proc" x="6" y="8" width="76" height="40" rx="12"/>
-              <text class="dfd-glyph" x="44" y="32" text-anchor="middle">1.0</text>
+            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de entidad: rectángulo con nombre">
+              <rect class="er-ent" x="8" y="12" width="72" height="32" rx="3"/>
+              <text class="er-glyph-title" x="44" y="32" text-anchor="middle">PRODUCTO</text>
             </svg>
           </div>
           <div class="sym-body">
-            <h4>Proceso</h4>
-            <div class="sym-kind">transforma el dato</div>
-            <p>Lo que <b>hace</b> algo con la información: la valida, calcula, combina o registra. Se nombra con un verbo activo ("Validar pago", "Calcular total") y lleva número.</p>
+            <h4>Entidad</h4>
+            <div class="sym-kind">el sustantivo que recuerdas</div>
+            <p>Una <b>cosa del negocio</b> con existencia propia: Producto, Venta, Cliente, Alumno. Se nombra en singular. La prueba: si puedes contar sus ejemplares ("tenemos 200 productos"), es entidad.</p>
           </div>
         </div>
         <div class="sym-card">
           <div class="sym-icon">
-            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de flujo de datos: flecha">
-              <defs>
-                <marker id="symArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-                  <path d="M0,0 L8,4.5 L0,9" style="fill:none;stroke:var(--ink-muted);stroke-width:1.6;"/>
-                </marker>
-              </defs>
-              <line class="dfd-flow" x1="10" y1="28" x2="72" y2="28" marker-end="url(#symArr)"/>
+            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de atributos: entidad con lista de propiedades">
+              <rect class="er-ent" x="8" y="4" width="72" height="48" rx="3"/>
+              <line class="er-div" x1="8" y1="18" x2="80" y2="18"/>
+              <text class="er-glyph-title" x="44" y="14" text-anchor="middle">PRODUCTO</text>
+              <text class="er-glyph" x="14" y="31">nombre</text>
+              <text class="er-glyph" x="14" y="44">precio</text>
             </svg>
           </div>
           <div class="sym-body">
-            <h4>Flujo de datos</h4>
-            <div class="sym-kind">el dato en movimiento</div>
-            <p>La flecha rotulada con el <b>dato que viaja</b> ("solicitud de cita", "comprobante"). No es control ni "siguiente paso": es información concreta moviéndose.</p>
+            <h4>Atributo</h4>
+            <div class="sym-kind">la propiedad que la describe</div>
+            <p>Cada <b>dato que guardas</b> de la entidad: nombre, precio, stock, fecha. Un atributo es un valor simple; si empieza a tener vida propia (varios valores, sus propios datos), era una entidad disfrazada.</p>
           </div>
         </div>
         <div class="sym-card">
           <div class="sym-icon">
-            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de almacén de datos: dos líneas paralelas abiertas">
-              <rect class="dfd-store-fill" x="6" y="14" width="76" height="28"/>
-              <line class="dfd-store-line" x1="6" y1="14" x2="82" y2="14"/>
-              <line class="dfd-store-line" x1="6" y1="42" x2="82" y2="42"/>
-              <line class="dfd-store-line" x1="22" y1="14" x2="22" y2="42"/>
-              <text class="dfd-glyph" x="52" y="32" text-anchor="middle">D1</text>
+            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de llave primaria: atributo identificador marcado">
+              <rect class="er-ent" x="8" y="4" width="72" height="48" rx="3"/>
+              <line class="er-div" x1="8" y1="18" x2="80" y2="18"/>
+              <text class="er-glyph-title" x="44" y="14" text-anchor="middle">PRODUCTO</text>
+              <text class="er-glyph-pk" x="14" y="31">PK id_producto</text>
+              <text class="er-glyph" x="14" y="44">nombre</text>
             </svg>
           </div>
           <div class="sym-body">
-            <h4>Almacén de datos</h4>
-            <div class="sym-kind">el dato en reposo</div>
-            <p>Donde la información <b>descansa</b> entre procesos: una tabla, un archivo, un registro. Se nombra con un sustantivo ("Pacientes", "Citas") y lleva un código <b>D1, D2&hellip;</b></p>
+            <h4>Llave primaria</h4>
+            <div class="sym-kind">la identidad irrepetible</div>
+            <p>El atributo que <b>identifica sin ambigüedad</b> a cada ejemplar: id, folio, matrícula, CURP. Dos productos pueden llamarse igual; sus llaves, jamás. Toda entidad debe tener exactamente una.</p>
           </div>
         </div>
         <div class="sym-card">
           <div class="sym-icon">
-            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de entidad externa: rectángulo">
-              <rect class="dfd-ext" x="14" y="10" width="60" height="36"/>
-              <text class="dfd-glyph" x="44" y="32" text-anchor="middle">Cliente</text>
+            <svg viewBox="0 0 88 56" role="img" aria-label="Símbolo de relación: dos entidades unidas por una línea con cardinalidad">
+              <rect class="er-ent" x="4" y="16" width="30" height="24" rx="3"/>
+              <rect class="er-ent" x="54" y="16" width="30" height="24" rx="3"/>
+              <line class="er-rel" x1="34" y1="28" x2="54" y2="28"/>
+              <line class="er-rel" x1="38" y1="21" x2="38" y2="35"/>
+              <line class="er-rel" x1="50" y1="28" x2="54" y2="21"/>
+              <line class="er-rel" x1="50" y1="28" x2="54" y2="35"/>
+              <text class="er-card-lbl" x="38" y="14" text-anchor="middle">1</text>
+              <text class="er-card-lbl" x="52" y="14" text-anchor="middle">N</text>
             </svg>
           </div>
           <div class="sym-body">
-            <h4>Entidad externa</h4>
-            <div class="sym-kind">fuera de la frontera</div>
-            <p>Quien <b>origina o recibe</b> datos pero vive afuera del sistema: una persona, un área u otro sistema. Es la fuente y el destino del flujo, nunca su transformador.</p>
+            <h4>Relación</h4>
+            <div class="sym-kind">el verbo que las une</div>
+            <p>La línea entre dos entidades, nombrada con un <b>verbo</b>: contiene, agrupa, realiza. En sus extremos vive la cardinalidad &mdash; la proporción &mdash; que es el corazón del modelo y el tema que sigue.</p>
           </div>
         </div>
       </div>
 
       <div class="example">
+        <div class="example-tag">Sobre la notación</div>
+        <p>Verás dos dialectos del mismo idioma: la notación clásica de <b>Chen</b> (entidades en rectángulos, relaciones en rombos, atributos en óvalos) y la de <b>pata de gallo</b> (crow's foot), donde los atributos se listan dentro del rectángulo y la cardinalidad se dibuja en los extremos de la línea. Usaremos pata de gallo porque es la que hablan Miro, Lucidchart, draw.io &mdash; y las IA la entienden perfectamente. Si en un libro ves rombos, es Chen: dice lo mismo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 CARDINALIDAD -->
+<section id="s4">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iv.</span><h2>La cardinalidad:<br>la proporción<br>entre entidades</h2></div>
+          <span class="sec-chip">14 min · 20:30</span>
+        </div>
+        <p class="sec-objective">Toda relación responde una doble pregunta: ¿con cuántos de allá se relaciona uno de acá &mdash; y viceversa? Solo hay tres respuestas posibles. Tres, como las razones de la cuerda.</p>
+      </div>
+      <p>Para leer la cardinalidad de una relación, párate en cada extremo y pregunta hacia el otro lado: "¿<em>uno</em> de estos, con <em>cuántos</em> de aquellos?". Las dos respuestas juntas dan la proporción:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">1 : 1</span><div><b>Uno a uno.</b> Un empleado tiene una credencial; una credencial pertenece a un empleado. Es la más rara &mdash; cuando aparezca, sospecha: quizá ambas entidades eran una sola.</div></div>
+        <div class="point"><span class="point-num">1 : N</span><div><b>Uno a muchos.</b> Una categoría agrupa muchos productos; cada producto pertenece a una sola categoría. Es la proporción reina: la mayoría de tu diagrama serán relaciones 1:N.</div></div>
+        <div class="point"><span class="point-num">N : M</span><div><b>Muchos a muchos.</b> Una venta contiene muchos productos; un producto aparece en muchas ventas. Legítima en el mundo real &mdash; pero las bases de datos no saben guardarla directa, y eso tiene consecuencias.</div></div>
+      </div>
+      <div class="example">
         <div class="example-tag">La regla de oro que evita el 80% de los errores</div>
-        <p>Memoriza esto: <b>un flujo de datos siempre toca un proceso.</b> El dato no salta de un almacén a una entidad externa, ni de una entidad a otra, sin pasar por un proceso que lo mueva. ¿Por qué? Porque algo tiene que <em>actuar</em> para que el dato viaje &mdash; y eso que actúa es, por definición, un proceso. Si en tu diagrama una flecha conecta dos almacenes directamente, o dos entidades externas, hay un proceso invisible que olvidaste dibujar.</p>
+        <p>Memoriza esto: <b>toda relación N:M se rompe en una entidad intermedia.</b> Entre Venta y Producto nace "Detalle de venta": cada renglón del ticket. La intermedia carga las llaves de sus dos padres y los datos propios del encuentro &mdash; la cantidad, el precio al que se vendió ese día. ¿Ya lo habías visto? Es literalmente el renglón "5 × Bolígrafo azul" del ticket de la papelería. Si tu diagrama tiene una N:M sin romper, no está terminado.</p>
+      </div>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">Cómo decide el analista</div>
+          <p class="say-text">"La cardinalidad no la decide la técnica: la decide el negocio. ¿Un producto puede estar en dos categorías? Si el dueño dice que sí, tu 1:N se vuelve N:M y tu base de datos cambia de forma. Por eso el analista pregunta antes de dibujar &mdash; cada número del diagrama es una regla de negocio congelada."</p>
+        </div>
       </div>
     </div>
   </div>
@@ -471,56 +465,84 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>El explorador:<br>del contexto<br>al detalle</h2></div>
+          <div><span class="sec-num">v.</span><h2>El explorador:<br>de la papelería<br>al diagrama</h2></div>
           <span class="sec-chip">20 min · 20:44</span>
         </div>
-        <p class="sec-objective">Un DFD no se dibuja de golpe: se descompone por niveles, de lo general a lo específico. Toca cada nivel y míralo "explotar" en sus procesos internos.</p>
+        <p class="sec-objective">Un E-R no se dibuja de golpe: se construye en tres pasos &mdash; entidades, atributos con llaves, relaciones con proporción. Míralo crecer sobre un sistema que ya conoces: la papelería del laboratorio.</p>
       </div>
-      <p>Caso: el <em>sistema de citas de una clínica</em> &mdash; el paciente pide cita, el sistema la agenda y la confirma, y el médico consulta su agenda. Vamos a dibujarlo en sus tres niveles. Empieza por el <b>contexto (nivel 0)</b>, que ve el sistema como una sola caja, y ve "explotándolo": cada toque revela más detalle del orden que estaba oculto.</p>
+      <p>Caso: la <em>Papelería "El Búho"</em> que analizaron en el laboratorio de prompting. Ya conocen sus reglas por haberla usado; ahora vamos a dibujar su memoria. Toca cada paso y observa cómo el diagrama pasa del sustantivo suelto al modelo completo:</p>
 
       <div class="dfx" id="dfx">
-        <div class="dfx-instr">Toca un nivel para verlo · caso: sistema de citas de una clínica</div>
+        <div class="dfx-instr">Toca un paso para verlo · caso: Papelería "El Búho"</div>
         <div class="dfx-tabs" id="dfxTabs">
-          <button class="dfx-tab on" type="button" data-level="0"><b>Nivel 0</b> · Contexto</button>
-          <button class="dfx-tab" type="button" data-level="1"><b>Nivel 1</b> · Procesos internos</button>
-          <button class="dfx-tab" type="button" data-level="2"><b>Detalle</b> · Explota "Agendar"</button>
+          <button class="dfx-tab on" type="button" data-level="0"><b>Paso 1</b> · Entidades</button>
+          <button class="dfx-tab" type="button" data-level="1"><b>Paso 2</b> · Atributos y llaves</button>
+          <button class="dfx-tab" type="button" data-level="2"><b>Paso 3</b> · Relaciones y proporción</button>
         </div>
         <div class="dfx-stage">
-          <div class="dfx-level" id="dfxLevel">Nivel 0 · Diagrama de contexto</div>
-          <div class="dfx-title" id="dfxTitle">El sistema como una sola caja</div>
+          <div class="dfx-level" id="dfxLevel">Paso 1 · Descubrir las entidades</div>
+          <div class="dfx-title" id="dfxTitle">Los sustantivos que el negocio recuerda</div>
           <div id="dfxCanvas" aria-live="polite"></div>
         </div>
         <div class="dfx-read" id="dfxRead"></div>
         <div class="dfx-balance" id="dfxBalance"></div>
       </div>
 
-      <p>¿Notaste lo que pasó al subir de nivel? La caja única se abrió y aparecieron procesos numerados <b>1, 2, 3</b>; luego el proceso "Agendar" se abrió en <b>2.1, 2.2, 2.3</b>. Eso es la <em>descomposición funcional</em>: el orden de Pitágoras desplegándose como una fracción que se sigue dividiendo. Y nota la disciplina numérica: el detalle de "2. Agendar" se numera 2.1, 2.2, 2.3 &mdash; nunca empieza de cero. El número guarda la genealogía del proceso.</p>
+      <p>¿Notaste el momento clave? Al llegar a las relaciones, la proporción N:M entre Venta y Producto <em>obligó</em> a que naciera una entidad nueva &mdash; Detalle de venta &mdash; que en el paso 1 nadie había visto. Eso es lo que hace un buen modelo: no solo dibuja lo que ves, sino que <b>revela lo que falta</b>. El orden pitagórico estaba oculto en el ticket y el diagrama lo hizo visible.</p>
     </div>
   </div>
 </section>
 
-<!-- S6 NIVELES Y BALANCEO -->
+<!-- S6 TRADUCCIÓN A SQL -->
 <section id="s6">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>Los niveles<br>y el balanceo<br>del DFD</h2></div>
+          <div><span class="sec-num">vi.</span><h2>Del diagrama a la<br>base de datos:<br>la traducción</h2></div>
           <span class="sec-chip">14 min · 21:04</span>
         </div>
-        <p class="sec-objective">Tres niveles, una sola regla que los une: lo que entra y sale arriba debe entrar y salir igual abajo. A eso se le llama balanceo.</p>
+        <p class="sec-objective">Un diagrama E-R completo se traduce a una base de datos de forma casi mecánica. Tan mecánica, que una IA lo hace en segundos &mdash; si tu diagrama le da toda la información.</p>
       </div>
-      <p>El explorador te mostró los tres niveles que vas a entregar. Conviene fijar qué hace cada uno y para qué sirve, porque cada nivel responde a un lector distinto:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Nivel 0 &mdash; Contexto.</b> Un solo proceso: el sistema entero como una caja, rodeado de sus entidades externas. Define la <em>frontera</em>: qué es el sistema y qué queda afuera. Es el diagrama que le enseñas al director en treinta segundos.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Nivel 1.</b> La caja se abre en los procesos principales (numerados 1, 2, 3&hellip;) y aparecen los <em>almacenes de datos</em>, que en el contexto estaban ocultos. Es el mapa funcional del sistema: lo que de verdad hace, en bloques.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Diagrama de detalle.</b> Un proceso del nivel 1 &mdash; digamos el "2" &mdash; se explota en sus subprocesos (2.1, 2.2&hellip;). Se baja hasta donde cada proceso sea ya elemental y no valga la pena seguir abriéndolo.</div></div>
+      <p>Las bases de datos hablan un idioma llamado <b>SQL</b>, y su instrucción fundacional es <code style="font-family:var(--mono); font-size:14px; color:var(--blood);">CREATE TABLE</code>: crear una tabla. La buena noticia: no necesitas escribir SQL &mdash; necesitas entender la <em>correspondencia</em>, porque cada pieza de tu diagrama se convierte en una pieza de la base de datos según reglas fijas. Esta es la tabla de traducción completa:</p>
+
+      <div class="techs-grid" data-animate>
+        <div class="tech-card">
+          <h4>Entidad → tabla</h4>
+          <div class="tc-when">create table producto</div>
+          <p>Cada rectángulo de tu diagrama se convierte en una tabla. Los ejemplares ("Bolígrafo azul", "Cuaderno profesional") serán sus renglones.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Atributo → columna</h4>
+          <div class="tc-when">nombre, precio, stock&hellip;</div>
+          <p>Cada atributo es una columna con un <b>tipo de dato</b>: texto, número entero, decimal, fecha. La IA elige el tipo leyendo el nombre del atributo &mdash; si el nombre es claro.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Llave primaria → PRIMARY KEY</h4>
+          <div class="tc-when">identidad garantizada</div>
+          <p>Tu atributo marcado con PK se declara <b>PRIMARY KEY</b>: la base de datos rechazará dos renglones con la misma llave. La identidad deja de ser promesa y se vuelve ley.</p>
+        </div>
+        <div class="tech-card hl">
+          <h4>Relación 1:N → llave foránea</h4>
+          <div class="tc-when">foreign key en el lado N</div>
+          <p>El lado "muchos" carga una columna extra con la llave de su padre: cada producto lleva el id de su categoría. Esa columna es la <b>FOREIGN KEY</b> &mdash; el hilo que mantiene unido el modelo.</p>
+        </div>
+        <div class="tech-card hl">
+          <h4>Relación N:M → tabla intermedia</h4>
+          <div class="tc-when">dos foráneas + datos propios</div>
+          <p>La N:M rota genera su propia tabla con <b>dos llaves foráneas</b> (una por padre) y sus atributos del encuentro: cantidad, precio del día. Exactamente el Detalle de venta del explorador.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Regla de negocio → restricción</h4>
+          <div class="tc-when">not null · unique · check</div>
+          <p>"El precio debe ser mayor que cero", "el folio no se repite": las reglas que descubriste analizando se declaran como restricciones y la base de datos las vigila sola, para siempre.</p>
+        </div>
       </div>
-      <p>Y aquí la regla pitagórica que separa un DFD profesional de un dibujo bonito: el <em>balanceo</em>. Los flujos que entran y salen de un proceso en el nivel superior deben ser <b>exactamente los mismos</b> que entran y salen del diagrama que lo explota. Si "2. Agendar" recibe "datos de solicitud" y entrega "confirmación" en el nivel 1, su diagrama de detalle debe recibir y entregar justo eso &mdash; ni un flujo de más, ni uno de menos. Es conservación: la información no se crea ni se destruye al cambiar de nivel, solo se detalla.</p>
+
       <div class="say">
         <div class="say-card">
-          <div class="say-label">La prueba del nueve del DFD</div>
-          <p class="say-text">"El balanceo es al DFD lo que cuadrar las cuentas es a un contador. Si los flujos de entrada y salida no coinciden entre un nivel y el que lo explota, tu modelo tiene una fuga &mdash; un dato que apareció de la nada o que se perdió en el camino. Y un dato perdido en el diagrama es un bug garantizado en el sistema."</p>
+          <div class="say-label">La consecuencia para el analista</div>
+          <p class="say-text">"Si la traducción es mecánica, entonces el valor no está en traducir: está en el modelo. Una IA convierte tu diagrama en SQL en diez segundos &mdash; pero si al diagrama le falta una llave o una cardinalidad, la IA adivinará, y las bases de datos construidas sobre adivinanzas se pagan durante años. Tu trabajo es que no tenga que adivinar."</p>
         </div>
       </div>
     </div>
@@ -536,18 +558,18 @@
           <div><span class="sec-num">vii.</span><h2>Los errores que<br>delatan a un novato</h2></div>
           <span class="sec-chip">12 min · 21:18</span>
         </div>
-        <p class="sec-objective">Hay cuatro errores clásicos en los DFD de principiante. Conócelos hoy y no los cometas en tu tarea ni en el examen.</p>
+        <p class="sec-objective">Hay cuatro errores clásicos en los E-R de principiante. Conócelos hoy y no los cometas en tu taller, en tu tarea ni en el examen.</p>
       </div>
-      <p>Un DFD mal hecho se delata a primera vista. Estos son los cuatro fallos que el profesor &mdash; y la realidad &mdash; cazan de inmediato. Cada uno tiene un nombre folclórico en la disciplina:</p>
+      <p>Un modelo de datos mal hecho se delata a primera vista &mdash; y a diferencia de un texto mal redactado, sus errores se heredan a la base de datos y de ahí al sistema entero. Estos son los cuatro fallos que el profesor, la IA y la realidad cazan de inmediato:</p>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>El "agujero negro".</b> Un proceso que tiene flujos de entrada pero <em>ninguno</em> de salida. Imposible: si algo entra y nada sale, el dato se evaporó. Todo proceso transforma; por tanto, todo proceso devuelve algo.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>El "milagro".</b> Lo contrario: un proceso que produce salidas sin tener entradas. No se puede transformar lo que no llegó. Si un proceso entrega un dato, alguien tuvo que dárselo primero.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>El flujo prohibido.</b> Una flecha que conecta dos almacenes, o dos entidades externas, o un almacén con una entidad &mdash; sin proceso de por medio. Rompe la regla de oro: olvidaste dibujar quién mueve ese dato.</div></div>
-        <div class="point"><span class="point-num">04</span><div><b>El nombre vago.</b> Procesos llamados "Gestionar datos" o "Procesar info". No dicen nada. Un buen nombre es un verbo concreto sobre un dato concreto: "Validar disponibilidad", "Generar comprobante".</div></div>
+        <div class="point"><span class="point-num">01</span><div><b>La tabla sábana.</b> Meter todo en una sola entidad: la venta con el nombre del producto, su precio, la categoría y el teléfono del cliente, todo revuelto. Cada dato repetido mil veces es mil oportunidades de que un día no coincida. Si un grupo de atributos se repite, era otra entidad.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>La entidad sin llave.</b> Un Producto sin id, un Alumno sin matrícula. Funciona hasta que llegan dos "Juan Pérez" y el sistema ya no sabe a cuál cobrarle. Toda entidad necesita su atributo irrepetible &mdash; y si ninguno natural existe, se inventa un id.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>La cardinalidad muda.</b> Líneas sin proporción: ¿un cliente tiene una venta o muchas? El diagrama calla, y quien lo traduzca &mdash; humano o IA &mdash; tendrá que adivinar. Una relación sin cardinalidad es una regla de negocio sin decidir.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>La N:M sin romper.</b> Dejar "Venta contiene Producto N:M" dibujado tal cual, sin la entidad intermedia. En el pizarrón se ve bien; en la base de datos es imposible. Es el error que la IA te va a señalar primero &mdash; mejor que no tenga que hacerlo.</div></div>
       </div>
       <div class="example">
         <div class="example-tag">El truco para no equivocarte</div>
-        <p>Antes de dar por bueno tu DFD, recórrelo con dos preguntas pitagóricas, una por figura. Para cada <b>proceso</b>: "¿entra <em>y</em> sale algo de él?" (mata el agujero negro y el milagro). Para cada <b>flecha</b>: "¿toca al menos un proceso?" (mata el flujo prohibido). Si las dos preguntas se cumplen en todo el diagrama, tu flujo está en armonía &mdash; cuadra, como una proporción bien hecha.</p>
+        <p>Antes de dar por bueno tu diagrama, recórrelo con tres preguntas pitagóricas. Para cada <b>entidad</b>: "¿tiene su llave irrepetible?". Para cada <b>relación</b>: "¿tiene verbo y números en los dos extremos?". Para cada <b>N:M</b>: "¿ya nació su entidad intermedia?". Si las tres se cumplen en todo el diagrama, tu modelo cuadra &mdash; está en proporción, como una cuerda bien dividida.</p>
       </div>
     </div>
   </div>
@@ -559,45 +581,62 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Taller: el DFD de<br>contexto de tu proyecto</h2></div>
+          <div><span class="sec-num">viii.</span><h2>Taller: tu diagrama,<br>el prompt y el SQL</h2></div>
           <span class="sec-chip">18 min · 21:30</span>
         </div>
-        <p class="sec-objective">Teoría aplicada a tu sistema: hoy sales con el primer plano del flujo &mdash; el nivel 0 &mdash; y el esqueleto del nivel 1 listo para terminar en casa.</p>
+        <p class="sec-objective">La prueba de fuego de tu análisis: dibuja el E-R de tu proyecto, entrégaselo a una IA y pídele las sentencias SQL de la base de datos completa. Si tu diagrama está bien, el SQL saldrá bien &mdash; esa es la calificación que no perdona.</p>
       </div>
-      <p>Pitágoras no enseñaba teoría sin que el discípulo la trazara con sus manos. Hoy igual: el DFD de tu proyecto integrador empieza en este salón, en papel o en una herramienta. Cada paso alimenta directamente la sección de modelado de tu documento &mdash; la de mayor peso &mdash; y la Tarea 6:</p>
+      <p>Pitágoras no enseñaba teoría sin que el discípulo la trazara con sus manos. Hoy igual &mdash; y con un giro: tu diagrama no se queda en el papel. Se lo vas a compartir a una IA (Gemini, ChatGPT o la que uses) para que lo convierta en una base de datos real. La IA es tu programador; tú eres el analista. El programador solo puede construir lo que el plano le diga:</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
-            <h4>Dibuja la caja y su frontera <span class="fs-time">4 min</span></h4>
-            <p>Pon tu sistema como un solo proceso al centro. Alrededor, lista <b>quién le habla y a quién le responde</b>: esas son tus entidades externas. Ya tienes el nivel 0 &mdash; el diagrama de contexto.</p>
+            <h4>Dibuja tus entidades con sus atributos <span class="fs-time">5 min</span></h4>
+            <p>De tu proyecto integrador, identifica <b>3 a 5 entidades</b> (los sustantivos que el sistema debe recordar). Dibuja cada una como rectángulo con su lista de atributos y <b>marca la llave primaria</b> con "PK". Papel y lápiz bastan.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
-            <h4>Rotula los flujos que cruzan la frontera <span class="fs-time">4 min</span></h4>
-            <p>Para cada entidad externa, escribe sobre la flecha <b>qué dato concreto</b> entra y cuál sale ("solicitud de préstamo" &rarr;, &larr; "comprobante"). Nada de flechas sin nombre: el dato siempre tiene apellido.</p>
+            <h4>Traza las relaciones con su proporción <span class="fs-time">4 min</span></h4>
+            <p>Une las entidades con líneas, ponle <b>verbo</b> a cada una y escribe la <b>cardinalidad en ambos extremos</b> (1:1, 1:N, N:M). Encuentra al menos una N:M y <b>rómpela</b> en su entidad intermedia. Si no hay ninguna, pregúntate qué te falta ver.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
-            <h4>Explota al nivel 1 <span class="fs-time">6 min</span></h4>
-            <p>Abre tu caja en <b>3 a 5 procesos principales</b> numerados (1, 2, 3&hellip;) y agrega los <b>almacenes de datos</b> que aparezcan. Verifica el balanceo: lo que entraba y salía en el contexto debe seguir entrando y saliendo aquí.</p>
+            <h4>Compárteselo a la IA con un prompt de analista <span class="fs-time">4 min</span></h4>
+            <p>Tómale <b>foto a tu diagrama</b> y súbela al chat de la IA &mdash; o transcríbelo en texto: <span style="font-family:var(--mono); font-size:12px;">PRODUCTO(PK id_producto, nombre, precio, stock)</span> y las relaciones aparte. Usa el prompt de abajo como base y exige lo que un analista exigiría.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
-            <h4>Cázate los errores con un colega <span class="fs-time">4 min</span></h4>
-            <p>Intercambia tu DFD con un compañero. Su misión: buscar agujeros negros, milagros, flujos prohibidos y nombres vagos. Cada error que te encuentre hoy es un punto que no pierdes en la tarea.</p>
+            <h4>Valida el SQL como analista, no como fan <span class="fs-time">5 min</span></h4>
+            <p>Pega el SQL en <b>sqliteonline.com</b> (sin instalar nada) y ejecútalo. Luego audita contra tu diagrama: ¿una tabla por entidad? ¿una FOREIGN KEY por cada 1:N? ¿una tabla intermedia por cada N:M que rompiste? <b>Si algo falta, el error casi siempre está en tu diagrama o tu prompt &mdash; no en la IA.</b></p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Regla del trazo a mano</b> &mdash; hoy basta papel y lápiz; lo pasas a Miro, Lucidchart o draw.io en casa para la entrega. Lo que importa salir teniendo es el <b>orden</b>, no la herramienta: si el flujo cuadra en una servilleta, cuadrará en cualquier software.
+          <b>Regla del contrato</b> &mdash; si el SQL sale mal, no lo corrijas a mano: corrige el <b>diagrama</b> o el <b>prompt</b> y vuelve a pedir. El diagrama es el contrato; el SQL es solo su traducción. Un analista que parcha la traducción sin arreglar el contrato está firmando el siguiente error.
         </div>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt base · ajústalo a tu proyecto</div>
+        <pre>Actúa como administrador de bases de datos. Te comparto el diagrama
+entidad-relación de mi sistema [foto adjunta / descripción abajo].
+
+Genera las sentencias SQL (CREATE TABLE) para crear la base de datos
+completa en SQLite, cumpliendo:
+1. Una tabla por entidad, con tipos de datos apropiados por columna.
+2. PRIMARY KEY en cada tabla, según las llaves marcadas con PK.
+3. FOREIGN KEY por cada relación 1:N, en el lado "muchos".
+4. Tabla intermedia por cada relación N:M, con sus dos llaves foráneas.
+5. Restricciones para estas reglas de negocio: [tus reglas aquí].
+
+Al final, explica en una línea qué guarda cada tabla. Si algo del
+diagrama es ambiguo, pregúntame antes de asumir.</pre>
       </div>
     </div>
   </div>
@@ -612,30 +651,30 @@
           <div><span class="sec-num">ix.</span><h2>Cierre y Tarea 6</h2></div>
           <span class="sec-chip">11 min · 21:48</span>
         </div>
-        <p class="sec-objective">Si puedes dibujar el flujo de tu sistema, entendiste su orden. Si no, todavía te falta mirar. Ese es el legado de Pitágoras en una hoja de diagrama.</p>
+        <p class="sec-objective">Si puedes escribir la proporción entre los datos de tu sistema, entendiste su orden. Si no, todavía te falta preguntar. Ese es el legado de Pitágoras en una hoja de diagrama.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>El DFD modela las <em>funciones</em>: cómo entra, fluye, se transforma y sale el dato. No es diagrama de flujo de programa &mdash; ignora la secuencia y el tiempo; solo le importa el movimiento de la información.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Cuatro símbolos &mdash; proceso, flujo, almacén, entidad externa &mdash; y una regla de oro: todo flujo toca un proceso. Tres niveles &mdash; contexto, nivel 1 y detalle &mdash; unidos por el balanceo.</div></div>
-        <div class="point"><span class="point-num">03</span><div>Evita los cuatro pecados: agujero negro, milagro, flujo prohibido y nombre vago. Un DFD que cuadra es un sistema que se puede construir sin adivinar.</div></div>
+        <div class="point"><span class="point-num">01</span><div>El E-R modela la <em>memoria</em> del sistema: entidades (sustantivos), atributos (propiedades), llaves (identidad) y relaciones (verbos con proporción). Es el plano más caro de corregir después &mdash; por eso se dibuja antes.</div></div>
+        <div class="point"><span class="point-num">02</span><div>La cardinalidad es la proporción pitagórica del negocio: 1:1, 1:N, N:M &mdash; y toda N:M se rompe en una entidad intermedia que carga las llaves de sus dos padres.</div></div>
+        <div class="point"><span class="point-num">03</span><div>Un diagrama completo se traduce a SQL de forma mecánica &mdash; tan mecánica que una IA lo hace en segundos. La inteligencia no está en la traducción: está en el modelo. Esa parte es tuya.</div></div>
       </div>
 
       <div class="challenge">
         <div class="challenge-eyebrow">Tarea 6 · valor 1 punto · entrega: jueves 23 de julio</div>
-        <h3>Los tres DFD de tu sistema</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Construye tres diagramas de flujo de datos de tu proyecto: el de contexto (nivel 0), uno de nivel 1 y un diagrama de detalle. En Miro, Lucidchart, draw.io o herramienta libre. Esto es insumo directo de la sección de modelado de tu documento &mdash; la de mayor peso:</p>
+        <h3>El modelo de datos de tu sistema — y su base de datos generada con IA</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Termina lo que empezaste en el taller: el diagrama E-R completo de tu proyecto integrador y la evidencia de que una IA lo convirtió en una base de datos funcional. Esto es insumo directo de la sección de modelado de tu documento &mdash; la de mayor peso:</p>
         <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>DFD de contexto (nivel 0):</b> tu sistema como una sola caja, con todas sus entidades externas y los flujos que cruzan la frontera, rotulados.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>DFD de nivel 1:</b> de 3 a 5 procesos principales numerados, sus almacenes de datos y los flujos entre ellos. Balanceado con el contexto.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>Diagrama de detalle:</b> explota uno de los procesos del nivel 1 en sus subprocesos (p. ej. 2.1, 2.2, 2.3), respetando el balanceo de entradas y salidas.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Revisa que no haya agujeros negros, milagros ni flujos prohibidos. Si usaste IA, cierra con tu sección "Cómo usé IA".</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>Diagrama E-R completo:</b> entidades con atributos, llave primaria marcada en cada una, relaciones con verbo y cardinalidad en ambos extremos, y toda N:M rota en su entidad intermedia. En Miro, Lucidchart, draw.io o foto legible a mano.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>El prompt exacto</b> que le diste a la IA, copiado íntegro. Se evalúa que exija llaves, foráneas, tablas intermedias y tus reglas de negocio &mdash; no solo "hazme una base de datos".</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>El SQL generado y su ejecución:</b> las sentencias completas más una captura de sqliteonline.com (u otra herramienta) mostrando las tablas creadas sin errores.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span><b>Sección "Cómo usé IA":</b> qué le corregiste al diagrama o al prompt después de la primera respuesta, y qué error te señaló la IA que tú no habías visto.</li>
         </ul>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El jueves que viene</div>
-          <p class="say-text">"Euclides y el diccionario de datos. Pasamos de los flujos a definir, con rigor de geometría, cada dato que circula por el sistema."</p>
+          <p class="say-text">"Euclides y el diccionario de datos. Ya dibujaste qué guarda tu sistema; ahora definiremos, con rigor de geometría, cada dato: su tipo, su formato y sus reglas, campo por campo."</p>
         </div>
       </div>
     </div>
@@ -674,8 +713,8 @@
   document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
 
   // ============================================================
-  // Explorador de DFD: del contexto (nivel 0) al detalle
-  // Cada nivel es un SVG accesible que se "explota" al tocar un botón.
+  // Explorador E-R: de los sustantivos al modelo completo
+  // Cada paso es un SVG accesible que se construye al tocar un botón.
   // ============================================================
   (function initDfx() {
     const tabsWrap = document.getElementById('dfxTabs');
@@ -687,117 +726,105 @@
     const readEl = document.getElementById('dfxRead');
     const balanceEl = document.getElementById('dfxBalance');
 
-    // marcador de flecha reutilizable, definido una vez por SVG
-    const ARR = '<defs><marker id="dfxArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9" style="fill:none;stroke:var(--ink-muted);stroke-width:1.5;"/></marker></defs>';
-    const flow = (x1, y1, x2, y2) => '<line class="x-flow" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" marker-end="url(#dfxArr)"/>';
-    const lbl  = (x, y, t, anchor) => '<text class="x-flow-lbl" x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'middle') + '">' + t + '</text>';
+    // caja de entidad estilo pata de gallo: título + renglones de atributos
+    // rows: [{ t: 'nombre' }, { t: 'id_venta', pk: true }, { t: 'id_producto', fk: true }]
+    function ent(x, y, w, title, rows) {
+      const titleH = 26, rowH = 19;
+      const h = titleH + (rows.length ? rows.length * rowH + 10 : 6);
+      let s = '<rect class="x-ent" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4"/>';
+      s += '<text class="x-ent-title" x="' + (x + w / 2) + '" y="' + (y + 17) + '" text-anchor="middle">' + title + '</text>';
+      if (rows.length) {
+        s += '<line class="x-ent-div" x1="' + x + '" y1="' + (y + titleH) + '" x2="' + (x + w) + '" y2="' + (y + titleH) + '"/>';
+        rows.forEach((r, i) => {
+          const ry = y + titleH + 15 + i * rowH;
+          const cls = 'x-attr' + (r.pk ? ' x-pk' : '') + (r.fk ? ' x-fk' : '');
+          const pre = r.pk ? 'PK ' : (r.fk ? 'FK ' : '');
+          s += '<text class="' + cls + '" x="' + (x + 10) + '" y="' + ry + '">' + pre + r.t + '</text>';
+        });
+      }
+      return s;
+    }
+    // conector horizontal con cardinalidad: tick "|" en el lado uno (x1),
+    // pata de gallo en el lado muchos (x2). Funciona en ambas direcciones.
+    function rel(x1, y1, x2, y2, verbo) {
+      const dir = x2 > x1 ? 1 : -1;
+      let s = '<line class="x-rel" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
+      // lado uno (origen): tick perpendicular sobre la línea
+      const t = 12 * dir;
+      s += '<line class="x-rel" x1="' + (x1 + t) + '" y1="' + (y1 - 7) + '" x2="' + (x1 + t) + '" y2="' + (y1 + 7) + '"/>';
+      // lado muchos (destino): pata de gallo abriéndose hacia la entidad
+      const f = 13 * dir;
+      s += '<line class="x-rel" x1="' + (x2 - f) + '" y1="' + y2 + '" x2="' + x2 + '" y2="' + (y2 - 7) + '"/>';
+      s += '<line class="x-rel" x1="' + (x2 - f) + '" y1="' + y2 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
+      s += '<line class="x-rel" x1="' + (x2 - f) + '" y1="' + y2 + '" x2="' + x2 + '" y2="' + (y2 + 7) + '"/>';
+      const mx = (x1 + x2) / 2;
+      s += '<text class="x-card" x="' + (x1 + 10 * dir) + '" y="' + (y1 - 11) + '" text-anchor="middle">1</text>';
+      s += '<text class="x-card" x="' + (x2 - 10 * dir) + '" y="' + (y2 - 11) + '" text-anchor="middle">N</text>';
+      if (verbo) s += '<text class="x-rel-lbl" x="' + mx + '" y="' + (Math.min(y1, y2) + 34) + '" text-anchor="middle">' + verbo + '</text>';
+      return s;
+    }
 
     const LEVELS = {
       '0': {
-        level: 'Nivel 0 · Diagrama de contexto',
-        title: 'El sistema como una sola caja',
-        read: '<b>Lee así:</b> un único proceso &mdash; el sistema entero &mdash; rodeado de sus entidades externas (rectángulos). Las flechas rotuladas son los datos que cruzan la frontera. Aquí <b>no</b> hay almacenes: a este nivel, el interior del sistema es una caja negra.',
-        balance: '<b>Frontera definida:</b> el paciente y el médico quedan <b>fuera</b>; todo lo que está dentro de la caja es lo que vas a construir.',
+        level: 'Paso 1 · Descubrir las entidades',
+        title: 'Los sustantivos que el negocio recuerda',
+        read: '<b>Lee así:</b> se relee el análisis de la papelería subrayando sustantivos que se repiten: producto, venta, ticket, stock, IVA, descuento&hellip; No todos sobreviven: <b>Producto</b> y <b>Venta</b> son cosas contables que el sistema recuerda; el IVA es un solo valor (16%) y el descuento es una regla &mdash; datos y políticas, no entidades.',
+        balance: '<b>Prueba pitagórica:</b> si puedes contar sus ejemplares ("tenemos 8 productos, 3 ventas"), es entidad. Si es un valor único o una regla, vive en otra parte del documento &mdash; no en el diagrama.',
         svg:
-          '<svg class="dfx-svg" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DFD de contexto del sistema de citas: el sistema como un solo proceso entre el paciente y el médico.">' + ARR +
-          // entidad externa: paciente
-          '<rect class="x-ext" x="24" y="104" width="118" height="60"/>' +
-          '<text class="x-ext-name" x="83" y="139" text-anchor="middle">Paciente</text>' +
-          // proceso central (sistema entero)
-          '<ellipse class="x-proc" cx="300" cy="134" rx="118" ry="62"/>' +
-          '<text class="x-num" x="300" y="124" text-anchor="middle">0</text>' +
-          '<text class="x-name" x="300" y="150" text-anchor="middle">Sistema de citas</text>' +
-          // entidad externa: médico
-          '<rect class="x-ext" x="458" y="104" width="118" height="60"/>' +
-          '<text class="x-ext-name" x="517" y="139" text-anchor="middle">Médico</text>' +
-          // flujos paciente <-> sistema
-          flow(142, 118, 184, 112) + lbl(163, 100, 'solicitud de cita') +
-          flow(184, 156, 142, 150) + lbl(163, 182, 'confirmación') +
-          // flujos sistema <-> médico
-          flow(416, 112, 458, 118) + lbl(437, 100, 'agenda del día') +
-          flow(458, 150, 416, 156) + lbl(437, 182, 'consulta de agenda') +
+          '<svg class="dfx-svg" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paso 1: las entidades Producto y Venta identificadas; IVA y descuento descartados por ser valores y reglas.">' +
+          ent(90, 50, 160, 'PRODUCTO', []) +
+          ent(350, 50, 160, 'VENTA', []) +
+          '<text class="x-ghost" x="150" y="150" text-anchor="middle">¿ IVA 16% ?</text>' +
+          '<line class="x-ghost-strike" x1="105" y1="146" x2="196" y2="146"/>' +
+          '<text class="x-ghost" x="150" y="170" text-anchor="middle">es un valor, no una entidad</text>' +
+          '<text class="x-ghost" x="430" y="150" text-anchor="middle">¿ Descuento por volumen ?</text>' +
+          '<line class="x-ghost-strike" x1="330" y1="146" x2="530" y2="146"/>' +
+          '<text class="x-ghost" x="430" y="170" text-anchor="middle">es una regla, no una entidad</text>' +
           '</svg>'
       },
       '1': {
-        level: 'Nivel 1 · Procesos internos',
-        title: 'La caja se abre en tres procesos',
-        read: '<b>Lee así:</b> el "0" se descompuso en procesos numerados <b>1, 2, 3</b>, y ahora aparecen los <b>almacenes</b> (D1 Pacientes, D2 Citas) que el contexto ocultaba. Sigue la corriente: registrar &rarr; agendar &rarr; consultar.',
-        balance: '<b>Balanceo:</b> "solicitud de cita" y "confirmación" del paciente, y "agenda" hacia el médico, son <b>los mismos</b> flujos de frontera del nivel 0. Nada se inventó ni se perdió: solo se detalló.',
+        level: 'Paso 2 · Atributos y llaves',
+        title: 'Cada entidad declara qué guarda — y su identidad',
+        read: '<b>Lee así:</b> cada entidad lista sus atributos &mdash; los datos que la papelería realmente muestra en pantalla &mdash; y encabeza con su <b>llave primaria (PK)</b>: el id irrepetible. Nota que Venta guarda su total: parece calculable, pero es una <em>fotografía histórica</em> &mdash; si mañana cambia el precio del bolígrafo, el ticket de ayer no debe cambiar.',
+        balance: '<b>Ojo:</b> el folio (V-0001) también es único&hellip; ¿por qué no es la llave? Podría serlo &mdash; se llama llave natural. Pero la práctica profesional prefiere un id interno estable y dejar el folio como atributo único: los formatos de folio cambian; los id, no.',
         svg:
-          '<svg class="dfx-svg" viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DFD de nivel 1 del sistema de citas: tres procesos, dos almacenes y dos entidades externas.">' + ARR +
-          // entidades externas
-          '<rect class="x-ext" x="18" y="44" width="104" height="50"/>' +
-          '<text class="x-ext-name" x="70" y="74" text-anchor="middle">Paciente</text>' +
-          '<rect class="x-ext" x="478" y="262" width="104" height="50"/>' +
-          '<text class="x-ext-name" x="530" y="292" text-anchor="middle">Médico</text>' +
-          // proceso 1: registrar paciente
-          '<ellipse class="x-proc" cx="300" cy="68" rx="92" ry="42"/>' +
-          '<text class="x-num" x="300" y="60" text-anchor="middle">1</text>' +
-          '<text class="x-name" x="300" y="82" text-anchor="middle">Registrar paciente</text>' +
-          // proceso 2: agendar cita (el que se explota)
-          '<ellipse class="x-proc" cx="180" cy="210" rx="92" ry="44"/>' +
-          '<text class="x-num" x="180" y="202" text-anchor="middle">2</text>' +
-          '<text class="x-name" x="180" y="224" text-anchor="middle">Agendar cita</text>' +
-          // proceso 3: consultar agenda
-          '<ellipse class="x-proc" cx="430" cy="160" rx="92" ry="42"/>' +
-          '<text class="x-num" x="430" y="152" text-anchor="middle">3</text>' +
-          '<text class="x-name" x="430" y="174" text-anchor="middle">Consultar agenda</text>' +
-          // almacenes
-          '<rect class="x-store-fill" x="300" y="150" width="150" height="26"/>' +
-          '<line class="x-store-line" x1="300" y1="150" x2="450" y2="150"/>' +
-          '<line class="x-store-line" x1="300" y1="176" x2="450" y2="176"/>' +
-          '<line class="x-store-line" x1="320" y1="150" x2="320" y2="176"/>' +
-          '<text class="x-store-name" x="386" y="168" text-anchor="middle">D1 Pacientes</text>' +
-          '<rect class="x-store-fill" x="120" y="300" width="150" height="26"/>' +
-          '<line class="x-store-line" x1="120" y1="300" x2="270" y2="300"/>' +
-          '<line class="x-store-line" x1="120" y1="326" x2="270" y2="326"/>' +
-          '<line class="x-store-line" x1="140" y1="300" x2="140" y2="326"/>' +
-          '<text class="x-store-name" x="206" y="318" text-anchor="middle">D2 Citas</text>' +
-          // flujos
-          flow(122, 62, 208, 66) + lbl(165, 52, 'datos del paciente') +
-          flow(300, 110, 360, 148) + lbl(348, 128, 'expediente', 'start') +
-          flow(308, 168, 248, 196) + lbl(300, 132, 'paciente válido', 'start') +
-          flow(180, 254, 195, 298) + lbl(250, 282, 'cita registrada', 'start') +
-          flow(122, 80, 150, 168) + lbl(70, 150, 'solicitud', 'middle') +
-          flow(150, 168, 122, 86) + lbl(116, 130, 'confirmación', 'start') +
-          flow(252, 300, 372, 192) + lbl(296, 262, 'citas registradas', 'start') +
-          flow(498, 196, 512, 262) + lbl(520, 232, 'agenda del día', 'start') +
+          '<svg class="dfx-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paso 2: Producto y Venta con sus atributos y llaves primarias marcadas.">' +
+          ent(60, 30, 200, 'PRODUCTO', [
+            { t: 'id_producto', pk: true }, { t: 'nombre' }, { t: 'categoria' },
+            { t: 'precio' }, { t: 'stock' }, { t: 'stock_minimo' }
+          ]) +
+          ent(340, 30, 200, 'VENTA', [
+            { t: 'id_venta', pk: true }, { t: 'folio' }, { t: 'fecha' },
+            { t: 'subtotal' }, { t: 'descuento' }, { t: 'iva' }, { t: 'total' }
+          ]) +
           '</svg>'
       },
       '2': {
-        level: 'Diagrama de detalle · explota el proceso 2',
-        title: 'Dentro de "2. Agendar cita"',
-        read: '<b>Lee así:</b> el proceso "2" se abrió en subprocesos <b>2.1, 2.2, 2.3</b> &mdash; nota cómo el número hereda el "2" del padre. Es el nivel más fino: validar, asignar y notificar. Aquí ya no vale la pena seguir abriendo.',
-        balance: '<b>Balanceo:</b> entra "solicitud de cita" y sale "confirmación" &mdash; <b>exactamente</b> lo que entraba y salía del proceso 2 en el nivel 1. El almacén D2 Citas reaparece porque vive dentro de este proceso.',
+        level: 'Paso 3 · Relaciones y proporción',
+        title: 'La N:M se rompe — y nace el renglón del ticket',
+        read: '<b>Lee así:</b> una venta contiene <em>muchos</em> productos y un producto aparece en <em>muchas</em> ventas: N:M (la línea punteada de arriba, prohibida tal cual). Al romperla nace <b>DETALLE_VENTA</b> &mdash; el renglón del ticket &mdash; con las llaves foráneas (FK) de sus dos padres y sus datos propios: cantidad y el precio de ese día.',
+        balance: '<b>Balanceo pitagórico:</b> lee las patas de gallo: una VENTA tiene N detalles; un PRODUCTO aparece en N detalles; cada DETALLE pertenece a 1 venta y a 1 producto. Dos relaciones 1:N reemplazan a la N:M &mdash; la proporción se conservó, solo se detalló.',
         svg:
-          '<svg class="dfx-svg" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de detalle del proceso Agendar cita: subprocesos 2.1 validar, 2.2 asignar y 2.3 notificar.">' + ARR +
-          // entidad externa: paciente (origen y destino del flujo balanceado)
-          '<rect class="x-ext" x="18" y="128" width="104" height="50"/>' +
-          '<text class="x-ext-name" x="70" y="158" text-anchor="middle">Paciente</text>' +
-          // subproceso 2.1
-          '<ellipse class="x-proc" cx="230" cy="80" rx="88" ry="40"/>' +
-          '<text class="x-num" x="230" y="72" text-anchor="middle">2.1</text>' +
-          '<text class="x-name" x="230" y="94" text-anchor="middle">Validar fecha</text>' +
-          // subproceso 2.2
-          '<ellipse class="x-proc" cx="430" cy="150" rx="88" ry="40"/>' +
-          '<text class="x-num" x="430" y="142" text-anchor="middle">2.2</text>' +
-          '<text class="x-name" x="430" y="164" text-anchor="middle">Asignar cupo</text>' +
-          // subproceso 2.3
-          '<ellipse class="x-proc" cx="230" cy="240" rx="88" ry="40"/>' +
-          '<text class="x-num" x="230" y="232" text-anchor="middle">2.3</text>' +
-          '<text class="x-name" x="230" y="254" text-anchor="middle">Notificar cita</text>' +
-          // almacén D2 Citas
-          '<rect class="x-store-fill" x="358" y="244" width="150" height="26"/>' +
-          '<line class="x-store-line" x1="358" y1="244" x2="508" y2="244"/>' +
-          '<line class="x-store-line" x1="358" y1="270" x2="508" y2="270"/>' +
-          '<line class="x-store-line" x1="378" y1="244" x2="378" y2="270"/>' +
-          '<text class="x-store-name" x="444" y="262" text-anchor="middle">D2 Citas</text>' +
-          // flujos
-          flow(122, 140, 168, 96) + lbl(110, 110, 'solicitud de cita', 'start') +
-          flow(300, 96, 372, 138) + lbl(360, 108, 'fecha válida', 'start') +
-          flow(430, 190, 300, 232) + lbl(390, 226, 'cupo asignado', 'start') +
-          flow(430, 190, 430, 242) + lbl(440, 224, 'registrar', 'start') +
-          flow(168, 222, 122, 168) + lbl(110, 200, 'confirmación', 'start') +
+          '<svg class="dfx-svg" viewBox="0 0 600 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paso 3: la relación muchos a muchos entre Venta y Producto se resuelve con la entidad intermedia Detalle de venta.">' +
+          // la N:M prohibida, tachada
+          '<path class="x-dead" d="M 100 60 C 220 18, 380 18, 500 60"/>' +
+          '<text class="x-dead-lbl" x="300" y="26" text-anchor="middle">contiene &middot; N : M &mdash; así no se puede guardar</text>' +
+          '<line class="x-dead" x1="288" y1="42" x2="312" y2="30"/>' +
+          // entidades
+          ent(16, 100, 160, 'VENTA', [
+            { t: 'id_venta', pk: true }, { t: 'folio' }, { t: 'fecha' }, { t: 'total' }
+          ]) +
+          ent(218, 80, 170, 'DETALLE_VENTA', [
+            { t: 'id_detalle', pk: true }, { t: 'id_venta', fk: true },
+            { t: 'id_producto', fk: true }, { t: 'cantidad' }, { t: 'precio_unit' }
+          ]) +
+          ent(428, 100, 160, 'PRODUCTO', [
+            { t: 'id_producto', pk: true }, { t: 'nombre' }, { t: 'precio' }, { t: 'stock' }
+          ]) +
+          // venta 1 -> N detalle
+          rel(176, 160, 218, 160, 'tiene') +
+          // producto 1 -> N detalle (línea de derecha a izquierda)
+          rel(428, 160, 388, 160, 'aparece') +
           '</svg>'
       }
     };
