@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 18 · Euclides · Sistemas de Información</title>
-<meta name="description" content="Clase 18: el diccionario de datos junto al DFD. Definición rigurosa de flujos, almacenes y elementos de dato; técnicas de especificación de procesos; y por qué el rigor en las definiciones evita malentendidos caros. La geometría del dato, según Euclides. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 18: cómo conversan los sistemas — HTTP y APIs. Cliente y servidor, verbos y códigos de estado, la anatomía de una petición, y el diseño de la API de tu proyecto con IA. Los postulados de la web, según Euclides. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -127,11 +127,166 @@
   .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* ejemplo y taller (reuso) */
+  /* ============================================================
+     TARJETAS: LOS VERBOS DE HTTP (s4) y ENTIDAD → API (s6)
+  ============================================================ */
+  .techs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 720px) { .techs-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .techs-grid { grid-template-columns: 1fr; } }
+  .techs-grid.two { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 480px) { .techs-grid.two { grid-template-columns: 1fr; } }
+  .tech-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .techs-grid.go .tech-card { opacity: 1; transform: translateY(0); }
+  .techs-grid.go .tech-card:nth-child(1) { transition-delay: 0.05s; }
+  .techs-grid.go .tech-card:nth-child(2) { transition-delay: 0.15s; }
+  .techs-grid.go .tech-card:nth-child(3) { transition-delay: 0.25s; }
+  .techs-grid.go .tech-card:nth-child(4) { transition-delay: 0.35s; }
+  .techs-grid.go .tech-card:nth-child(5) { transition-delay: 0.45s; }
+  .techs-grid.go .tech-card:nth-child(6) { transition-delay: 0.55s; }
+  .tech-card h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
+  .tech-card h4 .verb { font-family: var(--mono); font-style: normal; font-size: 16px; color: var(--blood); font-weight: 500; letter-spacing: 0.04em; }
+  .tech-card .tc-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .tech-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+  .tech-card.hl { border-color: var(--blood); border-top: 3px solid var(--blood); }
+
+  /* ============================================================
+     ANATOMÍA DE LA URL (s3) — leyenda de cuatro partes
+  ============================================================ */
+  .sym-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 560px) { .sym-grid { grid-template-columns: 1fr; } }
+  .sym-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 20px 18px; display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: center; }
+  .sym-icon { display: flex; align-items: center; justify-content: center; }
+  .sym-icon .url-part { font-family: var(--mono); font-size: 13px; color: var(--blood); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 8px; text-align: center; width: 88px; word-break: break-all; line-height: 1.3; }
+  .sym-body h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 3px; }
+  .sym-body .sym-kind { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 8px; }
+  .sym-body p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+  .url-full { font-family: var(--mono); font-size: clamp(13px, 2.4vw, 17px); background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 16px 18px; margin: 24px 0; text-align: center; color: var(--ink-muted); overflow-x: auto; white-space: nowrap; }
+  .url-full b { font-weight: 500; }
+  .url-full .u1 { color: var(--blood); }
+  .url-full .u2 { color: var(--ink); }
+  .url-full .u3 { color: var(--ochre); }
+  .url-full .u4 { color: var(--olive); }
+
+  /* ============================================================
+     EXPLORADOR DE LA CONVERSACIÓN HTTP (s5)
+  ============================================================ */
+  .dfx { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .dfx-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
+  .dfx-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .dfx-tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 22px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.3; text-align: left; }
+  .dfx-tab:hover { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
+  .dfx-tab:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .dfx-tab.on { border-color: var(--blood); color: var(--paper); background: var(--blood); }
+  .dfx-tab b { font-weight: 600; }
+  .dfx-stage { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 18px 14px 14px; }
+  .dfx-level { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .dfx-title { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.15; margin-bottom: 14px; }
+  /* bloque de protocolo: la conversación en crudo */
+  .http-block { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 6px; padding: 16px 18px; margin: 0 0 12px; font-family: var(--mono); font-size: 12.5px; line-height: 1.9; overflow-x: auto; }
+  .http-block .ln { display: block; white-space: pre; }
+  .http-block .h-dir { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); display: block; margin: 2px 0 6px; }
+  .h-m { color: var(--blood); font-weight: 500; }
+  .h-u { color: var(--ink); }
+  .h-v { color: var(--ink-faint); }
+  .h-ok { color: var(--olive); font-weight: 500; }
+  .h-k { color: var(--ochre); }
+  .h-val { color: var(--ink-soft); }
+  .h-body { color: var(--olive); }
+  .h-json-k { color: var(--blood); }
+  .h-json-v { color: var(--ink-soft); }
+  .h-dim { color: var(--ink-faint); font-style: italic; }
+  /* aparición suave de cada acto */
+  .dfx-fig { opacity: 0; transform: translateY(8px); transition: opacity 0.45s ease, transform 0.45s ease; }
+  .dfx-fig.show { opacity: 1; transform: translateY(0); }
+  .dfx-read { margin-top: 16px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); }
+  .dfx-read b { color: var(--ink); font-weight: 600; }
+  .dfx-balance { margin-top: 12px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+  .dfx-balance b { color: var(--blood); font-weight: 600; }
+
+  /* ============================================================
+     EL VIAJE DE UNA PETICIÓN (s3) — diagrama animado
+  ============================================================ */
+  .net { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px 24px; margin: 32px 0; }
+  .net-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .net-steps { display: flex; flex-wrap: wrap; gap: 8px; }
+  .net-chip { font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; padding: 8px 13px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 20px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.2; }
+  .net-chip:hover { border-color: var(--blood); color: var(--blood); }
+  .net-chip:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .net-chip.on { border-color: var(--blood); color: var(--paper); background: var(--blood); }
+  .net-replay { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; padding: 8px 14px; background: transparent; border: 1px dashed var(--ochre); border-radius: 20px; color: var(--ochre); cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .net-replay:hover { background: var(--ochre); color: var(--paper); }
+  .net-stage { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 14px 10px 6px; }
+  .net-svg { width: 100%; max-width: 640px; display: block; margin: 0 auto; }
+  .net-caption { margin-top: 14px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); min-height: 68px; }
+  .net-caption b { color: var(--ink); font-weight: 600; }
+  /* piezas del escenario */
+  .net-svg .net-lbl { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.12em; }
+  .net-svg .nc-screen { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.6; transition: stroke 0.35s; }
+  .net-svg .nc-base { fill: var(--ink-soft); opacity: 0.25; }
+  .net-svg .nc-url { font-family: var(--mono); font-size: 11px; fill: var(--blood); font-weight: 500; opacity: 0; transition: opacity 0.35s; }
+  .net-svg .nc-page rect { fill: var(--ink-faint); opacity: 0; transition: opacity 0.4s; }
+  .net-svg .nc-page rect:first-child { fill: var(--ochre); }
+  .net-svg .net-wire { stroke: var(--line-strong); stroke-width: 2; }
+  .net-svg .ns-box { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.6; transition: stroke 0.35s; }
+  .net-svg .ns-slot { fill: var(--ink-faint); opacity: 0.28; }
+  .net-svg .ns-light { fill: var(--ink-faint); transition: fill 0.3s; }
+  .net-svg .net-dns-box { fill: var(--paper-elev); stroke: var(--ink-muted); stroke-width: 1.4; opacity: 0.45; transition: opacity 0.35s, stroke 0.35s; }
+  .net-svg .net-dns-txt { font-family: var(--mono); font-size: 11px; fill: var(--ink-muted); letter-spacing: 0.14em; opacity: 0.55; transition: opacity 0.35s; }
+  .net-svg .net-dns-line { stroke: var(--ink-faint); stroke-width: 1.3; stroke-dasharray: 5 4; fill: none; opacity: 0.3; transition: opacity 0.35s, stroke 0.35s; }
+  .net-svg .net-dns-q { font-family: var(--mono); font-size: 9.5px; fill: var(--ochre); opacity: 0; transition: opacity 0.35s; }
+  .net-svg .net-db-shape { fill: var(--paper-elev); stroke: var(--olive); stroke-width: 1.5; transition: stroke-width 0.3s; }
+  .net-svg .net-db-lbl { font-family: var(--mono); font-size: 10px; fill: var(--olive); letter-spacing: 0.1em; }
+  .net-svg .net-db-line { stroke: var(--olive); stroke-width: 1.4; stroke-dasharray: 5 4; opacity: 0.3; transition: opacity 0.35s; }
+  .net-svg .net-req, .net-svg .net-res { opacity: 0; transition: transform 1.7s ease 0.1s, opacity 0.35s; }
+  .net-svg .net-req rect { fill: var(--paper); stroke: var(--blood); stroke-width: 1.5; }
+  .net-svg .net-req text { font-family: var(--mono); font-size: 10.5px; fill: var(--blood); font-weight: 500; }
+  .net-svg .net-res rect { fill: var(--paper); stroke: var(--olive); stroke-width: 1.5; }
+  .net-svg .net-res text { font-family: var(--mono); font-size: 10.5px; fill: var(--olive); font-weight: 500; }
+  /* coreografía por paso */
+  .net[data-step="1"] .nc-screen { stroke: var(--blood); }
+  .net[data-step="1"] .nc-url { opacity: 1; }
+  .net[data-step="2"] .net-dns-box { opacity: 1; stroke: var(--ochre); }
+  .net[data-step="2"] .net-dns-txt { opacity: 1; }
+  .net[data-step="2"] .net-dns-line { opacity: 1; stroke: var(--ochre); }
+  .net[data-step="2"] .net-dns-q { opacity: 1; }
+  .net[data-step="3"] .net-req { opacity: 1; transform: translateX(180px); }
+  .net[data-step="4"] .net-req { opacity: 0; transform: translateX(180px); }
+  .net[data-step="4"] .ns-box { stroke: var(--blood); animation: nsPulse 1.1s ease infinite; }
+  .net[data-step="4"] .ns-light { fill: var(--blood); }
+  .net[data-step="4"] .ns-light:nth-of-type(2) { transition-delay: 0.15s; }
+  .net[data-step="4"] .net-db-line { opacity: 1; animation: dbDash 0.9s linear infinite; }
+  .net[data-step="4"] .net-db-shape { stroke-width: 2.6; }
+  .net[data-step="5"] .net-res { opacity: 1; transform: translateX(-170px); }
+  .net[data-step="6"] .net-res { opacity: 0; transform: translateX(-170px); }
+  .net[data-step="6"] .nc-screen { stroke: var(--blood); }
+  .net[data-step="6"] .nc-page rect { opacity: 0.85; }
+  .net[data-step="6"] .nc-page rect:nth-child(2) { transition-delay: 0.2s; }
+  .net[data-step="6"] .nc-page rect:nth-child(3) { transition-delay: 0.4s; }
+  .net[data-step="6"] .nc-page rect:nth-child(4) { transition-delay: 0.6s; }
+  @keyframes nsPulse { 0%, 100% { stroke-width: 1.6; } 50% { stroke-width: 3.2; } }
+  @keyframes dbDash { to { stroke-dashoffset: -18; } }
+  @media (prefers-reduced-motion: reduce) {
+    .net-svg .net-req, .net-svg .net-res { transition: opacity 0.35s; }
+    .net[data-step="4"] .ns-box, .net[data-step="4"] .net-db-line { animation: none; }
+  }
+
+  /* comparación XML vs JSON (s6) */
+  .json-vs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+  @media (max-width: 560px) { .json-vs { grid-template-columns: 1fr; } }
+  .json-vs .http-block { margin: 0; }
+
+  /* ejemplo (reuso) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
   .example p b { color: var(--ink); font-weight: 600; }
+
+  /* bloque de prompt (taller) */
+  .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
+  .prompt-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
+  .prompt-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; word-break: break-word; margin: 0; }
+
+  /* taller (reuso) */
   .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
   .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
   .field-step:first-child { border-top: none; padding-top: 0; }
@@ -141,71 +296,6 @@
   .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
   .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
   .field-planb b { color: var(--ochre); font-weight: 600; }
-
-  /* ============================================================
-     NOTACIÓN DEL DD (s4) — tabla de símbolos
-  ============================================================ */
-  .notation { display: grid; gap: 0; margin: 28px 0; border-top: 1px solid var(--line); }
-  .notation-row { display: grid; grid-template-columns: 56px 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
-  @media (max-width: 560px) { .notation-row { grid-template-columns: 44px 1fr; gap: 12px; } }
-  .notation-sym { font-family: var(--mono); font-size: 22px; color: var(--blood); text-align: center; line-height: 1; }
-  .notation-body { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
-  .notation-body b { color: var(--ink); font-weight: 600; }
-  .notation-body .nb-name { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink); display: block; margin-bottom: 3px; }
-
-  /* ============================================================
-     DEFINICIÓN EN CASCADA (s4) — flujo > almacén > elemento
-  ============================================================ */
-  .levels { display: grid; gap: 0; margin: 28px 0; }
-  .level-row { display: grid; grid-template-columns: 150px 1fr; gap: 18px; padding: 18px 0; border-top: 1px solid var(--line); align-items: baseline; }
-  .level-row:last-child { border-bottom: 1px solid var(--line); }
-  @media (max-width: 560px) { .level-row { grid-template-columns: 1fr; gap: 5px; } }
-  .level-kind { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ochre); padding-top: 3px; }
-  .level-def { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
-  .level-def b { color: var(--ink); font-weight: 600; }
-  .level-def .ld-eq { font-family: var(--mono); font-size: 13px; color: var(--blood); background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; display: inline-block; margin: 2px 0; }
-
-  /* ============================================================
-     ANATOMÍA DE UNA ENTRADA DEL DD (s6) — interactivo
-  ============================================================ */
-  .anat { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
-  .anat-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 18px; }
-  .anat-card { background: var(--paper); border: 1px solid var(--line-strong); border-top: 3px solid var(--blood); border-radius: 6px; padding: 8px 0 4px; }
-  .anat-part { display: grid; grid-template-columns: 150px 1fr; gap: 4px 18px; width: 100%; text-align: left; background: transparent; border: none; border-bottom: 1px solid var(--line); padding: 15px 22px; cursor: pointer; font-family: inherit; color: inherit; transition: background 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; align-items: baseline; }
-  .anat-part:last-of-type { border-bottom: none; }
-  .anat-part:hover { background: var(--paper-deep); }
-  .anat-part:focus-visible { outline: 2px solid var(--blood); outline-offset: -2px; }
-  .anat-part.on { background: var(--paper-deep); }
-  .anat-key { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ochre); padding-top: 4px; transition: color 0.2s; }
-  .anat-part.on .anat-key { color: var(--blood); }
-  .anat-val { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); line-height: 1.3; }
-  @media (max-width: 560px) { .anat-part { grid-template-columns: 1fr; gap: 2px; padding: 14px 16px; } .anat-key { padding-top: 0; } }
-  .anat-explain { margin-top: 18px; padding: 20px 22px; border-radius: 6px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ink-faint); transition: border-color 0.25s; }
-  .anat-explain.live { border-left-color: var(--blood); }
-  .anat-explain .ax-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
-  .anat-explain .ax-kicker b { color: var(--blood); font-weight: 600; }
-  .anat-explain .ax-what { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 12px; }
-  .anat-explain .ax-what b { color: var(--ink); font-weight: 600; }
-  .anat-explain .ax-why { font-size: 13.5px; color: var(--ink-muted); line-height: 1.55; border-top: 1px dashed var(--line-strong); padding-top: 12px; }
-  .anat-explain .ax-why b { color: var(--blood); font-weight: 600; }
-  .anat-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
-  .anat-score { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-muted); }
-  .anat-score b { color: var(--olive); font-weight: 600; }
-  .anat-conclusion { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--olive); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
-  .anat-conclusion.show { opacity: 1; max-height: 600px; }
-  .anat-conclusion b { color: var(--olive); font-weight: 600; }
-
-  /* tarjetas de técnicas de especificación de proceso (s5) */
-  .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
-  @media (max-width: 720px) { .spec-grid { grid-template-columns: 1fr; } }
-  .spec-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 22px 20px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-  .spec-grid.go .spec-card { opacity: 1; transform: translateY(0); }
-  .spec-grid.go .spec-card:nth-child(1) { transition-delay: 0.05s; }
-  .spec-grid.go .spec-card:nth-child(2) { transition-delay: 0.15s; }
-  .spec-grid.go .spec-card:nth-child(3) { transition-delay: 0.25s; }
-  .spec-card h4 { font-family: var(--serif); font-style: italic; font-size: 21px; color: var(--ink); margin-bottom: 4px; }
-  .spec-card .sc-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
-  .spec-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
 </style>
 </head>
 <body>
@@ -218,11 +308,11 @@
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#s1">Repaso</a></li>
       <li><a href="#s2">Euclides</a></li>
-      <li><a href="#s3">El DD</a></li>
-      <li><a href="#s4">Definir</a></li>
-      <li><a href="#s5">Procesos</a></li>
-      <li><a href="#s6">Anatomía</a></li>
-      <li><a href="#s7">El rigor</a></li>
+      <li><a href="#s3">Cliente-servidor</a></li>
+      <li><a href="#s4">Postulados</a></li>
+      <li><a href="#s5">Explorador</a></li>
+      <li><a href="#s6">APIs</a></li>
+      <li><a href="#s7">Malentendidos</a></li>
       <li><a href="#s8">Taller</a></li>
       <li><a href="#s9">Cierre</a></li>
     </ul>
@@ -234,7 +324,7 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 18</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Euclides</h1>
-      <p class="hero-tagline">Cada dato, definido<br>con <span>rigor de geometría</span>.</p>
+      <p class="hero-tagline">Detrás de cada clic,<br>una <span>conversación con postulados</span>.</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 16 julio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
@@ -248,7 +338,7 @@
 <section class="quote">
   <div class="wrap">
     <p class="quote-text">No hay camino real hacia la geometría.</p>
-    <p class="quote-attr">— <b>Euclides de Alejandría</b> · a Ptolomeo I · siglo iii a.C.</p>
+    <p class="quote-attr">— <b>Euclides de Alejandría</b>, al rey Ptolomeo I · siglo iii a.C.</p>
   </div>
 </section>
 
@@ -258,19 +348,19 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · la geometría del dato</span>
+          <span class="sec-chip">119 min · los postulados de la web</span>
         </div>
-        <p class="sec-objective">Hoy le ponemos definición a cada dato. El diccionario de datos es la geometría de tu sistema: cada flujo, cada almacén y cada elemento definido una sola vez, sin ambigüedad y para siempre &mdash; y cada proceso, especificado.</p>
+        <p class="sec-objective">Ya modelaste qué recuerda tu sistema. Hoy vemos cómo <em>conversa</em>: el protocolo HTTP con el que un navegador le habla a un servidor, los verbos y códigos que lo gobiernan, y las APIs &mdash; la puerta por la que los sistemas se hablan entre sí. Al final, la IA diseñará contigo la API de tu proyecto.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: dibujaste el flujo; ¿qué viaja por las flechas?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: modelaste la memoria; ¿cómo viaja el dato?</span><span class="agenda-dur">8 min</span></div>
         <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Euclides?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">El diccionario de datos y su DFD</span><span class="agenda-dur">12 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:28</span><span class="agenda-title">Definir flujos, almacenes y elementos</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">Especificar qué hace cada proceso</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:58</span><span class="agenda-title">Anatomía de una entrada del diccionario</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:16</span><span class="agenda-title">El rigor que evita facturas caras</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: el diccionario de tu proyecto</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Cliente y servidor: quién pide y quién responde</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">Los postulados de HTTP: verbos y códigos</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">El explorador: una conversación, anatomizada</span><span class="agenda-dur">20 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:04</span><span class="agenda-title">Las APIs: cuando los sistemas hablan entre sí</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:18</span><span class="agenda-title">Los malentendidos que delatan a un novato</span><span class="agenda-dur">12 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: la API de tu proyecto, diseñada con IA</span><span class="agenda-dur">18 min</span></div>
         <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y enlace con la próxima clase</span><span class="agenda-dur">11 min</span></div>
       </div>
     </div>
@@ -283,17 +373,17 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Dibujaste el flujo.<br>¿Qué viaja por las flechas?</h2></div>
+          <div><span class="sec-num">i.</span><h2>Modelaste la memoria.<br>¿Cómo viaja<br>el dato?</h2></div>
           <span class="sec-chip">8 min · 20:00</span>
         </div>
-        <p class="sec-objective">El DFD te mostró por dónde se mueve la información. Pero una flecha rotulada "datos del cliente" no dice nada: hay que abrirla y definir, dato por dato, qué contiene.</p>
+        <p class="sec-objective">El lunes dibujaste dónde viven los datos y una IA te construyó la base. Pero un sistema de información no solo recuerda: conversa. Hoy abrimos el cable y miramos qué viaja por él.</p>
       </div>
-      <p>En la clase pasada modelaste el movimiento de la información con el diagrama de flujo de datos: procesos, flujos, almacenes y entidades externas. Dibujaste flechas que dicen "pedido", "factura", "datos del cliente", y burbujas que transforman unas en otras. Quedó precioso. Pero hay una pregunta que el diagrama no contesta y que un programador te hará el primer día: <em>¿qué hay exactamente dentro de esa flecha?</em></p>
-      <p>"Datos del cliente" puede ser un nombre y un teléfono, o puede ser nombre, RFC, domicilio fiscal, correo, historial de compras y método de pago preferido. El DFD no lo sabe; el diccionario de datos sí. Hoy abrimos cada flecha y cada almacén y los definimos con precisión &mdash; y por eso nos acompaña Euclides, el hombre que convirtió la imprecisión en error y la definición en cimiento.</p>
+      <p>Vuelve a la escena del laboratorio: el profesor dictó una dirección extraña &mdash; <span style="font-family:var(--mono); font-size:14px;">http://10.55.107.224:5000</span> &mdash; y al escribirla en tu navegador apareció la papelería. Registraste ventas desde tu lugar y el historial de todos se actualizó. Detente ahí: tu máquina y la del profesor son computadoras distintas, y sin embargo <em>conversaron</em>. Algo viajó de la tuya a la suya y de vuelta. ¿Qué, exactamente? ¿Con qué reglas? ¿En qué idioma?</p>
+      <p>Ese idioma existe, tiene nombre &mdash; <b>HTTP</b>, protocolo de transferencia de hipertexto &mdash; y es el mismo para toda la web: lo hablan tu banco, Spotify, la papelería y el sistema que estás analizando en tu proyecto. La palabra clave es <em>protocolo</em>: un acuerdo de reglas fijas que ambas partes aceptan antes de hablar. Sin protocolo no hay conversación; hay ruido.</p>
       <div class="say">
         <div class="say-card">
           <div class="say-label">El dato que duele</div>
-          <p class="say-text">"Un DFD sin diccionario de datos es un mapa de carreteras sin saber qué transportan los camiones. Se ve completo, pero a la hora de construir, cada quien rellena los huecos a su antojo &mdash; y rellenar a su antojo es la definición exacta de un bug que aún no nace."</p>
+          <p class="say-text">"Un sistema aislado casi no existe ya: el valor está en los sistemas que se hablan &mdash; tu nómina con tu banco, tu tienda con la paquetería, tu app con el SAT. Y todos negocian con el mismo protocolo. Quien no entiende cómo conversan los sistemas, no puede analizarlos: solo puede mirarlos por fuera."</p>
         </div>
       </div>
     </div>
@@ -309,198 +399,340 @@
           <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Euclides?</h2></div>
           <span class="sec-chip">8 min · 20:08</span>
         </div>
-        <p class="sec-objective">Porque hace veintitrés siglos demostró que todo edificio sólido empieza por definiciones que no admiten discusión &mdash; y eso es, exactamente, un diccionario de datos.</p>
+        <p class="sec-objective">Porque escribió el primer protocolo de la historia: cinco postulados aceptados por todos, y de ellos, toda la geometría. HTTP es unos Elementos para máquinas: pocas reglas fijas, y de ellas, toda la web.</p>
       </div>
-      <p>Euclides escribió <em>los Elementos</em>, el libro de texto más longevo de la historia: trece volúmenes de geometría que se estudiaron casi sin cambios durante dos mil años. Y no empezó demostrando teoremas. Empezó con algo más humilde y más poderoso: <em>definiciones</em>. "Punto es lo que no tiene partes." "Línea es longitud sin anchura." Antes de afirmar nada, Euclides fijó el significado exacto de cada término. De esas definiciones y de unos pocos axiomas dedujo, paso a paso, todo lo demás.</p>
-      <p>Esa es la lección para tu sistema. El diccionario de datos es el libro de definiciones de tu proyecto: aquí "cliente" significa esto y solo esto, "fecha" tiene este formato y no otro, "monto" admite estos valores y rechaza aquellos. Si las definiciones son firmes, todo lo que construyas encima se sostiene. Si son ambiguas, el edificio entero hereda la grieta. Cuando Ptolomeo I, rey de Egipto, le pidió a Euclides un atajo para aprender geometría sin tanto rigor, la respuesta fue la cita de hoy: <em>no hay camino real hacia la geometría</em>. Tampoco lo hay hacia un sistema bien hecho: el rigor en las definiciones no se puede saltar.</p>
+      <p>Euclides de Alejandría hizo algo más radical que descubrir teoremas: <em>organizó el acuerdo</em>. En los Elementos partió de cinco postulados &mdash; afirmaciones simples que ambas partes aceptan sin discusión, como "por dos puntos pasa una recta" &mdash; y demostró que, si todos los aceptan, se puede construir un edificio de cientos de proposiciones donde cada quien llega, por sí mismo, a las mismas conclusiones. El acuerdo previo es lo que hace posible la conversación: sin postulados compartidos, dos geómetras solo pueden gritarse opiniones.</p>
+      <p>Un protocolo de red es exactamente eso. HTTP fija unos cuantos postulados &mdash; qué verbos existen, qué forma tiene una petición, qué códigos puede tener una respuesta &mdash; y gracias a que <b>todos</b> los aceptan, un navegador hecho en California conversa con un servidor casero en Atizapán sin que sus autores se hayan conocido jamás. Y la anécdota de Euclides con el rey Ptolomeo remata la idea: no hay camino real. El protocolo no hace excepciones &mdash; tu celular, Google y la papelería del profesor siguen las mismas reglas, sin privilegios para nadie.</p>
       <div class="say">
         <div class="say-card">
-          <div class="say-label">Euclides aplicado al análisis</div>
-          <p class="say-text">"El que dice 'el formato lo definimos después, ya nos entendemos' está pidiendo el camino real de Ptolomeo. No existe. Lo que defines hoy con rigor te ahorra una guerra de interpretaciones mañana; lo que dejas ambiguo, alguien lo definirá por ti &mdash; y casi nunca como tú querías."</p>
+          <div class="say-label">Euclides aplicado a las redes</div>
+          <p class="say-text">"La web no funciona porque alguien la dirija: funciona porque todos aceptaron los mismos postulados. Ese es el descubrimiento de Euclides aplicado a las máquinas &mdash; el acuerdo previo vale más que la autoridad. Cambia un postulado sin avisar y la conversación entera se rompe."</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S3 EL DICCIONARIO DE DATOS -->
+<!-- S3 CLIENTE Y SERVIDOR -->
 <section id="s3">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>El diccionario<br>de datos y su DFD</h2></div>
-          <span class="sec-chip">12 min · 20:16</span>
+          <div><span class="sec-num">iii.</span><h2>Cliente y servidor:<br>quién pide y<br>quién responde</h2></div>
+          <span class="sec-chip">14 min · 20:16</span>
         </div>
-        <p class="sec-objective">Qué es el diccionario de datos, para qué sirve y por qué nace pegado al DFD. Si el DFD es el mapa, el diccionario es la leyenda que lo hace legible.</p>
+        <p class="sec-objective">Toda la web es un juego de dos papeles: el cliente pide, el servidor responde. Y toda petición empieza con una dirección &mdash; la URL &mdash; que ya sabes leer sin saber que la sabes leer.</p>
       </div>
-      <p>El <em>diccionario de datos</em> (DD) es el repositorio único y ordenado donde se define cada dato del sistema: qué significa, qué forma tiene, qué valores admite y de qué se compone. No es un archivo aparte ni un anexo opcional: es la otra mitad del DFD. El DFD muestra <b>por dónde</b> se mueve la información; el diccionario dice <b>qué es</b> esa información. Ninguno funciona solo.</p>
-      <p>Piénsalo como un mapa con su leyenda. El DFD pone las flechas y las cajas; el diccionario explica que la flecha "pedido" se compone de número, fecha, cliente y líneas de detalle, y que cada una de esas, a su vez, se compone de algo más. Sin la leyenda, el mapa es decorativo. Tres cosas concretas resuelve el diccionario:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Una sola fuente de la verdad.</b> Cada dato se define <em>una vez</em> y todos los diagramas y documentos remiten a esa definición. Si "fecha de entrega" cambia de formato, se cambia en un lugar &mdash; no en quince hojas dispersas.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Cero ambigüedad entre equipos.</b> Analista, programador, base de datos y cliente leen la misma definición. "Lo que yo entendí" deja de existir: el diccionario es el árbitro, como el documento de caso de uso lo fue para los flujos.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>El puente hacia la base de datos.</b> Lo que hoy defines como elemento de dato &mdash; tipo, longitud, valores válidos &mdash; mañana es casi literal una columna de tu base de datos. El diccionario es el borrador del esquema que viene.</div></div>
+      <p>La conversación HTTP tiene dos papeles fijos. El <b>cliente</b> &mdash; tu navegador, una app, otro sistema &mdash; siempre <em>inicia</em>: pide algo. El <b>servidor</b> &mdash; un programa corriendo en alguna máquina &mdash; siempre <em>responde</em>: entrega lo pedido o explica por qué no. Nunca al revés: el servidor no te habla primero, aunque parezca (las notificaciones también empiezan con una petición del cliente). Es una conversación por turnos, como el ajedrez: petición, respuesta, petición, respuesta.</p>
+      <p>Y cada petición empieza con una dirección. Aquella "dirección extraña" del laboratorio, leída con ojos de analista, era esto:</p>
+
+      <div class="url-full"><b><span class="u1">http://</span><span class="u2">10.55.107.224</span><span class="u3">:5000</span><span class="u4">/productos</span></b></div>
+
+      <div class="sym-grid" data-animate>
+        <div class="sym-card">
+          <div class="sym-icon"><div class="url-part">http://</div></div>
+          <div class="sym-body">
+            <h4>El protocolo</h4>
+            <div class="sym-kind">en qué idioma hablamos</div>
+            <p>Anuncia las reglas de la conversación. <b>http</b> es el idioma plano; <b>https</b> es el mismo idioma dentro de un sobre cifrado &mdash; el candado del navegador. Nunca escribas contraseñas donde no hay candado.</p>
+          </div>
+        </div>
+        <div class="sym-card">
+          <div class="sym-icon"><div class="url-part">10.55.107.224</div></div>
+          <div class="sym-body">
+            <h4>La dirección</h4>
+            <div class="sym-kind">a qué máquina le hablo</div>
+            <p>La <b>IP</b>: el domicilio de la máquina en la red. Los nombres como <span style="font-family:var(--mono); font-size:12px;">google.com</span> son un alias que otro servicio (el DNS, el directorio telefónico de internet) traduce a una IP antes de tocar la puerta.</p>
+          </div>
+        </div>
+        <div class="sym-card">
+          <div class="sym-icon"><div class="url-part">:5000</div></div>
+          <div class="sym-body">
+            <h4>El puerto</h4>
+            <div class="sym-kind">por cuál puerta entro</div>
+            <p>Una máquina puede atender varios servicios a la vez; cada uno escucha en una <b>puerta numerada</b>. La web usa la 80 (http) y la 443 (https) por omisión &mdash; por eso casi nunca lo escribes. La papelería atendía en la 5000.</p>
+          </div>
+        </div>
+        <div class="sym-card">
+          <div class="sym-icon"><div class="url-part">/productos</div></div>
+          <div class="sym-body">
+            <h4>La ruta</h4>
+            <div class="sym-kind">qué recurso pido</div>
+            <p>Dentro del servidor, <b>qué cosa</b> quiero: el catálogo (<span style="font-family:var(--mono); font-size:12px;">/productos</span>), un ticket (<span style="font-family:var(--mono); font-size:12px;">/ventas/V-0001</span>). Fíjate: las rutas nombran a las entidades de tu diagrama E-R. No es casualidad.</p>
+          </div>
+        </div>
       </div>
-      <p>En resumen: cada flujo y cada almacén que dibujaste ayer tiene que tener su entrada en el diccionario. Si una flecha no está definida, el modelo está incompleto &mdash; aunque el dibujo se vea terminado.</p>
+
+      <h3>El viaje completo de una petición</h3>
+      <p>Ahora junta las piezas y mira el viaje entero &mdash; del clic al dibujo en pantalla. El diagrama se reproduce solo; también puedes tocar cualquier paso para detenerte en él:</p>
+
+      <div class="net" id="net" data-step="1">
+        <div class="net-head">
+          <div class="net-steps" id="netSteps">
+            <button class="net-chip on" type="button" data-step="1">1 · La URL</button>
+            <button class="net-chip" type="button" data-step="2">2 · DNS</button>
+            <button class="net-chip" type="button" data-step="3">3 · Petición</button>
+            <button class="net-chip" type="button" data-step="4">4 · Resolución</button>
+            <button class="net-chip" type="button" data-step="5">5 · Respuesta</button>
+            <button class="net-chip" type="button" data-step="6">6 · Dibujo</button>
+          </div>
+          <button class="net-replay" type="button" id="netReplay">&#8635; Reproducir</button>
+        </div>
+        <div class="net-stage">
+          <svg class="net-svg" viewBox="0 0 640 275" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama animado del viaje de una petición HTTP: el cliente arma la URL, el DNS la traduce, la petición viaja al servidor, éste resuelve el recurso consultando la base de datos, la respuesta regresa y el navegador dibuja la página.">
+            <!-- cliente -->
+            <text class="nc-url" x="100" y="48" text-anchor="middle">GET /productos</text>
+            <rect class="nc-screen" x="40" y="60" width="120" height="86" rx="6"/>
+            <g class="nc-page">
+              <rect x="52" y="72" width="96" height="10" rx="2"/>
+              <rect x="52" y="90" width="70" height="6" rx="2"/>
+              <rect x="52" y="102" width="84" height="6" rx="2"/>
+              <rect x="52" y="114" width="60" height="6" rx="2"/>
+            </g>
+            <rect class="nc-base" x="30" y="150" width="140" height="9" rx="4"/>
+            <text class="net-lbl" x="100" y="184" text-anchor="middle">CLIENTE &middot; NAVEGADOR</text>
+            <!-- dns -->
+            <path class="net-dns-line" d="M 160 70 C 215 44, 245 36, 283 34"/>
+            <rect class="net-dns-box" x="285" y="16" width="80" height="36" rx="6"/>
+            <text class="net-dns-txt" x="325" y="39" text-anchor="middle">DNS</text>
+            <text class="net-dns-q" x="240" y="66" text-anchor="middle">papeleria.mx &rarr; 10.55.107.224</text>
+            <!-- cable -->
+            <line class="net-wire" x1="165" y1="120" x2="470" y2="120"/>
+            <!-- servidor -->
+            <rect class="ns-box" x="470" y="52" width="130" height="110" rx="6"/>
+            <rect class="ns-slot" x="482" y="64" width="82" height="10" rx="2"/>
+            <rect class="ns-slot" x="482" y="80" width="82" height="10" rx="2"/>
+            <rect class="ns-slot" x="482" y="96" width="82" height="10" rx="2"/>
+            <circle class="ns-light" cx="584" cy="69" r="3.4"/>
+            <circle class="ns-light" cx="584" cy="85" r="3.4"/>
+            <text class="net-lbl" x="560" y="184" text-anchor="middle">SERVIDOR</text>
+            <!-- base de datos -->
+            <line class="net-db-line" x1="505" y1="162" x2="486" y2="206"/>
+            <rect class="net-db-shape" x="452" y="212" width="52" height="34"/>
+            <ellipse class="net-db-shape" cx="478" cy="212" rx="26" ry="8"/>
+            <ellipse class="net-db-shape" cx="478" cy="246" rx="26" ry="8"/>
+            <text class="net-db-lbl" x="478" y="236" text-anchor="middle">BD</text>
+            <!-- sobres -->
+            <g class="net-req">
+              <rect x="168" y="90" width="118" height="24" rx="12"/>
+              <text x="227" y="106" text-anchor="middle">GET /productos</text>
+            </g>
+            <g class="net-res">
+              <rect x="338" y="128" width="132" height="24" rx="12"/>
+              <text x="404" y="144" text-anchor="middle">200 OK &middot; HTML</text>
+            </g>
+          </svg>
+        </div>
+        <div class="net-caption" id="netCaption"></div>
+      </div>
+
+      <div class="example">
+        <div class="example-tag">Un detalle con consecuencias</div>
+        <p>El servidor <b>no recuerda la conversación</b>: cada petición debe traer todo lo necesario para entenderse sola (a eso se le llama <em>sin estado</em>). Por eso existen las cookies y las sesiones &mdash; el gafete que el cliente presenta en cada turno para que el servidor "lo reconozca". Cuando tu banco te saca por inactividad, acaba de vencer tu gafete, no la conversación.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S4 DEFINIR FLUJOS, ALMACENES Y ELEMENTOS -->
+<!-- S4 VERBOS Y CÓDIGOS -->
 <section id="s4">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>Definir flujos,<br>almacenes y elementos</h2></div>
-          <span class="sec-chip">16 min · 20:28</span>
+          <div><span class="sec-num">iv.</span><h2>Los postulados:<br>verbos y códigos</h2></div>
+          <span class="sec-chip">14 min · 20:30</span>
         </div>
-        <p class="sec-objective">Como Euclides: pocos símbolos, reglas claras y todo lo demás se deduce. El diccionario define en cascada, de lo grande a lo mínimo, hasta llegar al dato que ya no se parte.</p>
+        <p class="sec-objective">Toda petición lleva un verbo &mdash; qué quiero hacer &mdash; y toda respuesta un código &mdash; cómo salió. Cuatro verbos y cinco familias de códigos: los postulados completos de la web.</p>
       </div>
-      <p>El diccionario de datos tiene su propia notación &mdash; austera y precisa, como los axiomas de Euclides. Con un puñado de símbolos puedes describir cualquier estructura de datos sin ambigüedad. Estos son los que más vas a usar:</p>
+      <p>El cliente no puede pedir cualquier cosa de cualquier forma: HTTP le da un repertorio cerrado de <b>verbos</b>. Estos cuatro cubren casi toda conversación &mdash; y nota el parentesco con lo que ya sabes: son las mismas cuatro operaciones que se hacen con los datos de una entidad:</p>
 
-      <div class="notation">
-        <div class="notation-row"><div class="notation-sym">=</div><div class="notation-body"><span class="nb-name">Se compone de</span> Define un dato a partir de otros. <b>pedido = encabezado + líneas</b> significa: un pedido es, exactamente, un encabezado más sus líneas.</div></div>
-        <div class="notation-row"><div class="notation-sym">+</div><div class="notation-body"><span class="nb-name">Y (concatenación)</span> Une componentes obligatorios. <b>nombre + apellido</b>: van los dos, siempre.</div></div>
-        <div class="notation-row"><div class="notation-sym">[ | ]</div><div class="notation-body"><span class="nb-name">Una de varias opciones</span> Selección excluyente. <b>[ efectivo | tarjeta | transferencia ]</b>: uno y solo uno.</div></div>
-        <div class="notation-row"><div class="notation-sym">{ }</div><div class="notation-body"><span class="nb-name">Repetición</span> Cero o más veces. Un pedido tiene <b>{ línea de detalle }</b>: muchas líneas, no se sabe cuántas de antemano.</div></div>
-        <div class="notation-row"><div class="notation-sym">( )</div><div class="notation-body"><span class="nb-name">Opcional</span> Puede estar o no. <b>cliente = nombre + ( segundo nombre ) + apellido</b>.</div></div>
-      </div>
-
-      <p>Con esa notación, las entradas se escriben en <em>cascada</em>: el flujo se define en términos de estructuras menores, esas en términos de elementos, y los elementos &mdash; los datos atómicos, los que ya no se parten &mdash; se definen con tipo, longitud y valores válidos. Tres niveles, de lo compuesto a lo elemental:</p>
-
-      <div class="levels">
-        <div class="level-row">
-          <div class="level-kind">Flujo de datos</div>
-          <div class="level-def">Lo que viaja por una flecha del DFD, o lo que guarda un almacén. Se define como composición de otros. <span class="ld-eq">pedido = nro_pedido + fecha + cliente + { línea_detalle }</span></div>
+      <div class="techs-grid two" data-animate>
+        <div class="tech-card hl">
+          <h4><span class="verb">GET</span> · leer</h4>
+          <div class="tc-when">dame ese recurso</div>
+          <p>Pide información sin cambiar nada. Es lo que hace tu navegador cada vez que escribes una URL o sigues un enlace: <b>GET /productos</b> &mdash; "muéstrame el catálogo". Se puede repetir mil veces sin consecuencias.</p>
         </div>
-        <div class="level-row">
-          <div class="level-kind">Estructura</div>
-          <div class="level-def">Una agrupación intermedia reutilizable. Se define una vez y se usa en varios flujos. <span class="ld-eq">línea_detalle = clave_producto + cantidad + precio_unitario</span></div>
+        <div class="tech-card hl">
+          <h4><span class="verb">POST</span> · crear</h4>
+          <div class="tc-when">registra esto que te mando</div>
+          <p>Envía datos para <b>crear algo nuevo</b>: registrar la venta, dar de alta el producto, enviar el formulario. Por eso el navegador te advierte al recargar una página de compra: repetir un POST puede cobrar dos veces.</p>
         </div>
-        <div class="level-row">
-          <div class="level-kind">Elemento de dato</div>
-          <div class="level-def">El átomo: ya no se compone de nada más. Aquí viven tipo, longitud, valores válidos y descripción. <span class="ld-eq">cantidad = entero, 1 a 999, sin decimales</span></div>
+        <div class="tech-card">
+          <h4><span class="verb">PUT</span> · actualizar</h4>
+          <div class="tc-when">reemplaza lo que tenías</div>
+          <p>Modifica un recurso que ya existe: corregir el precio de un producto, cambiar tu dirección de entrega. La edición del catálogo de la papelería era, conceptualmente, un PUT.</p>
+        </div>
+        <div class="tech-card">
+          <h4><span class="verb">DELETE</span> · eliminar</h4>
+          <div class="tc-when">borra ese recurso</div>
+          <p>Pide eliminar el recurso de la ruta. El servidor decide si obedece &mdash; ¿recuerdas que la papelería se negaba a borrar productos con ventas? El verbo pide; las reglas de negocio disponen.</p>
         </div>
       </div>
 
-      <p>Fíjate en la disciplina euclidiana: nada se usa antes de definirse. Si "línea_detalle" aparece dentro de "pedido", tiene que existir su propia entrada. Y si "clave_producto" aparece dentro de "línea_detalle", también. Se baja nivel por nivel hasta tocar el dato que ya no se parte. Ese descenso ordenado es lo que garantiza que no quede ningún cabo suelto.</p>
+      <p>Y el servidor responde siempre con un <b>código de tres cifras</b>. La primera cifra dice la familia &mdash; y con las familias basta para leer cualquier conversación. Tres de ellas ya las viviste en el laboratorio:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">2xx</span><div><b>Éxito.</b> <span style="font-family:var(--mono); font-size:13px;">200 OK</span>: pedido concedido. Cada vez que la papelería te mostró el catálogo, un 200 viajó de vuelta. Es el código que nunca notas &mdash; el silencio de que todo funciona.</div></div>
+        <div class="point"><span class="point-num">3xx</span><div><b>Redirección.</b> <span style="font-family:var(--mono); font-size:13px;">302 Found</span>: "hecho &mdash; ahora ve a esta otra dirección". Al cobrar una venta, la papelería respondía 302 y tu navegador saltaba solo al ticket. Nunca lo viste; pasó en cada compra.</div></div>
+        <div class="point"><span class="point-num">4xx</span><div><b>El cliente se equivocó.</b> <span style="font-family:var(--mono); font-size:13px;">404 Not Found</span>: pediste algo que no existe (una ruta mal escrita); <span style="font-family:var(--mono); font-size:13px;">403</span>: existe, pero no tienes permiso. La culpa está de tu lado de la conversación.</div></div>
+        <div class="point"><span class="point-num">5xx</span><div><b>El servidor se equivocó.</b> <span style="font-family:var(--mono); font-size:13px;">500 Internal Server Error</span>: tu petición era válida y aún así el servidor tronó por dentro. ¿Recuerdas el error al abrir "Nuevo producto" aquella noche? Eso fue un 500 &mdash; y un programador corriendo a corregirlo.</div></div>
+      </div>
+      <div class="example">
+        <div class="example-tag">La regla de oro para leer códigos</div>
+        <p>Ante cualquier falla, el código te dice <b>a quién investigar</b>: un 4xx apunta al cliente (la petición está mal hecha); un 5xx apunta al servidor (la petición está bien y el sistema falló). Es la primera pregunta de todo diagnóstico profesional &mdash; y la diferencia entre culpar al usuario y culpar al sistema.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S5 ESPECIFICAR PROCESOS -->
+<!-- S5 EXPLORADOR -->
 <section id="s5">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>Especificar qué<br>hace cada proceso</h2></div>
-          <span class="sec-chip">14 min · 20:44</span>
+          <div><span class="sec-num">v.</span><h2>El explorador:<br>una conversación,<br>anatomizada</h2></div>
+          <span class="sec-chip">20 min · 20:44</span>
         </div>
-        <p class="sec-objective">El diccionario define los datos; falta definir las burbujas. Cada proceso del DFD necesita su especificación: qué transforma una entrada en su salida, sin ambigüedad.</p>
+        <p class="sec-objective">Vamos a congelar el instante en que tocaste "Cobrar" en la papelería y leer, línea por línea, lo que de verdad viajó por el cable &mdash; ida, vuelta, y la versión para máquinas.</p>
       </div>
-      <p>El DFD dibuja un proceso como una burbuja que recibe datos y produce otros &mdash; "calcular total", "validar pedido". Pero la burbuja no dice <em>cómo</em> ni <em>bajo qué reglas</em> transforma lo uno en lo otro. Esa lógica se documenta aparte, en la <em>especificación de proceso</em> (a veces llamada mini-spec): un texto breve y preciso, asociado a cada proceso elemental del diagrama, que describe la regla de negocio que ejecuta. Hay tres técnicas clásicas, y se eligen según qué tan enredada sea la lógica:</p>
+      <p>Caso: aquella venta de <em>5 bolígrafos azules</em> en la Papelería "El Búho". Entre que tocaste el botón y apareció el ticket pasó una conversación completa en HTTP. Toca cada acto y léela en crudo &mdash; es texto, siempre fue solo texto:</p>
 
-      <div class="spec-grid" data-animate>
-        <div class="spec-card">
-          <h4>Español estructurado</h4>
-          <div class="sc-when">lógica secuencial sencilla</div>
-          <p>Lenguaje natural disciplinado, con verbos imperativos y pasos numerados. Sin jerga, sin código: "obtener saldo; restar el retiro; registrar el movimiento". Cualquiera lo lee, incluido el cliente.</p>
+      <div class="dfx" id="dfx">
+        <div class="dfx-instr">Toca un acto para verlo · caso: la venta de 5 bolígrafos</div>
+        <div class="dfx-tabs" id="dfxTabs">
+          <button class="dfx-tab on" type="button" data-level="0"><b>Acto 1</b> · La petición</button>
+          <button class="dfx-tab" type="button" data-level="1"><b>Acto 2</b> · La respuesta</button>
+          <button class="dfx-tab" type="button" data-level="2"><b>Acto 3</b> · La versión para máquinas</button>
         </div>
-        <div class="spec-card">
-          <h4>Tabla de decisión</h4>
-          <div class="sc-when">muchas condiciones combinadas</div>
-          <p>Una rejilla de condiciones contra acciones. Cuando hay varios "si esto y aquello, entonces&hellip;", la tabla los lista <em>todos</em> y delata el caso que olvidaste &mdash; el hueco que en prosa pasa inadvertido.</p>
+        <div class="dfx-stage">
+          <div class="dfx-level" id="dfxLevel">Acto 1 · La petición</div>
+          <div class="dfx-title" id="dfxTitle">Lo que tu navegador envió al tocar "Cobrar"</div>
+          <div id="dfxCanvas" aria-live="polite"></div>
         </div>
-        <div class="spec-card">
-          <h4>Árbol de decisión</h4>
-          <div class="sc-when">ramas anidadas, pocas variables</div>
-          <p>Un diagrama que se ramifica según cada condición. Igual de exhaustivo que la tabla, pero más visual: ideal cuando las decisiones se encadenan y quieres que el cliente las siga de un vistazo.</p>
-        </div>
+        <div class="dfx-read" id="dfxRead"></div>
+        <div class="dfx-balance" id="dfxBalance"></div>
       </div>
 
-      <p>La regla de oro euclidiana: una especificación de proceso no admite "etcétera" ni "y cosas así". O describe el caso, o el caso no está cubierto. Igual que un teorema no se demuestra "más o menos", una regla de negocio no se especifica "más o menos". Y ojo &mdash; ninguna de las tres técnicas es código: son herramientas de análisis que un médico, un contador o un gerente pueden leer y validar. Ese es justo el punto.</p>
+      <p>¿Notaste lo más importante? En los tres actos, <b>todo es texto legible</b>. No hay magia ni cables misteriosos: hay un formato acordado &mdash; primera línea con el verbo o el código, luego los encabezados, línea en blanco, y el cuerpo. Postulados de Euclides: quien conoce el formato puede leer cualquier conversación de la web. Tú acabas de leer una.</p>
     </div>
   </div>
 </section>
 
-<!-- S6 ANATOMÍA DE UNA ENTRADA (INTERACTIVO) -->
+<!-- S6 APIS -->
 <section id="s6">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>Anatomía de<br>una entrada</h2></div>
-          <span class="sec-chip">18 min · 20:58</span>
+          <div><span class="sec-num">vi.</span><h2>Las APIs: cuando<br>los sistemas hablan<br>entre sí</h2></div>
+          <span class="sec-chip">14 min · 21:04</span>
         </div>
-        <p class="sec-objective">Diseccionemos una entrada real de diccionario, parte por parte. Toca cada campo y descubre qué define, por qué importa y qué desastre evita.</p>
+        <p class="sec-objective">Quita al humano de la conversación y deja que dos sistemas se hablen con las mismas reglas: eso es una API. El acto 3 del explorador ya te la presentó &mdash; ahora veamos por qué mueve la economía.</p>
       </div>
-      <p>Aquí tienes la entrada del diccionario para un elemento de dato atómico: <em>correo_cliente</em>, tomado del almacén de clientes. Cada renglón cumple una función distinta y todas son obligatorias. <b>Toca o haz clic en cada parte</b> &mdash; con el teclado, navega con Tab y activa con Enter o barra espaciadora &mdash; y el sitio te explica qué es y por qué un buen analista nunca la deja en blanco.</p>
+      <p>En el acto 3 viste la misma venta dos veces: como <b>HTML</b> (una página con estilos, para que un humano la lea) y como <b>JSON</b> (los datos puros, para que otra máquina los use). Esa segunda ventanilla &mdash; misma información, sin decoración, en formato predecible &mdash; es una <b>API</b>: interfaz de programación de aplicaciones. La puerta trasera por la que los sistemas se hablan sin pasar por las pantallas.</p>
 
-      <div class="anat" id="anat">
-        <div class="anat-instr">Toca cada renglón de la entrada · elemento de dato: <b>correo_cliente</b></div>
-        <div class="anat-card" id="anatCard" role="group" aria-label="Partes de una entrada del diccionario de datos">
-          <button class="anat-part" type="button" data-id="nombre">
-            <span class="anat-key">Nombre</span>
-            <span class="anat-val">correo_cliente</span>
-          </button>
-          <button class="anat-part" type="button" data-id="tipo">
-            <span class="anat-key">Tipo</span>
-            <span class="anat-val">Alfanumérico (cadena)</span>
-          </button>
-          <button class="anat-part" type="button" data-id="longitud">
-            <span class="anat-key">Longitud</span>
-            <span class="anat-val">Hasta 254 caracteres</span>
-          </button>
-          <button class="anat-part" type="button" data-id="valores">
-            <span class="anat-key">Valores válidos</span>
-            <span class="anat-val">usuario@dominio · un solo &ldquo;@&rdquo; · obligatorio</span>
-          </button>
-          <button class="anat-part" type="button" data-id="descripcion">
-            <span class="anat-key">Descripción</span>
-            <span class="anat-val">Correo de contacto del cliente para avisos y facturación</span>
-          </button>
+      <h3>¿Qué es exactamente JSON?</h3>
+      <p><b>JSON</b> &mdash; <em>JavaScript Object Notation</em> &mdash; nació dentro de un lenguaje de programación pero se independizó hace veinte años: hoy es simple <b>texto neutro</b> que cualquier sistema entiende. Su gramática entera cabe en dos piezas: el <b>objeto</b> &mdash; una cosa descrita entre llaves <span style="font-family:var(--mono); font-size:14px;">{ }</span> como pares <span style="font-family:var(--mono); font-size:13px;">"llave": valor</span> &mdash; y la <b>lista</b>, una serie ordenada entre corchetes <span style="font-family:var(--mono); font-size:14px;">[ ]</span>. Con objetos que contienen listas que contienen objetos se describe cualquier información del mundo &mdash; economía euclidiana otra vez.</p>
+      <p>Antes de JSON, el estándar era <b>XML</b>, que decía lo mismo con el doble de ceremonia. Compara la misma venta en los dos dialectos:</p>
+
+      <div class="json-vs">
+        <div>
+          <div class="http-block">
+          <span class="h-dir">Ayer &middot; XML</span>
+          <span class="ln"><span class="h-dim">&lt;venta&gt;</span></span>
+          <span class="ln">  <span class="h-dim">&lt;folio&gt;</span><span class="h-val">V-0001</span><span class="h-dim">&lt;/folio&gt;</span></span>
+          <span class="ln">  <span class="h-dim">&lt;total&gt;</span><span class="h-val">41.76</span><span class="h-dim">&lt;/total&gt;</span></span>
+          <span class="ln"><span class="h-dim">&lt;/venta&gt;</span></span>
+          </div>
         </div>
-
-        <div class="anat-explain" id="anatExplain" aria-live="polite">
-          <div class="ax-kicker">Toca un renglón para empezar</div>
-          <div class="ax-what">Cada parte de la entrada responde a una pregunta distinta. Empieza por <b>Nombre</b> y baja hasta <b>Descripción</b>: verás cómo, juntas, no dejan lugar a la interpretación.</div>
-          <div class="ax-why">Euclides definía un término antes de usarlo. Tú haces lo mismo: defines el dato antes de que alguien lo programe a su manera.</div>
-        </div>
-
-        <div class="anat-bar">
-          <div class="anat-score" id="anatScore"><b>0</b> / 5 partes exploradas</div>
-        </div>
-
-        <div class="anat-conclusion" id="anatConclusion">
-          <b>Exploraste la entrada completa.</b> Nota lo que acabas de hacer: definiste un solo dato &mdash; el correo &mdash; con cinco respuestas que no dejan resquicio. Multiplica esto por cada flujo, almacén y elemento de tu sistema y tendrás tu diccionario de datos. Parece tedioso, y lo es; pero cada renglón que llenas hoy es una discusión que no tendrás con un programador dentro de tres meses. No hay camino real: se llena renglón por renglón.
+        <div>
+          <div class="http-block">
+          <span class="h-dir">Hoy &middot; JSON</span>
+          <span class="ln">{</span>
+          <span class="ln">  <span class="h-json-k">"folio"</span>: <span class="h-json-v">"V-0001"</span>,</span>
+          <span class="ln">  <span class="h-json-k">"total"</span>: <span class="h-json-v">41.76</span></span>
+          <span class="ln">}</span>
+          </div>
         </div>
       </div>
 
-      <p>¿Notaste el patrón? Ninguna de las cinco preguntas es opcional. Quien define solo el nombre y el tipo y deja en blanco los valores válidos, está invitando a que cada quien decida si un correo sin "@" es aceptable. La entrada completa es un pequeño teorema: dados estos cinco datos, el significado de "correo_cliente" queda demostrado y cerrado.</p>
+      <p>¿Por qué ganó JSON y se volvió <em>el</em> estándar de comunicación entre sistemas? Cuatro razones, y las cuatro son de analista, no de programador:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>Lo leen los dos.</b> Una máquina lo procesa sin ambigüedad y un humano lo lee sin manual. Cuando algo falla entre dos sistemas, el analista abre la conversación y <em>ve</em> el dato &mdash; con formatos binarios eso era imposible.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Es neutral.</b> No pertenece a ningún lenguaje ni empresa: Python, Java, C#, un banco, un reloj inteligente &mdash; todos lo producen y lo consumen igual. Es el postulado compartido de Euclides: nadie es dueño de las reglas, por eso todos las aceptan.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Es ligero.</b> Compara los dos bloques de arriba: XML repite cada etiqueta dos veces. A escala de millones de peticiones por segundo &mdash; y de celulares con datos limitados &mdash; los caracteres de más cuestan dinero, batería y tiempo.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>Es el espejo de tu modelo de datos.</b> Un objeto JSON es una entidad; sus llaves son los atributos; una lista anidada es una relación 1:N. Tu diagrama E-R del lunes viaja por la red sin traducirse &mdash; por eso el JSON del acto 3 te resultó familiar.</div></div>
+      </div>
+
+      <p>Ya usas APIs todos los días sin verlas: cuando tu app del clima muestra la temperatura, le preguntó a la API del servicio meteorológico; cuando pagas en una tienda en línea, la tienda le habla a la API del banco; cuando Rappi te muestra el mapa, se lo pidió a la API de Google Maps. Ningún humano vio esas conversaciones &mdash; son sistemas consultando a sistemas, en HTTP, con JSON. Para tu proyecto integrador la pregunta del analista es: ¿qué debería poder preguntarle <em>otro sistema</em> al mío? La respuesta se diseña igual que el lunes &mdash; con una tabla de traducción:</p>
+
+      <div class="techs-grid" data-animate>
+        <div class="tech-card">
+          <h4>Entidad → recurso</h4>
+          <div class="tc-when">/productos · /ventas</div>
+          <p>Cada entidad de tu diagrama E-R se vuelve una <b>ruta</b>. El catálogo entero: <span style="font-family:var(--mono); font-size:11.5px;">/productos</span>. Un ejemplar, por su llave: <span style="font-family:var(--mono); font-size:11.5px;">/productos/7</span>. Tu modelo de datos ya dibujó el mapa de la API.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Acción → verbo + ruta</h4>
+          <div class="tc-when">get, post, put, delete</div>
+          <p>Consultar el catálogo: <b>GET /productos</b>. Registrar una venta: <b>POST /ventas</b>. Corregir un precio: <b>PUT /productos/7</b>. Los requisitos funcionales de tu SOW se convierten en renglones de esta tabla.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Regla de negocio → código de error</h4>
+          <div class="tc-when">4xx con explicación</div>
+          <p>"No vender más que el stock" se responde con un 4xx y un JSON que explica el porqué. Las reglas que descubriste analizando son, en la API, respuestas de rechazo bien redactadas.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Dato → JSON</h4>
+          <div class="tc-when">atributos como campos</div>
+          <p>Cada respuesta carga los <b>atributos de tu E-R</b> como campos JSON: folio, fecha, total. Si el lunes nombraste bien tus atributos, tu API ya tiene vocabulario.</p>
+        </div>
+        <div class="tech-card hl">
+          <h4>El contrato</h4>
+          <div class="tc-when">la documentación de la api</div>
+          <p>La lista completa de rutas, verbos, campos y códigos es <b>el contrato de la API</b>: lo que el sistema promete a quien le hable. Se firma como el SOW &mdash; y romperlo sin avisar rompe a todos los que dependían de él.</p>
+        </div>
+        <div class="tech-card">
+          <h4>La llave de acceso</h4>
+          <div class="tc-when">api key · autenticación</div>
+          <p>Las APIs serias piden identificarse en cada petición (el "gafete" de la sesión, versión máquinas). Quién puede preguntar qué &mdash; eso también es un requerimiento, y de los caros.</p>
+        </div>
+      </div>
+
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La consecuencia para el analista</div>
+          <p class="say-text">"Hoy las empresas ya no solo venden productos: venden APIs. El banco cobra por cada consulta a su API de pagos; el clima, el mapa y el buró de crédito se rentan por petición. Cuando diseñas la API de un sistema no estás haciendo un dibujo técnico &mdash; estás decidiendo qué parte del negocio se puede conectar, y a qué precio."</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S7 EL RIGOR -->
+<!-- S7 MALENTENDIDOS -->
 <section id="s7">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vii.</span><h2>El rigor que evita<br>facturas caras</h2></div>
-          <span class="sec-chip">14 min · 21:16</span>
+          <div><span class="sec-num">vii.</span><h2>Los malentendidos<br>que delatan a un novato</h2></div>
+          <span class="sec-chip">12 min · 21:18</span>
         </div>
-        <p class="sec-objective">El rigor en las definiciones parece un lujo de académicos. Es lo contrario: es la decisión más barata que tomarás en todo el proyecto, porque el costo de la ambigüedad se cobra al final.</p>
+        <p class="sec-objective">Hay cuatro confusiones clásicas sobre cómo funciona la web. Piérdelas hoy y hablarás de redes como analista, no como usuario.</p>
       </div>
-      <p>Hay una ley dura en este oficio: un error de definición cuesta poco corregirlo hoy y una fortuna corregirlo cuando ya está programado, probado y en producción. Una ambigüedad que tardas dos minutos en cerrar en el diccionario puede costar semanas de reprogramación si se descubre cuando el sistema ya vive. El diccionario de datos es, en el fondo, un seguro contra esa factura &mdash; y la prima es barata: rigor hoy.</p>
-      <p>El ejemplo clásico, y verídico una y otra vez: el campo "fecha". Si el diccionario no especifica el formato, el equipo de México lo entiende como día/mes/año y otro equipo lo entiende como mes/día/año. El 03/04 es 3 de abril para unos y 4 de marzo para otros. Nadie miente, nadie se equivoca de código &mdash; simplemente cada quien rellenó un hueco que el diccionario debió cerrar. La factura de ese hueco se paga en datos corruptos, reportes equivocados y, a veces, en demandas.</p>
+      <p>Estas cuatro frases se oyen en juntas reales, y cada una revela un modelo mental equivocado. Corrígelas en tu cabeza antes de que te cuesten credibilidad &mdash; o dinero:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>"Internet y la web son lo mismo."</b> No: internet es la red física (cables, antenas, ruteadores) por donde viajan muchas conversaciones distintas &mdash; la web (HTTP) es solo una de ellas. El correo, WhatsApp y los videojuegos hablan otros protocolos sobre la misma red.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>"No hay internet" (ante cualquier falla).</b> El diagnóstico profesional distingue: ¿no resuelve el nombre (DNS)? ¿no llega a la máquina (red)? ¿llega pero responde 404 (ruta equivocada)? ¿o 500 (el servidor tronó)? Cuatro fallas distintas, cuatro culpables distintos.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>"La página se guarda en mi computadora."</b> Tu navegador recibe una <em>copia</em> de la respuesta y la dibuja; la verdad vive en el servidor. Por eso todos veían el mismo historial de ventas en el laboratorio: no había 25 papelerías, había 25 clientes de un solo servidor.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>"El candado significa que el sitio es confiable."</b> El https solo garantiza que la conversación va <em>cifrada</em> &mdash; nadie la lee en el camino. Un sitio fraudulento puede tener candado: el sobre es seguro; el remitente, quién sabe. Confianza y cifrado son requerimientos distintos.</div></div>
+      </div>
       <div class="example">
-        <div class="example-tag">La definición que salvó (o hundió) un sistema</div>
-        <p>Un caso real famoso: en 1999 una sonda a Marte se perdió porque un equipo trabajó en unidades métricas y otro en libras-fuerza. Nadie revisó la <b>definición de la unidad</b> del dato que se intercambiaban. Ciento veinticinco millones de dólares evaporados por una ambigüedad que una sola entrada de diccionario &mdash; "empuje, en newtons" &mdash; habría evitado. Tu sistema no irá a Marte, pero la lección es idéntica: <b>el dato indefinido siempre se define solo&hellip; y casi nunca a tu favor.</b></p>
+        <div class="example-tag">El truco para no equivocarte</div>
+        <p>Cuando algo falle, hazte las preguntas <b>en orden euclidiano</b>, de postulado en postulado: ¿tengo red? &rarr; ¿el nombre resuelve? &rarr; ¿el servidor contesta? &rarr; ¿con qué código? Cada respuesta descarta a un sospechoso. Diagnosticar no es adivinar: es recorrer la conversación por sus pasos.</p>
       </div>
-      <p>Por eso Euclides empezó por las definiciones y no por los teoremas. No era pedantería: sabía que un edificio entero puede caer por una palabra mal entendida en el cimiento. Tu diccionario es ese cimiento. El rigor no es lo que hace lento el proyecto &mdash; es lo que evita rehacerlo.</p>
     </div>
   </div>
 </section>
@@ -511,45 +743,63 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Taller: el diccionario<br>de tu proyecto</h2></div>
+          <div><span class="sec-num">viii.</span><h2>Taller: la API de<br>tu proyecto,<br>diseñada con IA</h2></div>
           <span class="sec-chip">18 min · 21:30</span>
         </div>
-        <p class="sec-objective">Toma el DFD de tu proyecto y empieza su diccionario. Define un flujo en cascada hasta sus elementos &mdash; y deja que un colega intente romper tus definiciones.</p>
+        <p class="sec-objective">El lunes la IA construyó tu base de datos a partir del diagrama E-R. Hoy cierra el ciclo: a partir de esas mismas entidades y tus requisitos, la IA diseñará contigo el contrato de tu API.</p>
       </div>
-      <p>Euclides no aprendió geometría leyendo: la demostró con su propia mano. Hoy haces lo mismo con tus datos. Trabaja sobre el DFD que ya tienes y produce un pedazo real de diccionario que irá directo a la sección de modelado de tu documento.</p>
+      <p>Mismo método que el lunes: tú pones el análisis, la IA pone la traducción. El insumo es lo que ya tienes &mdash; las entidades de tu diagrama E-R y los requisitos funcionales de tu SOW. El producto es la <b>tabla de endpoints</b>: el contrato de conversación de tu sistema:</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
-            <h4>Elige el flujo más importante de tu DFD <span class="fs-time">3 min</span></h4>
-            <p>De tu diagrama, toma la flecha o el almacén <b>central</b>: el que carga el dato que justifica tu sistema. ¿Agenda citas? Define "cita". ¿Registra préstamos? Define "préstamo". El que, si está mal definido, arruina todo lo demás.</p>
+            <h4>Elige tres acciones de tu sistema <span class="fs-time">4 min</span></h4>
+            <p>De tus requisitos funcionales, toma <b>3 acciones concretas</b> (una de consulta, una de registro, una de modificación o borrado). Ejemplo con la papelería: ver el catálogo, registrar una venta, corregir un precio.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
-            <h4>Defínelo en cascada con la notación <span class="fs-time">8 min</span></h4>
-            <p>Escribe la entrada del flujo con <b>=</b>, <b>+</b>, <b>[ | ]</b> y <b>{ }</b>, baja a sus estructuras y aterriza al menos <b>tres elementos de dato</b> con sus cinco partes completas: nombre, tipo, longitud, valores válidos y descripción. Sin "etcétera".</p>
+            <h4>Mapéalas a mano: verbo + ruta + código <span class="fs-time">4 min</span></h4>
+            <p>Antes de pedir ayuda, inténtalo tú con la tabla de traducción: ¿qué <b>verbo</b>? ¿qué <b>ruta</b> (nombrada por tus entidades)? ¿qué <b>código</b> si sale bien y cuál si el cliente rompe una regla de negocio? Este borrador es tu criterio para auditar a la IA.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
-            <h4>Intercambia: tu pareja busca la ambigüedad <span class="fs-time">5 min</span></h4>
-            <p>Pásale tus definiciones a un compañero. Su misión euclidiana es atacar con "¿y qué pasa si&hellip;?": ¿la fecha qué formato lleva? ¿el monto admite negativos? ¿el correo puede ir vacío? Cada hueco que encuentre es un <b>valor válido que te faltó especificar</b>.</p>
+            <h4>Pide a la IA el contrato completo <span class="fs-time">5 min</span></h4>
+            <p>Usa el prompt de abajo con <b>tus entidades del lunes</b> y tus reglas de negocio. Exige la tabla completa: todos los endpoints, qué recibe y qué responde cada uno (con ejemplo JSON), y los códigos de error por regla.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
-            <h4>Corrige y cierra la definición <span class="fs-time">2 min</span></h4>
-            <p>Cierra cada hueco que tu revisor abrió. La meta es que ningún elemento quede a interpretación. Esa versión &mdash; flujo, estructuras y elementos definidos &mdash; entra a la sección de modelado de tu documento, la de mayor peso.</p>
+            <h4>Audita el contrato como analista <span class="fs-time">5 min</span></h4>
+            <p>Compara contra tu borrador y tu E-R: ¿cada entidad tiene su recurso? ¿los verbos corresponden a las acciones? ¿cada regla de negocio tiene su código de rechazo? ¿los campos JSON son tus atributos? <b>Lo que la IA inventó de más o de menos es tu hallazgo del día.</b></p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Regla del revisor euclidiano</b> &mdash; vale ser implacable y no vale ofenderse. Si tu compañero puede interpretar un dato de dos formas distintas, la definición está mal &mdash; no él. El que más ambigüedades te encuentra hoy es el que te ahorra la guerra de interpretaciones con el programador mañana.
+          <b>Regla del contrato (otra vez)</b> &mdash; si la API salió mal, no parches renglones sueltos: el error suele estar en un requisito ambiguo o en una entidad mal modelada. Corrige el insumo y vuelve a pedir. Análisis débil, API débil &mdash; con IA o sin ella.
         </div>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt base · ajústalo a tu proyecto</div>
+        <pre>Actúa como arquitecto de software. Mi sistema es [descripción en una
+línea]. Sus entidades son: [pega tus entidades con atributos, las del
+diagrama E-R]. Sus reglas de negocio: [tus reglas].
+
+Diseña el contrato de su API REST sobre HTTP. Entrégame una tabla con:
+1. Cada endpoint: verbo HTTP + ruta (rutas nombradas por entidad).
+2. Qué recibe (parámetros o cuerpo JSON) y qué responde (JSON de
+   ejemplo usando los atributos de mis entidades).
+3. Código de éxito de cada operación, y código + mensaje de error
+   para cada regla de negocio que se pueda violar.
+4. Qué endpoints deberían requerir autenticación y por qué.
+
+No inventes entidades ni campos que no te di. Si algo es ambiguo,
+pregúntame antes de asumir.</pre>
       </div>
     </div>
   </div>
@@ -564,25 +814,29 @@
           <div><span class="sec-num">ix.</span><h2>Cierre y enlace<br>con la próxima clase</h2></div>
           <span class="sec-chip">11 min · 21:48</span>
         </div>
-        <p class="sec-objective">Definir cada dato una sola vez, sin ambigüedad y para siempre: esa es la geometría del sistema. Hoy no hay tarea nueva &mdash; el trabajo del taller se incorpora a tu documento.</p>
+        <p class="sec-objective">La web entera cabe en unos cuantos postulados: dos papeles, cuatro verbos, cinco familias de códigos, y un formato de texto que ahora ya sabes leer. No hay camino real &mdash; pero el camino común está abierto.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>El diccionario de datos es la otra mitad del DFD: el mapa dice por dónde se mueve el dato; el diccionario dice qué es. Cada flujo y cada almacén necesita su entrada.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Se define en cascada &mdash; flujo, estructura, elemento &mdash; con notación precisa, y cada proceso se especifica con español estructurado, tabla o árbol de decisión. Nada de "etcétera".</div></div>
-        <div class="point"><span class="point-num">03</span><div>El rigor en las definiciones no es lujo: es el seguro más barato del proyecto. El dato indefinido siempre se define solo, y casi nunca a tu favor. No hay camino real.</div></div>
+        <div class="point"><span class="point-num">01</span><div>HTTP es el <em>protocolo</em> de la web: cliente que pide, servidor que responde, por turnos y sin memoria. La URL es la dirección completa de cada petición: protocolo, máquina, puerto y recurso.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Toda petición lleva un verbo (GET, POST, PUT, DELETE) y toda respuesta un código (2xx éxito, 3xx redirección, 4xx culpa del cliente, 5xx culpa del servidor). Con eso se lee &mdash; y se diagnostica &mdash; cualquier conversación.</div></div>
+        <div class="point"><span class="point-num">03</span><div>Una API es la misma conversación sin humanos: tus entidades como recursos, tus atributos como JSON, tus reglas de negocio como códigos de rechazo. El contrato de la API se analiza y se firma &mdash; como todo contrato.</div></div>
       </div>
 
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">Antes de irte · participación en clase</div>
-          <p class="say-text">"En voz alta, una ronda rápida: cada quien dice un dato de su proyecto que hasta hoy daba por obvio &mdash; 'fecha', 'estatus', 'monto' &mdash; y qué ambigüedad le acaba de descubrir. No es tarea ni se entrega: es el reflejo euclidiano de no usar un término sin haberlo definido."</p>
-        </div>
+      <div class="challenge">
+        <div class="challenge-eyebrow">Reto opcional · sin puntos · para el lunes</div>
+        <h3>Espía una conversación real</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Abre las herramientas de desarrollador de tu navegador (tecla F12 &rarr; pestaña "Red" o "Network"), entra a un sitio que uses a diario y déjalo cargar. Luego responde:</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>¿Cuántas peticiones disparó una sola página? (te va a sorprender)</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Encuentra un GET con respuesta <b>JSON</b>: acabas de cachar al sitio hablando con su propia API.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Trae una captura al lunes. Y no olvides: la <b>Tarea 6</b> (E-R + SQL con IA) se entrega el jueves 23.</li>
+        </ul>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El lunes que viene</div>
-          <p class="say-text">"Leibniz y el modelado de datos. De definir los datos pasamos a relacionarlos: entidades, relaciones y cardinalidades con diagramas Entidad-Relación."</p>
+          <p class="say-text">"Leibniz, que soñaba con resolver toda disputa diciendo 'calculemos'. Tu sistema ya guarda datos y ya sabe conversar &mdash; el lunes veremos qué hace con ellos."</p>
         </div>
       </div>
     </div>
@@ -620,63 +874,165 @@
   }, { threshold: 0.2 });
   document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
 
-  // Anatomía de una entrada del diccionario de datos
-  const ANAT_DATA = {
-    nombre: {
-      key: 'Nombre',
-      what: 'El identificador único del dato dentro de todo el sistema. Por convención: claro, sin espacios y consistente &mdash; <b>correo_cliente</b>, nunca "el mail" en una hoja y "email2" en otra.',
-      why: 'Es el término que Euclides define antes de usar. Si el mismo dato tiene tres nombres distintos en el proyecto, tienes tres datos que nadie sabe que son el mismo.'
-    },
-    tipo: {
-      key: 'Tipo',
-      what: 'La naturaleza del dato: <b>alfanumérico</b> (texto), numérico (entero o decimal), fecha, booleano, etc. Aquí, un correo es una cadena de texto &mdash; no un número.',
-      why: 'El tipo decide qué operaciones tienen sentido y cómo se guardará. Confundir "número de teléfono" con tipo numérico borra el cero inicial: un bug clásico nacido de un tipo mal elegido.'
-    },
-    longitud: {
-      key: 'Longitud',
-      what: 'El tamaño máximo (y a veces mínimo) que el dato puede ocupar. Para un correo, el estándar admite hasta <b>254 caracteres</b>: ni uno de campo, ni infinito.',
-      why: 'La longitud se traduce casi literal a la columna de la base de datos. Si la subestimas, truncas correos reales; si no la defines, alguien la inventará &mdash; y rara vez bien.'
-    },
-    valores: {
-      key: 'Valores válidos',
-      what: 'La regla que separa un dato aceptable de uno inválido: para el correo, formato <b>usuario@dominio</b>, un solo "@", y es obligatorio (no admite vacío).',
-      why: 'Aquí vive la calidad del dato. Es el renglón que más se deja en blanco y el que más caro se cobra: sin él, "x", "no tengo" o un correo sin "@" entran sin que nadie los frene.'
-    },
-    descripcion: {
-      key: 'Descripción',
-      what: 'En lenguaje humano, qué representa el dato y para qué se usa: el <b>correo de contacto del cliente</b>, destinado a avisos y a la facturación electrónica.',
-      why: 'Distingue datos que se parecen pero no son lo mismo. "Correo de contacto" no es "correo de facturación"; la descripción evita que alguien, dentro de un año, los confunda y mande la factura al lugar equivocado.'
-    }
-  };
+  // ============================================================
+  // Explorador de la conversación HTTP: petición, respuesta, API
+  // Cada acto es un bloque de protocolo en crudo, comentado.
+  // ============================================================
+  (function initDfx() {
+    const tabsWrap = document.getElementById('dfxTabs');
+    const canvas = document.getElementById('dfxCanvas');
+    if (!tabsWrap || !canvas) return;
+    const tabs = tabsWrap.querySelectorAll('.dfx-tab');
+    const levelEl = document.getElementById('dfxLevel');
+    const titleEl = document.getElementById('dfxTitle');
+    const readEl = document.getElementById('dfxRead');
+    const balanceEl = document.getElementById('dfxBalance');
 
-  (function initAnat() {
-    const root = document.getElementById('anat');
-    if (!root) return;
-    const parts = root.querySelectorAll('.anat-part');
-    const explain = document.getElementById('anatExplain');
-    const scoreEl = document.getElementById('anatScore');
-    const conclusion = document.getElementById('anatConclusion');
-    const total = parts.length;
-    const seen = new Set();
+    const LEVELS = {
+      '0': {
+        level: 'Acto 1 · La petición',
+        title: 'Lo que tu navegador envió al tocar "Cobrar"',
+        read: '<b>Lee así:</b> primera línea &mdash; el <b>verbo</b> (POST: voy a crear algo), la <b>ruta</b> y el dialecto. Luego los <b>encabezados</b>: a qué servidor le hablo y en qué formato va el paquete. Después una línea en blanco &mdash; el silencio que separa el sobre de la carta &mdash; y el <b>cuerpo</b>: lo que el formulario llevaba dentro.',
+        balance: '<b>Fíjate:</b> "producto_id=2&amp;cantidad=5" &mdash; el formulario entero de la venta viajó como una línea de texto. Todo formulario que has llenado en tu vida viajó así.',
+        body:
+          '<div class="http-block">' +
+          '<span class="h-dir">Cliente &rarr; servidor</span>' +
+          '<span class="ln"><span class="h-m">POST</span> <span class="h-u">/ventas/nueva</span> <span class="h-v">HTTP/1.1</span></span>' +
+          '<span class="ln"><span class="h-k">Host:</span> <span class="h-val">10.55.107.224:5000</span></span>' +
+          '<span class="ln"><span class="h-k">Content-Type:</span> <span class="h-val">application/x-www-form-urlencoded</span></span>' +
+          '<span class="ln">&nbsp;</span>' +
+          '<span class="ln"><span class="h-body">producto_id=2&amp;cantidad=5</span></span>' +
+          '</div>'
+      },
+      '1': {
+        level: 'Acto 2 · La respuesta',
+        title: 'Lo que el servidor contestó — en dos tiempos',
+        read: '<b>Lee así:</b> el servidor registró la venta y respondió <b>302</b>: "hecho &mdash; ahora ve al ticket". Tu navegador, obediente, disparó solo una segunda petición (GET al ticket) y recibió el <b>200</b> con el cuerpo: el HTML que dibujó en tu pantalla. Dos conversaciones en un parpadeo &mdash; nunca las viste.',
+        balance: '<b>Fíjate:</b> la respuesta también es verbo y formato acordado: código en la primera línea, encabezados, línea en blanco, cuerpo. Los mismos postulados, en ambas direcciones.',
+        body:
+          '<div class="http-block">' +
+          '<span class="h-dir">Servidor &rarr; cliente (tiempo 1)</span>' +
+          '<span class="ln"><span class="h-v">HTTP/1.1</span> <span class="h-ok">302 FOUND</span></span>' +
+          '<span class="ln"><span class="h-k">Location:</span> <span class="h-val">/ventas/V-0001</span></span>' +
+          '</div>' +
+          '<div class="http-block">' +
+          '<span class="h-dir">Servidor &rarr; cliente (tiempo 2, tras el GET automático)</span>' +
+          '<span class="ln"><span class="h-v">HTTP/1.1</span> <span class="h-ok">200 OK</span></span>' +
+          '<span class="ln"><span class="h-k">Content-Type:</span> <span class="h-val">text/html; charset=utf-8</span></span>' +
+          '<span class="ln">&nbsp;</span>' +
+          '<span class="ln"><span class="h-body">&lt;!doctype html&gt;</span></span>' +
+          '<span class="ln"><span class="h-body">&lt;html&gt;</span> <span class="h-dim">&hellip; el ticket V-0001 que tu navegador dibujó &hellip;</span> <span class="h-body">&lt;/html&gt;</span></span>' +
+          '</div>'
+      },
+      '2': {
+        level: 'Acto 3 · La versión para máquinas',
+        title: 'La misma venta, servida por la API en JSON',
+        read: '<b>Lee así:</b> misma conversación, otra ventanilla: el cliente ahora es <em>otro sistema</em> (una app de contabilidad, un dashboard) y pide la venta a la <b>API</b>. La respuesta ya no es HTML para dibujar: es <b>JSON</b> &mdash; los datos puros, con nombre y valor, listos para que una máquina los use.',
+        balance: '<b>¿Reconoces el JSON?</b> folio, total, cantidad, precio_unit&hellip; son los <b>atributos de tu diagrama E-R</b> del lunes &mdash; y la lista de productos anidada es DETALLE_VENTA. El JSON es tu modelo de datos en movimiento.',
+        body:
+          '<div class="http-block">' +
+          '<span class="h-dir">Otro sistema &rarr; servidor</span>' +
+          '<span class="ln"><span class="h-m">GET</span> <span class="h-u">/api/ventas/V-0001</span> <span class="h-v">HTTP/1.1</span></span>' +
+          '<span class="ln"><span class="h-k">Accept:</span> <span class="h-val">application/json</span></span>' +
+          '</div>' +
+          '<div class="http-block">' +
+          '<span class="h-dir">Servidor &rarr; otro sistema</span>' +
+          '<span class="ln"><span class="h-v">HTTP/1.1</span> <span class="h-ok">200 OK</span></span>' +
+          '<span class="ln"><span class="h-k">Content-Type:</span> <span class="h-val">application/json</span></span>' +
+          '<span class="ln">&nbsp;</span>' +
+          '<span class="ln">{</span>' +
+          '<span class="ln">  <span class="h-json-k">"folio"</span>: <span class="h-json-v">"V-0001"</span>,</span>' +
+          '<span class="ln">  <span class="h-json-k">"fecha"</span>: <span class="h-json-v">"2026-07-06"</span>,</span>' +
+          '<span class="ln">  <span class="h-json-k">"total"</span>: <span class="h-json-v">41.76</span>,</span>' +
+          '<span class="ln">  <span class="h-json-k">"productos"</span>: [</span>' +
+          '<span class="ln">    { <span class="h-json-k">"nombre"</span>: <span class="h-json-v">"Bolígrafo azul"</span>, <span class="h-json-k">"cantidad"</span>: <span class="h-json-v">5</span>, <span class="h-json-k">"precio_unit"</span>: <span class="h-json-v">8.00</span> }</span>' +
+          '<span class="ln">  ]</span>' +
+          '<span class="ln">}</span>' +
+          '</div>'
+      }
+    };
 
-    function render(id, btn) {
-      const data = ANAT_DATA[id];
+    function render(level) {
+      const data = LEVELS[level];
       if (!data) return;
-      parts.forEach(p => p.classList.remove('on'));
-      btn.classList.add('on');
-      explain.classList.add('live');
-      explain.innerHTML =
-        '<div class="ax-kicker">Parte de la entrada · <b>' + data.key + '</b></div>' +
-        '<div class="ax-what">' + data.what + '</div>' +
-        '<div class="ax-why">' + data.why + '</div>';
-      seen.add(id);
-      scoreEl.innerHTML = '<b>' + seen.size + '</b> / ' + total + ' partes exploradas';
-      if (seen.size === total) conclusion.classList.add('show');
+      tabs.forEach(t => {
+        const on = t.dataset.level === level;
+        t.classList.toggle('on', on);
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      levelEl.textContent = data.level;
+      titleEl.textContent = data.title;
+      readEl.innerHTML = data.read;
+      balanceEl.innerHTML = data.balance;
+      const fig = document.createElement('div');
+      fig.className = 'dfx-fig';
+      fig.innerHTML = data.body;
+      canvas.innerHTML = '';
+      canvas.appendChild(fig);
+      requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.add('show')));
     }
 
-    parts.forEach(btn => {
-      btn.addEventListener('click', () => render(btn.dataset.id, btn));
+    tabs.forEach(t => {
+      t.setAttribute('aria-pressed', t.classList.contains('on') ? 'true' : 'false');
+      t.addEventListener('click', () => render(t.dataset.level));
     });
+
+    render('0');
+  })();
+
+  // ============================================================
+  // El viaje de una petición: diagrama animado por pasos.
+  // Se reproduce solo al entrar en pantalla; los pasos son
+  // clicables y el botón "Reproducir" reinicia la secuencia.
+  // ============================================================
+  (function initNet() {
+    const net = document.getElementById('net');
+    if (!net) return;
+    const chips = net.querySelectorAll('.net-chip');
+    const caption = document.getElementById('netCaption');
+    const replay = document.getElementById('netReplay');
+
+    const CAPS = {
+      1: '<b>Paso 1 · Escribes la dirección.</b> El navegador desarma la URL y arma la petición: verbo <b>GET</b>, ruta <b>/productos</b>, destino la máquina del servidor. Todavía no sale nada de tu computadora.',
+      2: '<b>Paso 2 · El DNS traduce el nombre.</b> Si escribiste un nombre (papeleria.mx), el directorio telefónico de internet lo convierte en una IP. En el laboratorio este paso se saltó: el profesor les dictó la IP directa.',
+      3: '<b>Paso 3 · La petición viaja.</b> El sobre de texto &mdash; verbo, ruta, encabezados &mdash; cruza la red hasta la puerta 5000 de la máquina del servidor. Si no hay quien escuche en esa puerta, aquí muere la conversación.',
+      4: '<b>Paso 4 · El servidor resuelve el recurso.</b> Recibe la petición, encuentra quién atiende la ruta /productos, <b>consulta la base de datos</b> &mdash; la que modelaste el lunes &mdash; y arma la respuesta con lo que encontró.',
+      5: '<b>Paso 5 · La respuesta viaja de regreso.</b> Código <b>200 OK</b>, encabezados y el cuerpo &mdash; el HTML del catálogo (o JSON, si quien preguntó era otra máquina) &mdash; recorren el cable de vuelta.',
+      6: '<b>Paso 6 · El navegador dibuja.</b> Interpreta el HTML recibido y pinta la página. El viaje completo &mdash; los seis pasos &mdash; tomó décimas de segundo. Lo acabas de ver en cámara lenta por primera y última vez.'
+    };
+
+    let timer = null;
+    let step = 1;
+
+    function show(n) {
+      step = n;
+      net.dataset.step = String(n);
+      chips.forEach(c => {
+        const on = Number(c.dataset.step) === n;
+        c.classList.toggle('on', on);
+        c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      caption.innerHTML = CAPS[n];
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function play() {
+      stop();
+      show(1);
+      timer = setInterval(() => {
+        if (step >= 6) { stop(); return; }
+        show(step + 1);
+      }, 3000);
+    }
+
+    chips.forEach(c => c.addEventListener('click', () => { stop(); show(Number(c.dataset.step)); }));
+    replay.addEventListener('click', play);
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { play(); io.disconnect(); } });
+    }, { threshold: 0.45 });
+    io.observe(net);
+
+    show(1);
   })();
 </script>
 
