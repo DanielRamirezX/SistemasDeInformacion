@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 19 · Leibniz · Sistemas de Información</title>
-<meta name="description" content="Clase 19: modelado de datos con diagramas Entidad-Relación. Entidades, atributos, relaciones y cardinalidades (1:1, 1:N, N:N), con nociones de normalización básica. El principio de razón suficiente de Leibniz aplicado a los datos. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 19: la prueba del análisis de requerimientos. La IA como cliente vago y como juez — mide qué tan bien recopilas requerimientos y das con la solución. El calculemus de Leibniz. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -127,11 +127,73 @@
   .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* ejemplo y taller (reuso) */
+  /* ============================================================
+     TARJETAS: CRITERIOS DEL BUEN REQUERIMIENTO (s4)
+  ============================================================ */
+  .techs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
+  @media (max-width: 480px) { .techs-grid { grid-template-columns: 1fr; } }
+  .tech-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 22px 20px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .techs-grid.go .tech-card { opacity: 1; transform: translateY(0); }
+  .techs-grid.go .tech-card:nth-child(1) { transition-delay: 0.05s; }
+  .techs-grid.go .tech-card:nth-child(2) { transition-delay: 0.15s; }
+  .techs-grid.go .tech-card:nth-child(3) { transition-delay: 0.25s; }
+  .techs-grid.go .tech-card:nth-child(4) { transition-delay: 0.35s; }
+  .tech-card h4 { font-family: var(--serif); font-style: italic; font-size: 21px; color: var(--ink); margin-bottom: 4px; }
+  .tech-card .tc-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .tech-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+  .tech-card .tc-fail { display: block; margin-top: 10px; font-size: 12.5px; color: var(--ink-muted); font-style: italic; }
+  .tech-card .tc-fail b { color: var(--blood); font-style: normal; font-weight: 600; }
+  .tech-card.hl { border-color: var(--blood); border-top: 3px solid var(--blood); }
+
+  /* ============================================================
+     EXPLORADOR DEL ICEBERG (s5)
+  ============================================================ */
+  .dfx { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .dfx-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
+  .dfx-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .dfx-tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 22px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.3; text-align: left; }
+  .dfx-tab:hover { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
+  .dfx-tab:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .dfx-tab.on { border-color: var(--blood); color: var(--paper); background: var(--blood); }
+  .dfx-tab b { font-weight: 600; }
+  .dfx-stage { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 20px 20px 16px; }
+  .dfx-level { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
+  .dfx-title { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.15; margin-bottom: 16px; }
+  /* piezas del iceberg */
+  .ice-quote { font-family: var(--serif); font-style: italic; font-size: clamp(19px, 3vw, 24px); color: var(--ink); line-height: 1.4; padding: 6px 0 6px 20px; border-left: 3px solid var(--ochre); }
+  .ice-quote span { color: var(--blood); }
+  .req-list { list-style: none; padding: 0; margin: 0; }
+  .req-group { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); margin: 14px 0 4px; }
+  .req-group:first-child { margin-top: 0; }
+  .req-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+  .req-item .mk { font-family: var(--mono); font-size: 13px; font-weight: 600; line-height: 1.5; }
+  .req-item.surface .mk { color: var(--ochre); }
+  .req-item.deep .mk { color: var(--blood); }
+  .req-item b { color: var(--ink); font-weight: 600; }
+  .sol-card { background: var(--paper-elev); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 18px 20px; }
+  .sol-card p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 10px; }
+  .sol-card p:last-child { margin: 0; }
+  .sol-card b { color: var(--ink); font-weight: 600; }
+  /* aparición suave de cada nivel */
+  .dfx-fig { opacity: 0; transform: translateY(8px); transition: opacity 0.45s ease, transform 0.45s ease; }
+  .dfx-fig.show { opacity: 1; transform: translateY(0); }
+  .dfx-read { margin-top: 16px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); }
+  .dfx-read b { color: var(--ink); font-weight: 600; }
+  .dfx-balance { margin-top: 12px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+  .dfx-balance b { color: var(--blood); font-weight: 600; }
+
+  /* ejemplo (reuso) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
   .example p b { color: var(--ink); font-weight: 600; }
+
+  /* bloque de prompt (taller) */
+  .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
+  .prompt-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
+  .prompt-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; word-break: break-word; margin: 0; }
+
+  /* taller (reuso) */
   .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
   .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
   .field-step:first-child { border-top: none; padding-top: 0; }
@@ -141,80 +203,6 @@
   .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
   .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
   .field-planb b { color: var(--ochre); font-weight: 600; }
-
-  /* ============================================================
-     TARJETAS DE PIEZAS DEL MODELO ER (s4) — reuso del grid
-  ============================================================ */
-  .er-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
-  @media (max-width: 720px) { .er-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .er-grid { grid-template-columns: 1fr; } }
-  .er-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-  .er-grid.go .er-card { opacity: 1; transform: translateY(0); }
-  .er-grid.go .er-card:nth-child(1) { transition-delay: 0.05s; }
-  .er-grid.go .er-card:nth-child(2) { transition-delay: 0.15s; }
-  .er-grid.go .er-card:nth-child(3) { transition-delay: 0.25s; }
-  .er-grid.go .er-card:nth-child(4) { transition-delay: 0.35s; }
-  .er-grid.go .er-card:nth-child(5) { transition-delay: 0.45s; }
-  .er-grid.go .er-card:nth-child(6) { transition-delay: 0.55s; }
-  .er-card h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
-  .er-card .er-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
-  .er-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
-
-  /* ============================================================
-     LAS CUATRO CARDINALIDADES (s5)
-  ============================================================ */
-  .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
-  @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } }
-  .card-box { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 6px; padding: 22px 22px 20px; }
-  .card-box .cb-not { font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--blood); margin-bottom: 4px; }
-  .card-box .cb-name { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-bottom: 12px; }
-  .card-svg { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 0 12px; }
-  .card-box p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
-  .card-box p b { color: var(--ink); font-weight: 600; }
-  .cs-ent { fill: var(--paper); stroke: var(--ink-soft); stroke-width: 1.6; }
-  .cs-rel { fill: var(--paper-deep); stroke: var(--ochre); stroke-width: 1.4; }
-  .cs-line { stroke: var(--ink-muted); stroke-width: 1.3; }
-  .cs-label { font-family: var(--mono); font-size: 12px; fill: var(--ink); letter-spacing: 0.04em; }
-  .cs-card { font-family: var(--mono); font-size: 13px; fill: var(--blood); font-weight: 500; letter-spacing: 0.04em; }
-
-  /* ============================================================
-     "ELIGE LA CARDINALIDAD" — INTERACTIVO (s6)
-  ============================================================ */
-  .pick { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
-  .pick-progress { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .pick-progress b { color: var(--olive); font-weight: 600; }
-  .pick-scene { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px 18px; margin-bottom: 20px; }
-  .pick-rel { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; margin-bottom: 16px; }
-  @media (max-width: 480px) { .pick-rel { grid-template-columns: 1fr; gap: 8px; text-align: center; } }
-  .pick-ent { background: var(--paper-elev); border: 1.5px solid var(--ink-soft); border-radius: 6px; padding: 14px 12px; text-align: center; }
-  .pick-ent .pe-name { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); line-height: 1.1; }
-  .pick-verb { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ochre); text-align: center; white-space: nowrap; }
-  .pick-q { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .pick-q b { color: var(--ink); font-weight: 600; }
-  .pick-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 4px; }
-  @media (max-width: 480px) { .pick-opts { grid-template-columns: 1fr; } }
-  .pick-opt { font-family: var(--mono); font-size: 15px; letter-spacing: 0.04em; color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 6px; padding: 16px 14px; cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; text-align: center; font-weight: 500; }
-  .pick-opt:hover:not(:disabled) { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
-  .pick-opt:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
-  .pick-opt:disabled { cursor: default; }
-  .pick-opt.correct { border-color: var(--olive); color: var(--olive); background: rgba(93,102,56,0.10); }
-  .pick-opt.wrong { border-color: var(--blood); color: var(--blood); background: rgba(160,36,24,0.07); }
-  .pick-feedback { margin-top: 18px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ink-faint); font-size: 14px; line-height: 1.55; color: var(--ink-muted); min-height: 20px; transition: border-color 0.25s; }
-  .pick-feedback.ok { border-left-color: var(--olive); }
-  .pick-feedback.no { border-left-color: var(--blood); }
-  .pick-feedback b { color: var(--ink); font-weight: 600; }
-  .pick-feedback .pf-ok { color: var(--olive); font-weight: 600; }
-  .pick-feedback .pf-no { color: var(--blood); font-weight: 600; }
-  .pick-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
-  .pick-next, .pick-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 22px; border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; touch-action: manipulation; }
-  .pick-next { background: var(--blood); color: var(--paper); border: 1px solid var(--blood); }
-  .pick-next:hover { background: var(--blood-dark); border-color: var(--blood-dark); }
-  .pick-next:disabled { opacity: 0.35; cursor: default; background: transparent; color: var(--ink-muted); border-color: var(--line-strong); }
-  .pick-reset { background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); }
-  .pick-reset:hover { background: var(--paper); color: var(--ink); }
-  .pick-conclusion { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--olive); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
-  .pick-conclusion.show { opacity: 1; max-height: 700px; }
-  .pick-conclusion b { color: var(--olive); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -227,11 +215,11 @@
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#s1">Repaso</a></li>
       <li><a href="#s2">Leibniz</a></li>
-      <li><a href="#s3">Modelo ER</a></li>
-      <li><a href="#s4">Piezas</a></li>
-      <li><a href="#s5">Cardinalidad</a></li>
-      <li><a href="#s6">Interactivo</a></li>
-      <li><a href="#s7">Normalización</a></li>
+      <li><a href="#s3">El iceberg</a></li>
+      <li><a href="#s4">Criterios</a></li>
+      <li><a href="#s5">Explorador</a></li>
+      <li><a href="#s6">El juez</a></li>
+      <li><a href="#s7">Errores</a></li>
       <li><a href="#s8">Taller</a></li>
       <li><a href="#s9">Cierre</a></li>
     </ul>
@@ -243,7 +231,7 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 19</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Leibniz</h1>
-      <p class="hero-tagline">Cada relación entre datos<br>tiene su <span>razón suficiente</span>.</p>
+      <p class="hero-tagline">Escuchaste al cliente.<br>¿<span>diste con lo que quería</span>?</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 20 julio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
@@ -256,8 +244,8 @@
 
 <section class="quote">
   <div class="wrap">
-    <p class="quote-text">Nada sucede sin una razón suficiente.</p>
-    <p class="quote-attr">— <b>Gottfried W. Leibniz</b> · principio de razón suficiente</p>
+    <p class="quote-text">Calculemos.</p>
+    <p class="quote-attr">— <b>Gottfried W. Leibniz</b> · <i>calculemus</i> · siglo xvii</p>
   </div>
 </section>
 
@@ -267,20 +255,20 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · la razón de cada dato</span>
+          <span class="sec-chip">119 min · el juicio del análisis</span>
         </div>
-        <p class="sec-objective">Hoy le damos esqueleto a la información: entidades, atributos y relaciones. Aprenderás a dibujar diagramas Entidad&ndash;Relación y, sobre todo, a justificar la cardinalidad de cada vínculo &mdash; porque ninguna relación existe sin su razón suficiente.</p>
+        <p class="sec-objective">Llevas seis semanas recopilando requerimientos &mdash; pero nunca supiste con certeza si lo hiciste bien. Hoy lo medimos: una IA será tu <em>cliente</em> vago y difícil, tú la entrevistarás para descubrir lo que necesita, y al final la misma IA será tu <em>juez</em> &mdash; te dirá, con número, si diste con el resultado.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes los procesos; ¿dónde viven los datos?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: sabes construir; ¿sabes escuchar?</span><span class="agenda-dur">8 min</span></div>
         <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Leibniz?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">El modelo Entidad&ndash;Relación</span><span class="agenda-dur">12 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:28</span><span class="agenda-title">Entidades, atributos y relaciones</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">Las cuatro cardinalidades</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:00</span><span class="agenda-title">Interactivo: elige la cardinalidad</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:16</span><span class="agenda-title">Normalización: cuándo es suficiente</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: el ER de tu proyecto</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 7</span><span class="agenda-dur">11 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">El requerimiento faltante: el iceberg</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">Cómo se mide un buen requerimiento</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">El explorador: bajo la frase del cliente</span><span class="agenda-dur">20 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:04</span><span class="agenda-title">La IA como cliente y como juez</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:18</span><span class="agenda-title">Los errores que delatan a un novato</span><span class="agenda-dur">12 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: entrevista, propón, calculemus</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y enlace con la próxima clase</span><span class="agenda-dur">11 min</span></div>
       </div>
     </div>
   </div>
@@ -292,17 +280,17 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Tienes los procesos.<br>¿Dónde viven los datos?</h2></div>
+          <div><span class="sec-num">i.</span><h2>Sabes construir.<br>¿Sabes<br>escuchar?</h2></div>
           <span class="sec-chip">8 min · 20:00</span>
         </div>
-        <p class="sec-objective">Ya modelaste cómo fluye la información por el sistema. Falta lo que ese flujo deja a su paso: los datos que se guardan, y cómo se relacionan entre sí.</p>
+        <p class="sec-objective">Modelaste datos, generaste bases, diseñaste APIs. Todo eso se puede verificar: corre o no corre. Pero hay una habilidad anterior a todas, la más difícil de todas &mdash; y la única que nunca supiste si dominabas.</p>
       </div>
-      <p>En las clases anteriores aprendiste a modelar el <em>comportamiento</em> del sistema: qué hace, quién lo usa, cómo fluye la información de un proceso a otro. Pero todo ese movimiento deja un sedimento: datos que hay que guardar y volver a encontrar. Un pedido se procesa una vez; el registro de ese pedido vive para siempre &mdash; y tiene que poder ligarse a su cliente, a sus productos, a su factura.</p>
-      <p>Hoy cambiamos de lente: del flujo a la estructura. ¿Qué cosas necesita recordar tu sistema, qué sabe de cada una y cómo se conectan? Esa fotografía estática de los datos es el <em>modelo de datos</em>, y su herramienta canónica es el diagrama Entidad&ndash;Relación. Y para no dibujar relaciones al azar nos acompaña Leibniz, el filósofo que exigía una razón para cada cosa &mdash; y, de paso, el hombre que inventó el sistema binario en el que vive todo dato.</p>
+      <p>Repasa lo que llevas: casos de uso, historias de usuario, el SOW, el diagrama E-R, la base de datos, la API. Cada una de esas piezas tiene una prueba objetiva &mdash; el SQL ejecuta o truena, la API responde o falla. Pero todas nacen de un acto previo que <em>no</em> tiene prueba: <b>recopilar los requerimientos</b>. Entrevistaste, escuchaste, anotaste lo que el cliente quería. ¿Y cómo supiste que estaba completo? La verdad incómoda: no lo supiste. Nadie te dijo qué te faltó preguntar.</p>
+      <p>Ese es el punto ciego del análisis. Un requerimiento que descubres se anota y se construye; un requerimiento que <em>no</em> descubres es invisible &mdash; no deja rastro, no da error, no aparece en ninguna pantalla. Simplemente falta, y nadie lo nota hasta que el cliente, meses después, dice la frase más cara de la profesión: <em>"esto no era lo que pedí"</em>. Hoy vamos a hacer visible ese punto ciego &mdash; y a medirlo.</p>
       <div class="say">
         <div class="say-card">
           <div class="say-label">El dato que duele</div>
-          <p class="say-text">"Un sistema con procesos hermosos y un modelo de datos mal pensado es una casa preciosa con cimientos torcidos. Los procesos se reescriben en una tarde; el modelo de datos mal diseñado te persigue durante años &mdash; y migrar datos viejos a una estructura nueva es de las cirugías más caras del oficio."</p>
+          <p class="say-text">"El código con errores se corrige en horas; el requerimiento que nunca preguntaste se paga con el proyecto entero. Los estudios lo repiten desde hace cuarenta años: la mayoría de los sistemas que fracasan no fallaron al construirse &mdash; fallaron al escucharse. Y esa falla no se ve hasta que ya es cara."</p>
         </div>
       </div>
     </div>
@@ -318,243 +306,168 @@
           <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Leibniz?</h2></div>
           <span class="sec-chip">8 min · 20:08</span>
         </div>
-        <p class="sec-objective">Porque dos de sus ideas son, literalmente, los cimientos de los datos: el sistema binario y el principio de razón suficiente.</p>
+        <p class="sec-objective">Porque soñó con acabar las discusiones interminables convirtiéndolas en cálculo. "No adivinemos quién tiene razón &mdash; midámoslo." Hoy tomamos su sueño y lo usamos para medir algo que siempre fue pura opinión: qué tan bien escuchas.</p>
       </div>
-      <p>Leibniz tiene un lugar doble en esta materia. Primero, lo concreto: él formalizó el <em>sistema binario</em>, la aritmética de ceros y unos sobre la que descansa cada bit que tu sistema guarda. Cuando hablamos de "datos", hablamos de su invento. Soñaba además con una <em>característica universal</em>: un lenguaje exacto en el que cualquier idea pudiera escribirse sin ambigüedad y razonarse como un cálculo. El modelo Entidad&ndash;Relación es, en pequeño, esa ambición aplicada a la información: un lenguaje preciso para describir qué existe y cómo se vincula.</p>
-      <p>Pero lo que de verdad nos sirve hoy es su <em>principio de razón suficiente</em>: nada existe, nada es de cierta manera, sin una razón que lo explique. Trasládalo al modelado: cada entidad de tu diagrama debe estar porque el sistema necesita recordarla; cada relación, porque hay un vínculo real en el negocio; y cada cardinalidad &mdash; ese "uno a muchos", ese "muchos a muchos" &mdash; debe poder justificarse con una frase del mundo real. Si no sabes <em>por qué</em> una relación es 1:N y no N:N, todavía no la entendiste.</p>
+      <p>Gottfried Leibniz &mdash; coinventor del cálculo, padre del sistema binario que hace posible toda computadora &mdash; tuvo una obsesión mayor: terminar con las disputas humanas. Imaginó una <em>characteristica universalis</em>, un lenguaje tan preciso que cualquier desacuerdo pudiera resolverse no gritando, sino calculando. Su frase quedó para la historia: cuando dos personas discrepen, en vez de pelear, "bastará que tomen la pluma en la mano, se sienten ante el ábaco y se digan: <b>calculemus</b> &mdash; calculemos".</p>
+      <p>Piensa en lo que eso significa para nuestro punto ciego. "¿Recopilé bien los requerimientos?" siempre fue una pregunta de opinión &mdash; tú creías que sí, el cliente creía que no, y no había árbitro. Leibniz propone otra vía: convertir el juicio en medida. Si existiera un evaluador que conociera la respuesta completa &mdash; todos los requerimientos, la solución exacta que el cliente quería &mdash; podría comparar tu trabajo contra ella y decirte, con número, cuánto acertaste. Hoy ese evaluador existe: es una IA a la que le damos el papel de cliente con una verdad oculta, y luego el papel de juez. <em>Calculemus.</em></p>
       <div class="say">
         <div class="say-card">
-          <div class="say-label">Leibniz aplicado a los datos</div>
-          <p class="say-text">"Dibujar una flecha entre dos entidades es fácil; cualquiera junta cajas con líneas. Lo difícil &mdash; y lo profesional &mdash; es poder responder, para cada línea: ¿por qué esta cardinalidad y no otra? Esa pregunta es el principio de razón suficiente con bata de analista."</p>
+          <div class="say-label">Leibniz aplicado al análisis</div>
+          <p class="say-text">"No estás compitiendo contra la IA &mdash; la estás usando como espejo. Un espejo que conoce la respuesta y no tiene piedad ni prisa: te muestra exactamente qué preguntaste, qué asumiste y qué se te escapó. La calificación no es el premio; es el diagnóstico. Calculemus no busca ganar la discusión: busca terminarla con un dato."</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S3 MODELO ER -->
+<!-- S3 EL ICEBERG -->
 <section id="s3">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>El modelo<br>Entidad&ndash;Relación</h2></div>
-          <span class="sec-chip">12 min · 20:16</span>
+          <div><span class="sec-num">iii.</span><h2>El requerimiento<br>faltante:<br>el iceberg</h2></div>
+          <span class="sec-chip">14 min · 20:16</span>
         </div>
-        <p class="sec-objective">Un diagrama ER es un mapa de qué cosas guarda tu sistema y cómo se conectan. No es una base de datos: es el plano que viene antes.</p>
+        <p class="sec-objective">El cliente te dice una fracción de lo que necesita &mdash; el resto lo da por obvio, y por eso se lo calla. Recopilar requerimientos es bucear bajo la línea de flotación: casi todo lo importante está sumergido.</p>
       </div>
-      <p>El modelo Entidad&ndash;Relación, propuesto por Peter Chen en 1976, sirve para una cosa: capturar la estructura de la información de un negocio antes de tocar una sola tabla. Es a los datos lo que un plano arquitectónico es a un edificio &mdash; se dibuja con el cliente, se discute y se corrige <em>en papel</em>, donde corregir es barato. Tres ideas para situarlo:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Es conceptual, no técnico.</b> Un buen ER lo entiende el dueño del negocio, no solo el técnico. Habla de "clientes", "pedidos" y "productos", no de tipos de dato ni de motores de base de datos. Por eso sirve para acordar con el cliente qué información importa.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Es el puente al diseño físico.</b> Del ER acordado se deriva después la estructura real de tablas. Pero esa traducción viene luego: primero hay que entender el mundo, después implementarlo.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Vive de tres piezas.</b> Entidades (las cosas), atributos (lo que sabes de cada cosa) y relaciones (cómo se vinculan). Con esas tres y sus cardinalidades se describe casi cualquier dominio.</div></div>
+      <p>Cuando un cliente dice "quiero un sistema para mi negocio", te entrega la punta de un iceberg. Lo que dice en voz alta &mdash; lo <b>explícito</b> &mdash; es apenas lo que flota. Debajo hay dos capas invisibles y mucho más grandes. La primera es lo <b>implícito</b>: cosas que necesita pero cree tan evidentes que no vale la pena mencionarlas ("obvio que quiero poder corregir un error"). La segunda, la más profunda y peligrosa, es el <b>conocimiento tácito</b>: las reglas de su negocio que él vive todos los días y ni siquiera sabe que son reglas &mdash; hasta que tu sistema las rompe.</p>
+      <p>El problema es que el cliente no puede darte lo sumergido, porque para él no está sumergido: es aire, es agua, es lo normal. Solo hay una forma de sacarlo a flote, y no es escuchar mejor &mdash; es <em>preguntar</em> mejor. La diferencia entre un analista novato y uno experto no está en lo que anota; está en lo que se atreve a preguntar cuando el cliente ya "terminó" de hablar.</p>
+      <div class="example">
+        <div class="example-tag">La pregunta que cambia todo</div>
+        <p>Hay una familia de preguntas que sube el iceberg como ninguna otra: <b>"¿qué pasa cuando&hellip;?"</b>. ¿Qué pasa cuando una membresía vence a medio mes? ¿Qué pasa cuando dos clientes se llaman igual? ¿Qué pasa cuando alguien quiere cancelar? El novato pregunta "¿qué datos guardas?" y obtiene la punta. El experto pregunta "¿qué pasa cuando algo sale mal?" y obtiene el fondo &mdash; porque ahí, en los casos incómodos, es donde viven las reglas de negocio que de verdad definen el sistema.</p>
       </div>
-      <p>Como toda notación de modelado que hemos visto &mdash; UML, DFD &mdash;, el ER es un lenguaje compartido: un diagrama bien hecho lo lee cualquier analista del mundo. Vamos pieza por pieza.</p>
     </div>
   </div>
 </section>
 
-<!-- S4 PIEZAS -->
+<!-- S4 CRITERIOS -->
 <section id="s4">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>Entidades, atributos<br>y relaciones</h2></div>
-          <span class="sec-chip">16 min · 20:28</span>
+          <div><span class="sec-num">iv.</span><h2>Cómo se mide un<br>buen requerimiento</h2></div>
+          <span class="sec-chip">14 min · 20:30</span>
         </div>
-        <p class="sec-objective">Tres piezas, un vocabulario. Si las nombras bien, el diagrama casi se dibuja solo &mdash; y casi siempre se discute solo.</p>
+        <p class="sec-objective">Para que la IA te califique con justicia &mdash; y para que tú te autoevalúes &mdash; hace falta una vara. Un buen requerimiento cumple cuatro criterios; son, literalmente, las dimensiones con las que hoy serás medido.</p>
       </div>
-      <p>Estas son las seis nociones que componen cualquier diagrama ER. No las memorices como definiciones de examen: entiende qué responde cada una sobre tu negocio.</p>
+      <p>"Recopilé bien" no puede ser una corazonada: necesita criterios. La ingeniería de requerimientos acordó hace décadas cómo se ve uno bueno. Estos cuatro son los que importan hoy &mdash; y no por casualidad son las cuatro dimensiones que la IA usará para calificarte en el taller:</p>
 
-      <div class="er-grid" data-animate>
-        <div class="er-card">
-          <h4>Entidad</h4>
-          <div class="er-when">una cosa que se recuerda</div>
-          <p>Algo del mundo del que el sistema guarda información: Cliente, Pedido, Producto, Empleado. Regla práctica: si dirías "necesito una lista de…", probablemente es una entidad.</p>
+      <div class="techs-grid" data-animate>
+        <div class="tech-card hl">
+          <h4>Completo</h4>
+          <div class="tc-when">no falta ninguno</div>
+          <p>Cubre todo lo que el cliente necesita &mdash; explícito, implícito y tácito. Es el criterio más difícil, porque mide lo que <em>no</em> está: los requerimientos que nunca descubriste.</p>
+          <span class="tc-fail"><b>Falla:</b> "se me olvidó preguntar qué pasa al vencer la membresía".</span>
         </div>
-        <div class="er-card">
-          <h4>Atributo</h4>
-          <div class="er-when">lo que sabes de la entidad</div>
-          <p>Cada dato que describe a una entidad: el Cliente tiene nombre, correo, teléfono. Son las columnas de esa "lista". Atributo mal puesto en la entidad equivocada = dato que se repite o se pierde.</p>
+        <div class="tech-card hl">
+          <h4>No ambiguo</h4>
+          <div class="tc-when">una sola lectura</div>
+          <p>Cada requerimiento significa lo mismo para quien lo lee que para quien lo dijo. "Rápido", "amigable", "seguro" no son requerimientos: son huecos donde caben dos malentendidos.</p>
+          <span class="tc-fail"><b>Falla:</b> "el sistema debe ser rápido" &mdash; ¿rápido para quién, cuántos segundos?</span>
         </div>
-        <div class="er-card">
-          <h4>Identificador</h4>
-          <div class="er-when">distingue uno de otro</div>
-          <p>El atributo (o conjunto) que vuelve único a cada registro: la clave. Dos clientes pueden llamarse igual; su identificador no se repite jamás. Sin él, no sabes de quién hablas.</p>
+        <div class="tech-card">
+          <h4>Verificable</h4>
+          <div class="tc-when">se puede comprobar</div>
+          <p>Existe una forma objetiva de decir "esto se cumplió". Si no puedes imaginar la prueba que lo confirma, no es un requerimiento: es un deseo.</p>
+          <span class="tc-fail"><b>Falla:</b> "que a los clientes les guste" &mdash; ¿cómo lo mides?</span>
         </div>
-        <div class="er-card">
-          <h4>Relación</h4>
-          <div class="er-when">cómo se vinculan</div>
-          <p>El verbo entre dos entidades: un Cliente <em>realiza</em> Pedidos; un Pedido <em>contiene</em> Productos. Si no puedes nombrar la relación con un verbo claro, quizá no exista.</p>
-        </div>
-        <div class="er-card">
-          <h4>Cardinalidad</h4>
-          <div class="er-when">cuántos con cuántos</div>
-          <p>El número de la relación: ¿un cliente tiene un pedido o muchos? ¿un pedido pertenece a uno o varios clientes? Es la pieza que más se equivoca &mdash; y la que más cuesta corregir tarde.</p>
-        </div>
-        <div class="er-card">
-          <h4>Entidad débil</h4>
-          <div class="er-when">no existe sola</div>
-          <p>La que depende de otra para tener sentido: una "línea de pedido" no existe sin su Pedido. Útil reconocerla, pero no te obsesiones hoy: lo central es entidad, atributo, relación y cardinalidad.</p>
+        <div class="tech-card">
+          <h4>Rastreable</h4>
+          <div class="tc-when">sabes de dónde salió</div>
+          <p>Cada requerimiento tiene un origen: quién lo pidió y por qué. El principio de razón suficiente de Leibniz aplicado al análisis &mdash; nada entra al sistema sin una razón que lo justifique.</p>
+          <span class="tc-fail"><b>Falla:</b> "esto lo puse porque se me ocurrió" &mdash; ¿lo pidió el cliente?</span>
         </div>
       </div>
 
-      <div class="example">
-        <div class="example-tag">Una frase, todo el modelo</div>
-        <p>Lee esta oración del negocio: "<b>Un cliente realiza varios pedidos, y cada pedido contiene varios productos</b>." Casi todo el ER está ahí: los sustantivos (cliente, pedido, producto) son <b>entidades</b>; los verbos (realiza, contiene) son <b>relaciones</b>; y palabras como "varios" o "cada" delatan la <b>cardinalidad</b>. Modelar empieza por escuchar al cliente con oído de gramático.</p>
-      </div>
+      <p>Fíjate en el orden de dificultad: <em>verificable</em> y <em>rastreable</em> dependen de cómo <b>escribes</b> el requerimiento; <em>completo</em> y <em>no ambiguo</em> dependen de cómo <b>preguntas</b>. Por eso pesan más en la calificación de hoy: recopilar no es transcribir lo que oyes &mdash; es cazar lo que falta y desambiguar lo que sobra.</p>
     </div>
   </div>
 </section>
 
-<!-- S5 CARDINALIDADES -->
+<!-- S5 EXPLORADOR -->
 <section id="s5">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>Las cuatro<br>cardinalidades</h2></div>
-          <span class="sec-chip">16 min · 20:44</span>
+          <div><span class="sec-num">v.</span><h2>El explorador:<br>bajo la frase<br>del cliente</h2></div>
+          <span class="sec-chip">20 min · 20:44</span>
         </div>
-        <p class="sec-objective">La cardinalidad responde una pregunta en dos direcciones: cuántos de A se ligan a uno de B, y cuántos de B a uno de A. De ahí salen cuatro casos.</p>
+        <p class="sec-objective">Tomemos una frase real de cliente &mdash; corta, vaga, "sencilla" &mdash; y buceemos. Toca cada capa y mira cuánto había debajo de lo que dijo, hasta llegar a la solución que de verdad tenía en la cabeza.</p>
       </div>
-      <p>Para decidir la cardinalidad de una relación, pregúntate siempre <em>en los dos sentidos</em>. "Un cliente, ¿cuántos pedidos?" y "un pedido, ¿cuántos clientes?". Las dos respuestas juntas te dan el patrón. Estos son los cuatro, cada uno con su razón suficiente:</p>
+      <p>Caso: <em>"Fuerza Norte"</em>, un gimnasio de barrio. El dueño te suelta una sola frase y cree que con eso basta. Toca las tres capas y observa cómo el iceberg emerge &mdash; y cuánta distancia hay entre lo que dijo y lo que quería:</p>
 
-      <div class="card-grid">
-        <div class="card-box">
-          <div class="cb-not">1:1</div>
-          <div class="cb-name">uno a uno</div>
-          <svg class="card-svg" viewBox="0 0 280 70" role="img" aria-label="Relación uno a uno entre dos entidades">
-            <rect class="cs-ent" x="6" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="45" y="46" text-anchor="middle">Empleado</text>
-            <line class="cs-line" x1="84" y1="41" x2="196" y2="41"/>
-            <text class="cs-card" x="100" y="33">1</text>
-            <text class="cs-card" x="180" y="33">1</text>
-            <rect class="cs-ent" x="196" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="235" y="46" text-anchor="middle">Casillero</text>
-          </svg>
-          <p><b>Cada empleado tiene un casillero, y cada casillero es de un solo empleado.</b> Raro en la práctica; a menudo es señal de que dos entidades podrían ser una sola, salvo por seguridad o privacidad.</p>
+      <div class="dfx" id="dfx">
+        <div class="dfx-instr">Toca una capa para bajar · caso: gimnasio "Fuerza Norte"</div>
+        <div class="dfx-tabs" id="dfxTabs">
+          <button class="dfx-tab on" type="button" data-level="0"><b>Capa 1</b> · Lo que dijo</button>
+          <button class="dfx-tab" type="button" data-level="1"><b>Capa 2</b> · Lo que necesita</button>
+          <button class="dfx-tab" type="button" data-level="2"><b>Capa 3</b> · La solución que imaginó</button>
         </div>
-        <div class="card-box">
-          <div class="cb-not">1:N</div>
-          <div class="cb-name">uno a muchos</div>
-          <svg class="card-svg" viewBox="0 0 280 70" role="img" aria-label="Relación uno a muchos entre dos entidades">
-            <rect class="cs-ent" x="6" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="45" y="46" text-anchor="middle">Cliente</text>
-            <line class="cs-line" x1="84" y1="41" x2="196" y2="41"/>
-            <text class="cs-card" x="100" y="33">1</text>
-            <text class="cs-card" x="180" y="33">N</text>
-            <rect class="cs-ent" x="196" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="235" y="46" text-anchor="middle">Pedido</text>
-          </svg>
-          <p><b>Un cliente realiza muchos pedidos, pero cada pedido pertenece a un solo cliente.</b> El caso más común de todos. La mayoría de las relaciones reales son 1:N en alguna dirección.</p>
+        <div class="dfx-stage">
+          <div class="dfx-level" id="dfxLevel">Capa 1 · Lo explícito</div>
+          <div class="dfx-title" id="dfxTitle">Lo que el cliente dijo en voz alta</div>
+          <div id="dfxCanvas" aria-live="polite"></div>
         </div>
-        <div class="card-box">
-          <div class="cb-not">N:1</div>
-          <div class="cb-name">muchos a uno</div>
-          <svg class="card-svg" viewBox="0 0 280 70" role="img" aria-label="Relación muchos a uno entre dos entidades">
-            <rect class="cs-ent" x="6" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="45" y="46" text-anchor="middle">Empleado</text>
-            <line class="cs-line" x1="84" y1="41" x2="196" y2="41"/>
-            <text class="cs-card" x="100" y="33">N</text>
-            <text class="cs-card" x="180" y="33">1</text>
-            <rect class="cs-ent" x="196" y="24" width="84" height="34" rx="4"/>
-            <text class="cs-label" x="238" y="46" text-anchor="middle">Departamento</text>
-          </svg>
-          <p><b>Muchos empleados pertenecen a un departamento, y cada empleado a uno solo.</b> Es la misma 1:N leída desde el otro lado: el patrón no cambia, solo desde dónde lo miras.</p>
-        </div>
-        <div class="card-box">
-          <div class="cb-not">N:N</div>
-          <div class="cb-name">muchos a muchos</div>
-          <svg class="card-svg" viewBox="0 0 280 70" role="img" aria-label="Relación muchos a muchos entre dos entidades">
-            <rect class="cs-ent" x="6" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="45" y="46" text-anchor="middle">Pedido</text>
-            <line class="cs-line" x1="84" y1="41" x2="196" y2="41"/>
-            <text class="cs-card" x="100" y="33">N</text>
-            <text class="cs-card" x="180" y="33">N</text>
-            <rect class="cs-ent" x="196" y="24" width="78" height="34" rx="4"/>
-            <text class="cs-label" x="235" y="46" text-anchor="middle">Producto</text>
-          </svg>
-          <p><b>Un pedido contiene varios productos y un producto aparece en varios pedidos.</b> Al implementarse, casi siempre se rompe en dos relaciones 1:N con una entidad intermedia (p. ej. "línea de pedido").</p>
-        </div>
+        <div class="dfx-read" id="dfxRead"></div>
+        <div class="dfx-balance" id="dfxBalance"></div>
       </div>
 
-      <div class="example">
-        <div class="example-tag">El truco para no equivocarte</div>
-        <p>Frente a cualquier relación, di en voz alta dos frases con "uno" al frente: "<b>Un</b> A se relaciona con ¿uno o muchos B?" y "<b>Un</b> B se relaciona con ¿uno o muchos A?". Si ambas respuestas son "uno", es 1:1. Si una es "uno" y la otra "muchos", es 1:N (o N:1, según el lado). Si las dos son "muchos", es N:N. Dos frases &mdash; nunca falla, y cada respuesta es tu razón suficiente.</p>
-      </div>
+      <p>¿Sentiste el vértigo? De <em>una</em> frase salieron ocho requerimientos y una solución que el cliente jamás describió &mdash; pero que esperaba. Ninguno estaba en sus palabras; todos estaban en sus <b>silencios</b>. "Dar con el resultado" nunca fue adivinar: es hacer las preguntas que obligan al cliente a subir el iceberg él mismo. En el taller, la IA será este dueño de gimnasio &mdash; con su verdad oculta &mdash; y tú tendrás que sacársela.</p>
     </div>
   </div>
 </section>
 
-<!-- S6 INTERACTIVO -->
+<!-- S6 LA IA COMO CLIENTE Y JUEZ -->
 <section id="s6">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>Interactivo:<br>elige la cardinalidad</h2></div>
-          <span class="sec-chip">16 min · 21:00</span>
+          <div><span class="sec-num">vi.</span><h2>La IA como<br>cliente y<br>como juez</h2></div>
+          <span class="sec-chip">14 min · 21:04</span>
         </div>
-        <p class="sec-objective">Verás una relación entre dos entidades del mundo real. Tu trabajo: elegir la cardinalidad correcta &mdash; y entender, con cada respuesta, su razón suficiente.</p>
+        <p class="sec-objective">El truco del ejercicio es darle a la IA dos papeles opuestos, uno tras otro: primero un cliente que esconde la verdad, después un juez que la revela y la usa para medirte. Así se calcula lo que antes era opinión.</p>
       </div>
-      <p>Aplica el truco de las dos frases. Para cada caso, lee las dos entidades y la pregunta, y toca <b>1:1</b>, <b>1:N</b> o <b>N:N</b>. El sitio te dirá si acertaste y, sobre todo, <em>por qué</em>. Son varios casos; no hay prisa &mdash; lo importante es que puedas justificar cada elección.</p>
-
-      <div class="pick" id="pick">
-        <div class="pick-progress">
-          <span>Caso <b id="pickNum">1</b> de <span id="pickTotal">7</span></span>
-          <span>Aciertos: <b id="pickScore">0</b></span>
-        </div>
-        <div class="pick-scene">
-          <div class="pick-rel">
-            <div class="pick-ent"><div class="pe-name" id="pickA">—</div></div>
-            <div class="pick-verb" id="pickVerb">—</div>
-            <div class="pick-ent"><div class="pe-name" id="pickB">—</div></div>
-          </div>
-          <p class="pick-q" id="pickQ">—</p>
-        </div>
-        <div class="pick-opts" id="pickOpts">
-          <button class="pick-opt" type="button" data-val="1:1">1:1</button>
-          <button class="pick-opt" type="button" data-val="1:N">1:N</button>
-          <button class="pick-opt" type="button" data-val="N:N">N:N</button>
-        </div>
-        <div class="pick-feedback" id="pickFeedback" role="status" aria-live="polite">Lee el caso, di las dos frases en tu cabeza y elige una cardinalidad.</div>
-        <div class="pick-bar">
-          <button class="pick-reset" id="pickReset" type="button">Reiniciar</button>
-          <button class="pick-next" id="pickNext" type="button" disabled>Siguiente caso &rarr;</button>
-        </div>
-        <div class="pick-conclusion" id="pickConclusion">
-          <b>¡Recorriste los casos!</b> Fíjate en las trampas: el vínculo entre persona y país de <em>nacimiento</em> parecía simétrico y no lo era &mdash; cada quien nace en un solo país, pero un país es origen de millones (1:N); "alumno y materias" se siente 1:N hasta que recuerdas que un alumno cursa varias <em>y</em> una materia tiene muchos alumnos &mdash; N:N puro. La cardinalidad no se adivina por intuición: se deduce diciendo las dos frases y atendiendo a la realidad del negocio. Eso es Leibniz: para cada número, una razón.
+      <p>Un examen normal no puede medir tu capacidad de <em>escuchar</em>: te da las preguntas ya hechas. La recopilación de requerimientos es lo contrario &mdash; el mérito está en descubrir las preguntas que nadie te dio. Para evaluar eso hace falta alguien que tenga una verdad completa y te obligue a extraerla. La IA puede hacer los dos papeles que ese examen necesita:</p>
+      <div class="points">
+        <div class="point"><span class="point-num">01</span><div><b>La IA como cliente.</b> Le pides que invente en secreto una lista de requerimientos, reglas de negocio y una solución concreta &mdash; y que <em>no</em> te los revele. Que responda como un dueño ocupado y poco técnico: corto, vago, sin corregirte si asumes. Su verdad oculta es la vara contra la que te medirás; tu única arma para descubrirla son tus preguntas.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>La IA como juez.</b> Terminada la entrevista, le pides que salga del papel, revele todo lo que escondía y compare: qué descubriste, qué se te escapó, qué tan cerca quedó tu solución de la suya. Y que lo cierre con un número y un veredicto &mdash; SÍ, PARCIAL o NO diste con el resultado.</div></div>
+      </div>
+      <p>La honestidad del ejercicio depende de una regla: la verdad oculta debe fijarse <b>antes</b> de que empieces a preguntar, no inventarse al final para darte la razón. Por eso el prompt del cliente le exige comprometerse con su lista secreta desde el arranque. Así el juez no improvisa la respuesta correcta &mdash; ya la tenía &mdash; y su calificación es un espejo, no un cumplido.</p>
+      <div class="say">
+        <div class="say-card">
+          <div class="say-label">La consecuencia para el analista</div>
+          <p class="say-text">"Lo valioso no es la nota &mdash; es el mapa de tus puntos ciegos. Si sacas 90 en cobertura pero 40 en reglas de negocio ocultas, acabas de descubrir que preguntas '¿qué guardas?' pero nunca '¿qué pasa cuando&hellip;?'. Ese patrón te acompañará a cada entrevista real de tu carrera, con clientes que no traen prompt de juez. Mejor cazarlo hoy, gratis."</p>
         </div>
       </div>
-
-      <p>¿Notaste cuántas veces tu primera intuición y la realidad no coincidían? Por eso no se modela "a ojo". Cada cardinalidad que pongas en tu diagrama debe poder defenderse con una frase del negocio &mdash; si no la tienes, no estás modelando, estás adivinando.</p>
     </div>
   </div>
 </section>
 
-<!-- S7 NORMALIZACIÓN -->
+<!-- S7 ERRORES -->
 <section id="s7">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vii.</span><h2>Normalización:<br>cuándo es suficiente</h2></div>
-          <span class="sec-chip">14 min · 21:16</span>
+          <div><span class="sec-num">vii.</span><h2>Los errores que<br>delatan a un novato</h2></div>
+          <span class="sec-chip">12 min · 21:18</span>
         </div>
-        <p class="sec-objective">Normalizar es ordenar los datos para que cada hecho se guarde una sola vez. Pero hay un punto en el que más normalización deja de ayudar &mdash; y empieza a estorbar.</p>
+        <p class="sec-objective">Cuatro hábitos hunden una entrevista de requerimientos &mdash; y la IA-cliente está diseñada para castigarlos sin piedad. Recon&oacute;celos ahora para no cometerlos cuando cuenten.</p>
       </div>
-      <p>La normalización es el conjunto de reglas que evita que un mismo dato se repita en muchos lados. ¿Por qué importa? Porque el dato duplicado es el dato que algún día se contradice: si el teléfono del cliente está copiado en cada uno de sus pedidos, el día que cambie tendrás veinte versiones y ninguna confiable. La idea de fondo es simple y muy leibniziana: <em>cada hecho debe tener un único lugar donde vive</em>.</p>
-      <p>En la práctica, para esta materia, basta con tres niveles &mdash; las tres primeras formas normales &mdash; entendidos como sentido común, no como ritual:</p>
+      <p>La IA-cliente no te va a ayudar: si tropiezas, te deja tropezar &mdash; igual que un cliente real. Estos son los cuatro tropiezos que más bajan la calificación, y que reconocerás en tu propia transcripción:</p>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>1FN — un valor por celda.</b> Nada de meter tres teléfonos separados por comas en un mismo campo. Cada dato, en su propio lugar, atómico. Si tienes una lista dentro de una celda, casi siempre falta una entidad.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>2FN — cada atributo depende de toda la clave.</b> En una "línea de pedido", el precio depende del producto y del pedido; el nombre del producto depende solo del producto &mdash; entonces vive en Producto, no aquí. Lo que no depende de la clave completa, se va a su entidad.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>3FN — sin datos calculables ni copiados de otra entidad.</b> No guardes el total si puedes sumarlo; no copies el nombre del cliente en el pedido si ya está en Cliente. Cada hecho, una sola fuente de verdad.</div></div>
+        <div class="point"><span class="point-num">01</span><div><b>La pregunta cerrada.</b> "¿Quieres registrar clientes, verdad?" El cliente contesta "sí" y no aprendiste nada &mdash; le pusiste las palabras en la boca. Las preguntas abiertas ("¿cómo llevas hoy el control de tus clientes?") lo hacen hablar; las cerradas solo confirman lo que ya creías.</div></div>
+        <div class="point"><span class="point-num">02</span><div><b>Asumir en vez de preguntar.</b> "Entonces el sistema cobra con tarjeta." ¿Lo dijo el cliente o lo diste por hecho? Cada suposición no verificada es un requerimiento inventado &mdash; falla de rastreabilidad &mdash; y a menudo, el error que el cliente descubre al final.</div></div>
+        <div class="point"><span class="point-num">03</span><div><b>Quedarse en la superficie.</b> Preguntar solo "¿qué datos guardas?" y nunca "¿qué pasa cuando algo sale mal?". Te llevas la punta del iceberg y das la entrevista por terminada &mdash; justo antes de la parte que importaba.</div></div>
+        <div class="point"><span class="point-num">04</span><div><b>Aceptar lo ambiguo.</b> El cliente dice "que sea rápido y fácil" y tú lo anotas tal cual, satisfecho. Un requerimiento ambiguo no se anota: se desambigua ahí mismo &mdash; "¿rápido es responder en menos de dos segundos?" &mdash; o se convertirá en una discusión el día de la entrega.</div></div>
       </div>
       <div class="example">
-        <div class="example-tag">El "cuándo es suficiente"</div>
-        <p>Existen formas normales más altas (BCNF, 4FN, 5FN), pero para casi todo sistema real <b>la 3FN es suficiente</b> &mdash; y querer ir más lejos suele ser perfeccionismo caro. Hasta hay casos donde, por velocidad, se <b>desnormaliza</b> a propósito (copiar un dato para no recalcularlo mil veces). La razón suficiente también aplica aquí: normaliza hasta donde el problema lo pida, ni un paso más por gusto. Saber dónde parar es criterio de analista, no debilidad.</p>
+        <div class="example-tag">El truco para no equivocarte</div>
+        <p>Antes de cada pregunta que vayas a escribir, pásala por dos filtros de Leibniz. Uno: <b>"¿esta pregunta lo hace hablar o solo lo hace asentir?"</b> &mdash; si la respuesta posible es sí/no, reescríbela abierta. Dos: <b>"¿estoy preguntando o estoy asumiendo?"</b> &mdash; si hay un dato en tu frase que el cliente no dijo, convierte la afirmación en pregunta. Dos filtros, y ya evitaste los cuatro errores.</p>
       </div>
     </div>
   </div>
@@ -566,45 +479,87 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Taller:<br>el ER de tu proyecto</h2></div>
+          <div><span class="sec-num">viii.</span><h2>Taller: entrevista,<br>propón, calculemus</h2></div>
           <span class="sec-chip">18 min · 21:30</span>
         </div>
-        <p class="sec-objective">Bajemos todo esto a tu sistema. Hoy sales con el primer diagrama Entidad&ndash;Relación de tu proyecto &mdash; el insumo directo de la Tarea 7.</p>
+        <p class="sec-objective">El momento de la verdad. Entrevistarás a un cliente que esconde su verdad, propondrás tu solución, y dejarás que la IA te ponga número y veredicto. Al final sabrás &mdash; por primera vez con un dato &mdash; qué tan bueno eres escuchando.</p>
       </div>
-      <p>Leibniz diría que un diagrama cuyas cardinalidades no puedes justificar todavía no es tuyo. Así que hoy dibujas el ER de tu proyecto integrador y, sobre todo, le pones razón suficiente a cada línea. Insumo directo para la sección "Modelo de datos" de tu documento &mdash; y arranque de tu Tarea 7.</p>
+      <p>Trabaja individual o en parejas, un solo chat de IA (Gemini, ChatGPT o la que uses). El ejercicio tiene tres fases y dos prompts. Elige primero un giro que <b>no</b> hayamos visto en clase &mdash; una estética canina, una cafetería, un taller mecánico, una guardería &mdash; para que nada te dé ventaja:</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
-            <h4>Caza tus entidades <span class="fs-time">4 min</span></h4>
-            <p>Escribe en una frase qué hace tu sistema y subraya los sustantivos importantes. Esos son tus candidatos a <b>entidad</b>. Quédate con las cinco o seis de las que de verdad necesitas guardar información (Cliente, Producto, Cita, Usuario&hellip;).</p>
+            <h4>Convoca a tu cliente <span class="fs-time">3 min</span></h4>
+            <p>Pega el <b>prompt del cliente</b> (abajo) con el giro que elegiste. La IA se pondrá en el papel de un dueño vago y te soltará una sola frase. No pidas su lista &mdash; no te la va a dar. Tu trabajo empieza aquí.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
-            <h4>Dale atributos e identificador <span class="fs-time">4 min</span></h4>
-            <p>Para cada entidad, anota tres o cuatro <b>atributos</b> y marca cuál es su <b>identificador</b> (la clave que no se repite). Si un atributo aparece copiado en dos entidades, detente: probablemente ahí falta una relación, no una copia.</p>
+            <h4>Entrevista: sube el iceberg <span class="fs-time">7 min</span></h4>
+            <p>Haz preguntas <b>abiertas</b> y, sobre todo, muchas del tipo <b>"¿qué pasa cuando&hellip;?"</b>. Persigue las reglas de negocio en los casos incómodos: vencimientos, cancelaciones, errores, excepciones. Cuida no caer en los cuatro errores &mdash; el cliente no te corregirá.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
-            <h4>Conecta y nombra las relaciones <span class="fs-time">5 min</span></h4>
-            <p>Traza una línea entre las entidades que se vinculan y ponle un <b>verbo</b> a cada línea (realiza, contiene, atiende). Si no encuentras el verbo, quizá esa relación no existe &mdash; bórrala sin culpa.</p>
+            <h4>Cierra tu análisis: requerimientos + solución <span class="fs-time">4 min</span></h4>
+            <p>Antes de pedir el veredicto, escribe tú &mdash; en el chat &mdash; <b>tu lista de requerimientos y reglas de negocio</b> descubiertas, y <b>un párrafo</b> describiendo el sistema que le construirías. Esto es lo que el juez medirá en sus dos dimensiones: ¿recopilaste?, ¿y diste con la solución?</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
-            <h4>Pon la cardinalidad y su razón <span class="fs-time">5 min</span></h4>
-            <p>En cada línea, di las dos frases del truco y escribe la cardinalidad (1:1, 1:N, N:N). Junto a cada una, una frase de <b>razón suficiente</b>: "1:N porque un cliente hace muchas citas pero cada cita es de un cliente". Sin la frase, la cardinalidad no cuenta.</p>
+            <h4>Calculemus: pide el veredicto <span class="fs-time">4 min</span></h4>
+            <p>Pega el <b>prompt del juez</b>. La IA revelará su lista secreta, marcará qué descubriste y qué no, comparará tu solución con la suya, y cerrará con tu calificación y el veredicto: <b>¿SÍ, PARCIAL o NO diste con el resultado?</b> Lee sus tres consejos &mdash; son tu tarea real.</p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Si te trabas</b> &mdash; toda N:N esconde una entidad intermedia. Cuando dos cosas se relacionan "muchos a muchos" (pedidos y productos, alumnos y materias), pregúntate qué dato vive <em>en el cruce</em> (la cantidad, la calificación): esa es tu tercera entidad. Descubrirla es señal de que ya piensas en modelo de datos.
+          <b>La nota es un espejo, no un juicio.</b> Si saliste bajo en una dimensión, no la justifiques &mdash; anótala. ¿Flojo en reglas de negocio? Preguntaste "qué" y no "qué pasa cuando". ¿Flojo en solución? Recopilaste datos pero no imaginaste el sistema. Si queda tiempo, córrelo otra vez con otro giro y busca subir <em>esa</em> dimensión. Eso es calculemus: repetir hasta que el número suba.
         </div>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt 1 · el cliente (pégalo primero)</div>
+        <pre>Actúa como el dueño de una [estética canina / cafetería / taller
+mecánico / guardería], un cliente real que quiere un sistema pero NO es
+técnico y NO sabe explicar del todo lo que necesita.
+
+Antes de empezar, inventa EN SECRETO y fija (no me los muestres):
+- una lista de 6 a 8 requerimientos funcionales,
+- varias reglas de negocio ocultas (qué pasa en casos incómodos),
+- una idea concreta del sistema que quieres.
+
+Reglas de tu papel:
+- Responde solo lo que te pregunte, corto y a veces vago, como una
+  persona ocupada y poco técnica.
+- Si te hago una pregunta cerrada (de sí/no) o asumo algo, contéstame
+  literal, sin corregirme ni ayudarme.
+- NO reveles tu lista ni hagas resúmenes: oblígame a descubrir todo con
+  buenas preguntas.
+
+Empieza con un saludo y UNA sola frase vaga de lo que quieres. Luego
+espera mis preguntas.</pre>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt 2 · el juez (pégalo al final)</div>
+        <pre>Fin de la entrevista. Sal del papel de cliente y actúa como profesor de
+análisis de sistemas. Con base en TODA nuestra conversación:
+
+1. Revela tu lista secreta completa: requerimientos funcionales, reglas
+   de negocio ocultas y la solución que tenías en mente.
+2. Marca cada punto como DESCUBIERTO o NO DESCUBIERTO según mis preguntas.
+3. Compara la solución que te propuse contra la que querías.
+4. Califícame de 0 a 100:
+   - cobertura de requerimientos (35)
+   - detección de reglas de negocio ocultas (25)
+   - ajuste de mi solución a la tuya (25)
+   - calidad de mis preguntas y no asumir (15)
+5. Veredicto claro: ¿DI CON EL RESULTADO? (SÍ / PARCIAL / NO) y por qué,
+   en dos líneas.
+6. Los 3 consejos más importantes para mi próxima entrevista.</pre>
       </div>
     </div>
   </div>
@@ -616,33 +571,31 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">ix.</span><h2>Cierre y Tarea 7</h2></div>
+          <div><span class="sec-num">ix.</span><h2>Cierre y enlace<br>con la próxima clase</h2></div>
           <span class="sec-chip">11 min · 21:48</span>
         </div>
-        <p class="sec-objective">Modelar datos es darle a la información una estructura con razones. Si puedes justificar cada entidad, cada relación y cada número, ya piensas como analista de datos.</p>
+        <p class="sec-objective">Recopilar requerimientos era la única habilidad sin examen. Hoy le pusiste número. La nota importa menos que lo que revela: el mapa de lo que todavía no sabes preguntar.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>El diagrama ER captura qué guarda el sistema y cómo se conecta, con tres piezas: entidades, atributos y relaciones &mdash; más sus cardinalidades.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Las cuatro cardinalidades (1:1, 1:N, N:1, N:N) se deducen diciendo dos frases, nunca a ojo. Toda N:N esconde una entidad intermedia.</div></div>
-        <div class="point"><span class="point-num">03</span><div>Normaliza hasta la 3FN: cada hecho, una sola fuente de verdad. Y, como pedía Leibniz, ten una razón suficiente para cada decisión &mdash; incluso para detenerte.</div></div>
+        <div class="point"><span class="point-num">01</span><div>El requerimiento que no descubres es invisible &mdash; no da error, solo falta. La mayoría de los sistemas fracasan por no escuchar, no por no construir. Es el punto ciego del análisis, y hoy lo hiciste visible.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Bajo la frase del cliente hay un iceberg: lo explícito flota, lo implícito y lo tácito están sumergidos. Solo sube con buenas preguntas &mdash; abiertas, sin asumir, y sobre todo "¿qué pasa cuando&hellip;?".</div></div>
+        <div class="point"><span class="point-num">03</span><div>Calculemus: la IA como cliente oculto y como juez convierte "¿lo hice bien?" en un número y un veredicto. No para ganar &mdash; para tener, por fin, un espejo de tus puntos ciegos.</div></div>
       </div>
 
       <div class="challenge">
-        <div class="challenge-eyebrow">Tarea 7 · valor 1 punto · entrega: jueves 30 de julio</div>
-        <h3>Los tres diagramas ER de tu sistema</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Elabora <b>tres diagramas Entidad&ndash;Relación</b> de tu proyecto con cardinalidades correctas. Hazlos en <b>dbdiagram.io, Miro, draw.io</b> o cualquier herramienta libre. Para que el punto sea tuyo:</p>
+        <div class="challenge-eyebrow">Reto opcional · sin puntos · llévalo a tu proyecto</div>
+        <h3>Pon a tu propio cliente frente al juez</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">El juez no sirve solo para el juego: sírvete de él con los requerimientos <b>reales</b> de tu proyecto integrador, antes de que el hueco lo encuentre tu calificación:</p>
         <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Tres diagramas ER de distintas partes (o vistas) de tu sistema, cada uno con sus entidades, atributos e identificadores.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Cada relación con su verbo y su cardinalidad explícita (1:1, 1:N, N:1 o N:N), bien marcada en el diagrama.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Una frase de razón suficiente por cada cardinalidad: por qué es ese número y no otro, en términos del negocio.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Tus modelos llegan al menos a 3FN (sin datos repetidos ni calculables). Si usaste IA, cierra con tu sección "Cómo usé IA": qué te sugirió y qué corregiste tú.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Pega tu lista de requerimientos y pídele a la IA que actúe como analista senior: que cace <b>ambigüedades, huecos y suposiciones</b>, y que te haga las cinco preguntas "¿qué pasa cuando&hellip;?" que tú no te hiciste.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Recordatorio: la <b>Tarea 6</b> (diagrama E-R + SQL generado con IA) se entrega este <b>jueves 23 de julio</b>. Un buen modelo de datos empieza por unos requerimientos completos &mdash; hoy practicaste justo eso.</li>
         </ul>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El jueves que viene</div>
-          <p class="say-text">"Pascal y los árboles de decisión. Cuando hay que decidir bajo incertidumbre, se modela: árboles y matrices de decisión con análisis de factibilidad."</p>
+          <p class="say-text">"Pascal y los árboles de decisión. Ya sabes recopilar lo que el cliente quiere; el jueves veremos cómo el sistema decide &mdash; cómo convertir un enredo de reglas de negocio en un árbol que elige, rama por rama, la acción correcta."</p>
         </div>
       </div>
     </div>
@@ -681,140 +634,88 @@
   document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
 
   // ============================================================
-  // Interactivo "elige la cardinalidad"
+  // Explorador del iceberg: de la frase del cliente a su solución.
+  // Cada capa es un bloque HTML que se revela al tocar un botón.
   // ============================================================
-  const PICK_CASES = [
-    {
-      a: 'Cliente', verb: 'realiza', b: 'Pedido',
-      q: 'Un cliente realiza muchos pedidos, pero ¿cuántos clientes tiene cada pedido?',
-      ans: '1:N',
-      why: 'Un cliente hace muchos pedidos, pero cada pedido pertenece a un solo cliente. Una respuesta "uno" y la otra "muchos": es 1:N, el caso más común del mundo real.'
-    },
-    {
-      a: 'Persona', verb: 'tiene', b: 'CURP',
-      q: 'Una persona tiene una CURP y una CURP identifica a una persona. ¿Cuántos a cuántos?',
-      ans: '1:1',
-      why: 'Cada persona tiene exactamente una CURP y cada CURP es de una sola persona: las dos frases dan "uno". Es 1:1 &mdash; el caso más raro, propio de identificadores y datos sensibles separados.'
-    },
-    {
-      a: 'Pedido', verb: 'contiene', b: 'Producto',
-      q: 'Un pedido contiene varios productos y un producto puede ir en muchos pedidos. ¿Cuántos a cuántos?',
-      ans: 'N:N',
-      why: 'Las dos frases dan "muchos": un pedido lleva varios productos y un producto aparece en muchos pedidos. Es N:N &mdash; y al implementarlo nacerá una entidad intermedia ("línea de pedido") que guarda la cantidad de cada producto.'
-    },
-    {
-      a: 'Departamento', verb: 'emplea', b: 'Empleado',
-      q: 'Un departamento emplea a muchas personas, pero ¿en cuántos departamentos trabaja cada empleado?',
-      ans: '1:N',
-      why: 'Un departamento tiene muchos empleados, pero (en este negocio) cada empleado pertenece a un solo departamento. Una "muchos", la otra "uno": 1:N. Visto desde el empleado sería N:1 &mdash; el mismo patrón, otro lado.'
-    },
-    {
-      a: 'Alumno', verb: 'cursa', b: 'Materia',
-      q: 'Un alumno cursa varias materias y una materia tiene muchos alumnos. ¿Cuántos a cuántos?',
-      ans: 'N:N',
-      why: 'La trampa clásica: se siente 1:N, pero las dos frases dan "muchos". Un alumno cursa varias materias y cada materia tiene muchos alumnos: N:N. En el cruce vive un dato propio &mdash; la calificación &mdash; que pide su entidad intermedia.'
-    },
-    {
-      a: 'País', verb: 'es origen de', b: 'Persona',
-      q: 'Una persona nace en un país, pero un país es origen de muchas personas. ¿Cuántos a cuántos?',
-      ans: '1:N',
-      why: 'Parece simétrico, pero no lo es: cada persona tiene un solo país de nacimiento, mientras que un país es origen de millones. Una "uno", la otra "muchos": 1:N. La simetría aparente es una trampa común.'
-    },
-    {
-      a: 'Empleado', verb: 'ocupa', b: 'Casillero',
-      q: 'Cada empleado tiene asignado un casillero y cada casillero es de un solo empleado. ¿Cuántos a cuántos?',
-      ans: '1:1',
-      why: 'Las dos frases dan "uno": un empleado, un casillero; un casillero, un empleado. Es 1:1. Cuando veas un 1:1, pregúntate si no deberían ser una sola entidad &mdash; aquí se separan por orden físico, no por dato.'
-    }
-  ];
+  (function initDfx() {
+    const tabsWrap = document.getElementById('dfxTabs');
+    const canvas = document.getElementById('dfxCanvas');
+    if (!tabsWrap || !canvas) return;
+    const tabs = tabsWrap.querySelectorAll('.dfx-tab');
+    const levelEl = document.getElementById('dfxLevel');
+    const titleEl = document.getElementById('dfxTitle');
+    const readEl = document.getElementById('dfxRead');
+    const balanceEl = document.getElementById('dfxBalance');
 
-  (function initPick() {
-    const root = document.getElementById('pick');
-    if (!root) return;
-    const elA = document.getElementById('pickA');
-    const elB = document.getElementById('pickB');
-    const elVerb = document.getElementById('pickVerb');
-    const elQ = document.getElementById('pickQ');
-    const elNum = document.getElementById('pickNum');
-    const elTotal = document.getElementById('pickTotal');
-    const elScore = document.getElementById('pickScore');
-    const opts = Array.from(document.querySelectorAll('#pickOpts .pick-opt'));
-    const feedback = document.getElementById('pickFeedback');
-    const nextBtn = document.getElementById('pickNext');
-    const resetBtn = document.getElementById('pickReset');
-    const conclusion = document.getElementById('pickConclusion');
+    const LEVELS = {
+      '0': {
+        level: 'Capa 1 · Lo explícito',
+        title: 'Lo que el cliente dijo en voz alta',
+        read: '<b>Lee así:</b> el novato oye "control de clientes" e imagina una lista de nombres &mdash; y da la entrevista por entendida. Pero la palabra trampa es <b>"sencillo"</b>: casi nunca significa "pocas funciones"; significa "no quiero pensar en esto, piénsalo tú". El cliente que pide algo sencillo suele ser el que más reglas ocultas carga.',
+        balance: 'Si te quedas en esta capa, construyes una agenda de contactos &mdash; y entregas un sistema que el cliente ni reconoce como lo que pidió.',
+        body:
+          '<p class="ice-quote">"Quiero un sistema para llevar el control de mis clientes del gimnasio. Nada complicado, algo <span>sencillo</span>."</p>'
+      },
+      '1': {
+        level: 'Capa 2 · Lo implícito y lo tácito',
+        title: 'Lo que necesita — y no dijo',
+        read: '<b>Lee así:</b> las tres primeras salen con una pregunta básica ("¿qué llevas hoy en tu cuaderno?"). Las cinco de abajo &mdash; las caras &mdash; solo emergen si preguntas <b>"¿qué pasa cuando&hellip;?"</b>. Son reglas de negocio que el dueño vive a diario y no sabe que debe decirte: para él son obvias, para tu sistema son invisibles.',
+        balance: 'El dueño tenía 8 requerimientos en mente. La frase inicial te dio 0. La pregunta honesta: ¿cuántos habrías sacado tú &mdash; y cuántos son de la mitad de abajo?',
+        body:
+          '<ul class="req-list">' +
+          '<li class="req-group">Con una pregunta básica &mdash; lo implícito</li>' +
+          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Registrar clientes con sus datos y su <b>tipo de membresía</b></span></li>' +
+          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Registrar los <b>pagos</b> de mensualidad</span></li>' +
+          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Ver quién está al corriente y <b>quién debe</b></span></li>' +
+          '<li class="req-group">Solo con "¿qué pasa cuando&hellip;?" &mdash; lo tácito, lo caro</li>' +
+          '<li class="req-item deep"><span class="mk">&#9650;</span><span>¿Qué pasa cuando una membresía <b>vence a medio mes</b>? ¿Corte inmediato o acceso hasta fin de mes?</span></li>' +
+          '<li class="req-item deep"><span class="mk">&#9650;</span><span>Membresías con <b>límite de visitas</b> frente a ilimitadas &mdash; se cobran y se controlan distinto</span></li>' +
+          '<li class="req-item deep"><span class="mk">&#9650;</span><span><b>Congelar</b> una membresía por viaje o lesión sin perder los días pagados</span></li>' +
+          '<li class="req-item deep"><span class="mk">&#9650;</span><span>Clases con <b>cupo</b>: ¿reservación?, ¿lista de espera?, ¿penalización por no asistir?</span></li>' +
+          '<li class="req-item deep"><span class="mk">&#9650;</span><span>El gimnasio <b>cierra en días festivos</b> &mdash; ¿esos días cuentan para la membresía?</span></li>' +
+          '</ul>'
+      },
+      '2': {
+        level: 'Capa 3 · La solución que imaginó',
+        title: 'El sistema que el cliente tenía en la cabeza',
+        read: '<b>Lee así:</b> esto es lo que el dueño esperaba <em>en silencio</em> al decir "sencillo". Nunca lo describió porque, para él, era la definición obvia de "control de clientes". Nota la distancia entre su frase y esto: ese hueco no está en sus palabras &mdash; es, exactamente, el trabajo del analista.',
+        balance: '"Diste con el resultado" no es adivinar esta caja: es hacer las preguntas que obligan al cliente a describírtela él mismo. Hoy la IA será este dueño &mdash; y luego tu juez. Calculemus.',
+        body:
+          '<div class="sol-card">' +
+          '<p><b>Control de acceso en la puerta:</b> el cliente pasa su credencial o un QR y el sistema lo deja entrar &mdash; o lo bloquea solo si debe. "Que yo no tenga que estar revisando quién pagó."</p>' +
+          '<p><b>Aviso automático de vencimiento:</b> un mensaje al cliente 3 días antes de que expire su membresía, para que renueve sin que el dueño persiga a nadie.</p>' +
+          '<p><b>Reservación de clases desde el celular</b>, con cupo y lista de espera, porque las clases llenas eran su dolor de cabeza.</p>' +
+          '<p><b>Un reporte mensual de ingresos</b> de una sola mirada. Para el dueño, "sencillo" era <em>esto</em> &mdash; que el sistema piense por él &mdash; no "pocas funciones".</p>' +
+          '</div>'
+      }
+    };
 
-    let idx = 0;
-    let score = 0;
-    let answered = false;
-
-    elTotal.textContent = PICK_CASES.length;
-
-    function render() {
-      const c = PICK_CASES[idx];
-      answered = false;
-      elA.textContent = c.a;
-      elB.textContent = c.b;
-      elVerb.textContent = c.verb;
-      elQ.textContent = c.q;
-      elNum.textContent = idx + 1;
-      opts.forEach(o => {
-        o.classList.remove('correct', 'wrong');
-        o.disabled = false;
+    function render(level) {
+      const data = LEVELS[level];
+      if (!data) return;
+      tabs.forEach(t => {
+        const on = t.dataset.level === level;
+        t.classList.toggle('on', on);
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
-      feedback.className = 'pick-feedback';
-      feedback.innerHTML = 'Lee el caso, di las dos frases en tu cabeza y elige una cardinalidad.';
-      nextBtn.disabled = true;
-      nextBtn.textContent = (idx === PICK_CASES.length - 1) ? 'Ver conclusión' : 'Siguiente caso →';
+      levelEl.textContent = data.level;
+      titleEl.textContent = data.title;
+      readEl.innerHTML = data.read;
+      balanceEl.innerHTML = data.balance;
+      const fig = document.createElement('div');
+      fig.className = 'dfx-fig';
+      fig.innerHTML = data.body;
+      canvas.innerHTML = '';
+      canvas.appendChild(fig);
+      requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.add('show')));
     }
 
-    function answer(val, btn) {
-      if (answered) return;
-      answered = true;
-      const c = PICK_CASES[idx];
-      opts.forEach(o => { o.disabled = true; });
-      const correctBtn = opts.find(o => o.dataset.val === c.ans);
-      if (val === c.ans) {
-        btn.classList.add('correct');
-        score++;
-        elScore.textContent = score;
-        feedback.className = 'pick-feedback ok';
-        feedback.innerHTML = '<span class="pf-ok">Correcto &mdash; ' + c.ans + '.</span> ' + c.why;
-      } else {
-        btn.classList.add('wrong');
-        if (correctBtn) correctBtn.classList.add('correct');
-        feedback.className = 'pick-feedback no';
-        feedback.innerHTML = '<span class="pf-no">No es ' + val + '.</span> La respuesta es <b>' + c.ans + '</b>. ' + c.why;
-      }
-      nextBtn.disabled = false;
-    }
-
-    opts.forEach(o => {
-      o.addEventListener('click', () => answer(o.dataset.val, o));
+    tabs.forEach(t => {
+      t.setAttribute('aria-pressed', t.classList.contains('on') ? 'true' : 'false');
+      t.addEventListener('click', () => render(t.dataset.level));
     });
 
-    nextBtn.addEventListener('click', () => {
-      if (!answered) return;
-      if (idx < PICK_CASES.length - 1) {
-        idx++;
-        conclusion.classList.remove('show');
-        render();
-        root.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        conclusion.classList.add('show');
-        nextBtn.disabled = true;
-      }
-    });
-
-    resetBtn.addEventListener('click', () => {
-      idx = 0;
-      score = 0;
-      elScore.textContent = '0';
-      conclusion.classList.remove('show');
-      render();
-    });
-
-    render();
+    render('0');
   })();
 </script>
 
