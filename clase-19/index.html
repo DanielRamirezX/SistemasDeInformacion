@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 19 · Leibniz · Sistemas de Información</title>
-<meta name="description" content="Clase 19: la prueba del análisis de requerimientos. La IA como cliente vago y como juez — mide qué tan bien recopilas requerimientos y das con la solución. El calculemus de Leibniz. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 19: dos pruebas del análisis con IA. Taller 1 — la IA como cliente oculto y como juez, para medir si sabes escuchar. Taller 2 — un sistema en vivo que no puedes fotografiar: descríbelo, deja que la IA lo reconstruya, y compara funcionalidades. El calculemus de Leibniz. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -127,68 +127,13 @@
   .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* ============================================================
-     TARJETAS: CRITERIOS DEL BUEN REQUERIMIENTO (s4)
-  ============================================================ */
-  .techs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
-  @media (max-width: 480px) { .techs-grid { grid-template-columns: 1fr; } }
-  .tech-card { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 22px 20px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-  .techs-grid.go .tech-card { opacity: 1; transform: translateY(0); }
-  .techs-grid.go .tech-card:nth-child(1) { transition-delay: 0.05s; }
-  .techs-grid.go .tech-card:nth-child(2) { transition-delay: 0.15s; }
-  .techs-grid.go .tech-card:nth-child(3) { transition-delay: 0.25s; }
-  .techs-grid.go .tech-card:nth-child(4) { transition-delay: 0.35s; }
-  .tech-card h4 { font-family: var(--serif); font-style: italic; font-size: 21px; color: var(--ink); margin-bottom: 4px; }
-  .tech-card .tc-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
-  .tech-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
-  .tech-card .tc-fail { display: block; margin-top: 10px; font-size: 12.5px; color: var(--ink-muted); font-style: italic; }
-  .tech-card .tc-fail b { color: var(--blood); font-style: normal; font-weight: 600; }
-  .tech-card.hl { border-color: var(--blood); border-top: 3px solid var(--blood); }
-
-  /* ============================================================
-     EXPLORADOR DEL ICEBERG (s5)
-  ============================================================ */
-  .dfx { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
-  .dfx-instr { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 16px; }
-  .dfx-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-  .dfx-tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 22px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; line-height: 1.3; text-align: left; }
-  .dfx-tab:hover { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
-  .dfx-tab:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
-  .dfx-tab.on { border-color: var(--blood); color: var(--paper); background: var(--blood); }
-  .dfx-tab b { font-weight: 600; }
-  .dfx-stage { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 20px 20px 16px; }
-  .dfx-level { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ochre); margin-bottom: 6px; }
-  .dfx-title { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.15; margin-bottom: 16px; }
-  /* piezas del iceberg */
-  .ice-quote { font-family: var(--serif); font-style: italic; font-size: clamp(19px, 3vw, 24px); color: var(--ink); line-height: 1.4; padding: 6px 0 6px 20px; border-left: 3px solid var(--ochre); }
-  .ice-quote span { color: var(--blood); }
-  .req-list { list-style: none; padding: 0; margin: 0; }
-  .req-group { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); margin: 14px 0 4px; }
-  .req-group:first-child { margin-top: 0; }
-  .req-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
-  .req-item .mk { font-family: var(--mono); font-size: 13px; font-weight: 600; line-height: 1.5; }
-  .req-item.surface .mk { color: var(--ochre); }
-  .req-item.deep .mk { color: var(--blood); }
-  .req-item b { color: var(--ink); font-weight: 600; }
-  .sol-card { background: var(--paper-elev); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 18px 20px; }
-  .sol-card p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 10px; }
-  .sol-card p:last-child { margin: 0; }
-  .sol-card b { color: var(--ink); font-weight: 600; }
-  /* aparición suave de cada nivel */
-  .dfx-fig { opacity: 0; transform: translateY(8px); transition: opacity 0.45s ease, transform 0.45s ease; }
-  .dfx-fig.show { opacity: 1; transform: translateY(0); }
-  .dfx-read { margin-top: 16px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--ochre); font-size: 13.5px; line-height: 1.55; color: var(--ink-muted); }
-  .dfx-read b { color: var(--ink); font-weight: 600; }
-  .dfx-balance { margin-top: 12px; padding: 14px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
-  .dfx-balance b { color: var(--blood); font-weight: 600; }
-
   /* ejemplo (reuso) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
   .example p b { color: var(--ink); font-weight: 600; }
 
-  /* bloque de prompt (taller) */
+  /* bloque de prompt (talleres) */
   .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
   .prompt-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
   .prompt-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; word-break: break-word; margin: 0; }
@@ -203,6 +148,45 @@
   .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
   .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
   .field-planb b { color: var(--ochre); font-weight: 600; }
+  .field.two { border-left-color: var(--blood); }
+  .field.two .field-step-num { background: var(--blood); }
+
+  /* ============================================================
+     EL SISTEMA EN VIVO (s2 · taller 2) — widget funcional real
+  ============================================================ */
+  .no-shot { display: flex; align-items: center; gap: 12px; background: var(--paper-deep); border: 1px dashed var(--blood); border-radius: 6px; padding: 14px 18px; margin: 28px 0 20px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.02em; color: var(--blood); }
+  .no-shot .ns-ico { font-size: 20px; flex-shrink: 0; }
+  .widget-frame { background: var(--paper-elev); border: 1px solid var(--line-strong); border-radius: 10px; padding: 28px; margin: 0 0 24px; display: flex; justify-content: center; }
+  .tw-card { width: 100%; max-width: 380px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 12px; padding: 24px 22px; box-shadow: 0 6px 28px rgba(42,29,20,0.10); font-family: var(--sans); }
+  .tw-header { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 18px; letter-spacing: 0.01em; }
+  .tw-field { margin-bottom: 16px; }
+  .tw-field label { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-muted); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .tw-field input[type="number"] { width: 100%; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; font-family: var(--sans); font-size: 15px; background: #fff; color: var(--ink); }
+  .tw-field input[type="number"]:focus { outline: 2px solid var(--olive); outline-offset: 1px; }
+  .tw-stepper { display: flex; align-items: center; gap: 16px; }
+  .tw-stepper button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-strong); background: #fff; color: var(--ink); font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .tw-stepper button:hover:not(:disabled) { background: var(--olive); color: #fff; border-color: var(--olive); }
+  .tw-stepper button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .tw-stepper span { font-size: 17px; font-weight: 600; min-width: 24px; text-align: center; }
+  .tw-tips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .tw-tip-btn { padding: 8px 14px; border-radius: 18px; border: 1px solid var(--line-strong); background: #fff; color: var(--ink-soft); font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .tw-tip-btn:hover { border-color: var(--olive); }
+  .tw-tip-btn.on { background: var(--olive); border-color: var(--olive); color: #fff; }
+  .tw-tip-custom input { width: 74px; padding: 8px 10px; border-radius: 18px; border: 1px solid var(--line-strong); font-family: var(--sans); font-size: 13px; text-align: center; }
+  .tw-result { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .tw-row { display: flex; justify-content: space-between; font-size: 14.5px; color: var(--ink-soft); padding: 5px 0; }
+  .tw-row.hl { font-weight: 700; color: var(--ink); font-size: 16.5px; padding-top: 9px; border-top: 1px dashed var(--line); margin-top: 4px; }
+  .tw-note { margin-top: 10px; font-size: 12.5px; color: var(--blood); line-height: 1.5; min-height: 1em; }
+  .tw-reveal { margin: 0 0 24px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 8px; padding: 0; }
+  .tw-reveal summary { cursor: pointer; padding: 16px 20px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ochre); list-style: none; }
+  .tw-reveal summary::-webkit-details-marker { display: none; }
+  .tw-reveal summary::before { content: '▸ '; }
+  .tw-reveal[open] summary::before { content: '▾ '; }
+  .tw-reveal-body { padding: 0 22px 20px; }
+  .tw-reveal-body ul { margin: 0; padding-left: 20px; }
+  .tw-reveal-body li { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 10px; }
+  .tw-reveal-body li:last-child { margin-bottom: 0; }
+  .tw-reveal-body b { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -213,15 +197,9 @@
     <ul class="nav-links">
       <li><a href="#hero">Inicio</a></li>
       <li><a href="#agenda">Agenda</a></li>
-      <li><a href="#s1">Repaso</a></li>
-      <li><a href="#s2">Leibniz</a></li>
-      <li><a href="#s3">El iceberg</a></li>
-      <li><a href="#s4">Criterios</a></li>
-      <li><a href="#s5">Explorador</a></li>
-      <li><a href="#s6">El juez</a></li>
-      <li><a href="#s7">Errores</a></li>
-      <li><a href="#s8">Taller</a></li>
-      <li><a href="#s9">Cierre</a></li>
+      <li><a href="#s1">Taller 1</a></li>
+      <li><a href="#s2">Taller 2</a></li>
+      <li><a href="#s3">Cierre</a></li>
     </ul>
   </div>
 </nav>
@@ -231,7 +209,7 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 19</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Leibniz</h1>
-      <p class="hero-tagline">Escuchaste al cliente.<br>¿<span>diste con lo que quería</span>?</p>
+      <p class="hero-tagline">Escuchaste al cliente.<br>¿Lograste que <span>te entendieran a ti</span>?</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Lun 20 julio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
@@ -255,268 +233,64 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · el juicio del análisis</span>
+          <span class="sec-chip">119 min · dos juicios con IA</span>
         </div>
-        <p class="sec-objective">Llevas seis semanas recopilando requerimientos &mdash; pero nunca supiste con certeza si lo hiciste bien. Hoy lo medimos: una IA será tu <em>cliente</em> vago y difícil, tú la entrevistarás para descubrir lo que necesita, y al final la misma IA será tu <em>juez</em> &mdash; te dirá, con número, si diste con el resultado.</p>
+        <p class="sec-objective">Leibniz soñaba con acabar toda disputa diciendo <em>calculemus</em> &mdash; calculemos. Hoy conviertes esa idea en dos pruebas. El <b>Taller 1</b> mide si sabes escuchar: una IA hace de cliente que esconde su verdad, y luego de juez. El <b>Taller 2</b> mide lo opuesto: hay un sistema en vivo, aquí mismo, que puedes tocar pero no fotografiar &mdash; descríbelo con precisión, deja que una IA lo reconstruya solo con tus palabras, y compara si hace lo mismo.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: sabes construir; ¿sabes escuchar?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Leibniz?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">El requerimiento faltante: el iceberg</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">Cómo se mide un buen requerimiento</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:44</span><span class="agenda-title">El explorador: bajo la frase del cliente</span><span class="agenda-dur">20 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:04</span><span class="agenda-title">La IA como cliente y como juez</span><span class="agenda-dur">14 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:18</span><span class="agenda-title">Los errores que delatan a un novato</span><span class="agenda-dur">12 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:30</span><span class="agenda-title">Taller: entrevista, propón, calculemus</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y enlace con la próxima clase</span><span class="agenda-dur">11 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Taller 1: entrevista, propón, calculemus</span><span class="agenda-dur">45 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:45</span><span class="agenda-title">Taller 2: observa, describe, calculemus</span><span class="agenda-dur">60 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:45</span><span class="agenda-title">Cierre y Tarea 6</span><span class="agenda-dur">14 min</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S1 REPASO -->
+<!-- S1 TALLER 1 -->
 <section id="s1">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Sabes construir.<br>¿Sabes<br>escuchar?</h2></div>
-          <span class="sec-chip">8 min · 20:00</span>
+          <div><span class="sec-num">i.</span><h2>Taller 1: entrevista,<br>propón, calculemus</h2></div>
+          <span class="sec-chip">45 min · 20:00</span>
         </div>
-        <p class="sec-objective">Modelaste datos, generaste bases, diseñaste APIs. Todo eso se puede verificar: corre o no corre. Pero hay una habilidad anterior a todas, la más difícil de todas &mdash; y la única que nunca supiste si dominabas.</p>
+        <p class="sec-objective">Primer juicio: ¿sabes escuchar? Entrevistarás a un cliente que esconde su verdad, propondrás tu solución, y dejarás que la IA te ponga número y veredicto.</p>
       </div>
-      <p>Repasa lo que llevas: casos de uso, historias de usuario, el SOW, el diagrama E-R, la base de datos, la API. Cada una de esas piezas tiene una prueba objetiva &mdash; el SQL ejecuta o truena, la API responde o falla. Pero todas nacen de un acto previo que <em>no</em> tiene prueba: <b>recopilar los requerimientos</b>. Entrevistaste, escuchaste, anotaste lo que el cliente quería. ¿Y cómo supiste que estaba completo? La verdad incómoda: no lo supiste. Nadie te dijo qué te faltó preguntar.</p>
-      <p>Ese es el punto ciego del análisis. Un requerimiento que descubres se anota y se construye; un requerimiento que <em>no</em> descubres es invisible &mdash; no deja rastro, no da error, no aparece en ninguna pantalla. Simplemente falta, y nadie lo nota hasta que el cliente, meses después, dice la frase más cara de la profesión: <em>"esto no era lo que pedí"</em>. Hoy vamos a hacer visible ese punto ciego &mdash; y a medirlo.</p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">El dato que duele</div>
-          <p class="say-text">"El código con errores se corrige en horas; el requerimiento que nunca preguntaste se paga con el proyecto entero. Los estudios lo repiten desde hace cuarenta años: la mayoría de los sistemas que fracasan no fallaron al construirse &mdash; fallaron al escucharse. Y esa falla no se ve hasta que ya es cara."</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- S2 POR QUÉ LEIBNIZ -->
-<section id="s2">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Leibniz?</h2></div>
-          <span class="sec-chip">8 min · 20:08</span>
-        </div>
-        <p class="sec-objective">Porque soñó con acabar las discusiones interminables convirtiéndolas en cálculo. "No adivinemos quién tiene razón &mdash; midámoslo." Hoy tomamos su sueño y lo usamos para medir algo que siempre fue pura opinión: qué tan bien escuchas.</p>
-      </div>
-      <p>Gottfried Leibniz &mdash; coinventor del cálculo, padre del sistema binario que hace posible toda computadora &mdash; tuvo una obsesión mayor: terminar con las disputas humanas. Imaginó una <em>characteristica universalis</em>, un lenguaje tan preciso que cualquier desacuerdo pudiera resolverse no gritando, sino calculando. Su frase quedó para la historia: cuando dos personas discrepen, en vez de pelear, "bastará que tomen la pluma en la mano, se sienten ante el ábaco y se digan: <b>calculemus</b> &mdash; calculemos".</p>
-      <p>Piensa en lo que eso significa para nuestro punto ciego. "¿Recopilé bien los requerimientos?" siempre fue una pregunta de opinión &mdash; tú creías que sí, el cliente creía que no, y no había árbitro. Leibniz propone otra vía: convertir el juicio en medida. Si existiera un evaluador que conociera la respuesta completa &mdash; todos los requerimientos, la solución exacta que el cliente quería &mdash; podría comparar tu trabajo contra ella y decirte, con número, cuánto acertaste. Hoy ese evaluador existe: es una IA a la que le damos el papel de cliente con una verdad oculta, y luego el papel de juez. <em>Calculemus.</em></p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">Leibniz aplicado al análisis</div>
-          <p class="say-text">"No estás compitiendo contra la IA &mdash; la estás usando como espejo. Un espejo que conoce la respuesta y no tiene piedad ni prisa: te muestra exactamente qué preguntaste, qué asumiste y qué se te escapó. La calificación no es el premio; es el diagnóstico. Calculemus no busca ganar la discusión: busca terminarla con un dato."</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- S3 EL ICEBERG -->
-<section id="s3">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>El requerimiento<br>faltante:<br>el iceberg</h2></div>
-          <span class="sec-chip">14 min · 20:16</span>
-        </div>
-        <p class="sec-objective">El cliente te dice una fracción de lo que necesita &mdash; el resto lo da por obvio, y por eso se lo calla. Recopilar requerimientos es bucear bajo la línea de flotación: casi todo lo importante está sumergido.</p>
-      </div>
-      <p>Cuando un cliente dice "quiero un sistema para mi negocio", te entrega la punta de un iceberg. Lo que dice en voz alta &mdash; lo <b>explícito</b> &mdash; es apenas lo que flota. Debajo hay dos capas invisibles y mucho más grandes. La primera es lo <b>implícito</b>: cosas que necesita pero cree tan evidentes que no vale la pena mencionarlas ("obvio que quiero poder corregir un error"). La segunda, la más profunda y peligrosa, es el <b>conocimiento tácito</b>: las reglas de su negocio que él vive todos los días y ni siquiera sabe que son reglas &mdash; hasta que tu sistema las rompe.</p>
-      <p>El problema es que el cliente no puede darte lo sumergido, porque para él no está sumergido: es aire, es agua, es lo normal. Solo hay una forma de sacarlo a flote, y no es escuchar mejor &mdash; es <em>preguntar</em> mejor. La diferencia entre un analista novato y uno experto no está en lo que anota; está en lo que se atreve a preguntar cuando el cliente ya "terminó" de hablar.</p>
-      <div class="example">
-        <div class="example-tag">La pregunta que cambia todo</div>
-        <p>Hay una familia de preguntas que sube el iceberg como ninguna otra: <b>"¿qué pasa cuando&hellip;?"</b>. ¿Qué pasa cuando una membresía vence a medio mes? ¿Qué pasa cuando dos clientes se llaman igual? ¿Qué pasa cuando alguien quiere cancelar? El novato pregunta "¿qué datos guardas?" y obtiene la punta. El experto pregunta "¿qué pasa cuando algo sale mal?" y obtiene el fondo &mdash; porque ahí, en los casos incómodos, es donde viven las reglas de negocio que de verdad definen el sistema.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- S4 CRITERIOS -->
-<section id="s4">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>Cómo se mide un<br>buen requerimiento</h2></div>
-          <span class="sec-chip">14 min · 20:30</span>
-        </div>
-        <p class="sec-objective">Para que la IA te califique con justicia &mdash; y para que tú te autoevalúes &mdash; hace falta una vara. Un buen requerimiento cumple cuatro criterios; son, literalmente, las dimensiones con las que hoy serás medido.</p>
-      </div>
-      <p>"Recopilé bien" no puede ser una corazonada: necesita criterios. La ingeniería de requerimientos acordó hace décadas cómo se ve uno bueno. Estos cuatro son los que importan hoy &mdash; y no por casualidad son las cuatro dimensiones que la IA usará para calificarte en el taller:</p>
-
-      <div class="techs-grid" data-animate>
-        <div class="tech-card hl">
-          <h4>Completo</h4>
-          <div class="tc-when">no falta ninguno</div>
-          <p>Cubre todo lo que el cliente necesita &mdash; explícito, implícito y tácito. Es el criterio más difícil, porque mide lo que <em>no</em> está: los requerimientos que nunca descubriste.</p>
-          <span class="tc-fail"><b>Falla:</b> "se me olvidó preguntar qué pasa al vencer la membresía".</span>
-        </div>
-        <div class="tech-card hl">
-          <h4>No ambiguo</h4>
-          <div class="tc-when">una sola lectura</div>
-          <p>Cada requerimiento significa lo mismo para quien lo lee que para quien lo dijo. "Rápido", "amigable", "seguro" no son requerimientos: son huecos donde caben dos malentendidos.</p>
-          <span class="tc-fail"><b>Falla:</b> "el sistema debe ser rápido" &mdash; ¿rápido para quién, cuántos segundos?</span>
-        </div>
-        <div class="tech-card">
-          <h4>Verificable</h4>
-          <div class="tc-when">se puede comprobar</div>
-          <p>Existe una forma objetiva de decir "esto se cumplió". Si no puedes imaginar la prueba que lo confirma, no es un requerimiento: es un deseo.</p>
-          <span class="tc-fail"><b>Falla:</b> "que a los clientes les guste" &mdash; ¿cómo lo mides?</span>
-        </div>
-        <div class="tech-card">
-          <h4>Rastreable</h4>
-          <div class="tc-when">sabes de dónde salió</div>
-          <p>Cada requerimiento tiene un origen: quién lo pidió y por qué. El principio de razón suficiente de Leibniz aplicado al análisis &mdash; nada entra al sistema sin una razón que lo justifique.</p>
-          <span class="tc-fail"><b>Falla:</b> "esto lo puse porque se me ocurrió" &mdash; ¿lo pidió el cliente?</span>
-        </div>
-      </div>
-
-      <p>Fíjate en el orden de dificultad: <em>verificable</em> y <em>rastreable</em> dependen de cómo <b>escribes</b> el requerimiento; <em>completo</em> y <em>no ambiguo</em> dependen de cómo <b>preguntas</b>. Por eso pesan más en la calificación de hoy: recopilar no es transcribir lo que oyes &mdash; es cazar lo que falta y desambiguar lo que sobra.</p>
-    </div>
-  </div>
-</section>
-
-<!-- S5 EXPLORADOR -->
-<section id="s5">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>El explorador:<br>bajo la frase<br>del cliente</h2></div>
-          <span class="sec-chip">20 min · 20:44</span>
-        </div>
-        <p class="sec-objective">Tomemos una frase real de cliente &mdash; corta, vaga, "sencilla" &mdash; y buceemos. Toca cada capa y mira cuánto había debajo de lo que dijo, hasta llegar a la solución que de verdad tenía en la cabeza.</p>
-      </div>
-      <p>Caso: <em>"Fuerza Norte"</em>, un gimnasio de barrio. El dueño te suelta una sola frase y cree que con eso basta. Toca las tres capas y observa cómo el iceberg emerge &mdash; y cuánta distancia hay entre lo que dijo y lo que quería:</p>
-
-      <div class="dfx" id="dfx">
-        <div class="dfx-instr">Toca una capa para bajar · caso: gimnasio "Fuerza Norte"</div>
-        <div class="dfx-tabs" id="dfxTabs">
-          <button class="dfx-tab on" type="button" data-level="0"><b>Capa 1</b> · Lo que dijo</button>
-          <button class="dfx-tab" type="button" data-level="1"><b>Capa 2</b> · Lo que necesita</button>
-          <button class="dfx-tab" type="button" data-level="2"><b>Capa 3</b> · La solución que imaginó</button>
-        </div>
-        <div class="dfx-stage">
-          <div class="dfx-level" id="dfxLevel">Capa 1 · Lo explícito</div>
-          <div class="dfx-title" id="dfxTitle">Lo que el cliente dijo en voz alta</div>
-          <div id="dfxCanvas" aria-live="polite"></div>
-        </div>
-        <div class="dfx-read" id="dfxRead"></div>
-        <div class="dfx-balance" id="dfxBalance"></div>
-      </div>
-
-      <p>¿Sentiste el vértigo? De <em>una</em> frase salieron ocho requerimientos y una solución que el cliente jamás describió &mdash; pero que esperaba. Ninguno estaba en sus palabras; todos estaban en sus <b>silencios</b>. "Dar con el resultado" nunca fue adivinar: es hacer las preguntas que obligan al cliente a subir el iceberg él mismo. En el taller, la IA será este dueño de gimnasio &mdash; con su verdad oculta &mdash; y tú tendrás que sacársela.</p>
-    </div>
-  </div>
-</section>
-
-<!-- S6 LA IA COMO CLIENTE Y JUEZ -->
-<section id="s6">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>La IA como<br>cliente y<br>como juez</h2></div>
-          <span class="sec-chip">14 min · 21:04</span>
-        </div>
-        <p class="sec-objective">El truco del ejercicio es darle a la IA dos papeles opuestos, uno tras otro: primero un cliente que esconde la verdad, después un juez que la revela y la usa para medirte. Así se calcula lo que antes era opinión.</p>
-      </div>
-      <p>Un examen normal no puede medir tu capacidad de <em>escuchar</em>: te da las preguntas ya hechas. La recopilación de requerimientos es lo contrario &mdash; el mérito está en descubrir las preguntas que nadie te dio. Para evaluar eso hace falta alguien que tenga una verdad completa y te obligue a extraerla. La IA puede hacer los dos papeles que ese examen necesita:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>La IA como cliente.</b> Le pides que invente en secreto una lista de requerimientos, reglas de negocio y una solución concreta &mdash; y que <em>no</em> te los revele. Que responda como un dueño ocupado y poco técnico: corto, vago, sin corregirte si asumes. Su verdad oculta es la vara contra la que te medirás; tu única arma para descubrirla son tus preguntas.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>La IA como juez.</b> Terminada la entrevista, le pides que salga del papel, revele todo lo que escondía y compare: qué descubriste, qué se te escapó, qué tan cerca quedó tu solución de la suya. Y que lo cierre con un número y un veredicto &mdash; SÍ, PARCIAL o NO diste con el resultado.</div></div>
-      </div>
-      <p>La honestidad del ejercicio depende de una regla: la verdad oculta debe fijarse <b>antes</b> de que empieces a preguntar, no inventarse al final para darte la razón. Por eso el prompt del cliente le exige comprometerse con su lista secreta desde el arranque. Así el juez no improvisa la respuesta correcta &mdash; ya la tenía &mdash; y su calificación es un espejo, no un cumplido.</p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">La consecuencia para el analista</div>
-          <p class="say-text">"Lo valioso no es la nota &mdash; es el mapa de tus puntos ciegos. Si sacas 90 en cobertura pero 40 en reglas de negocio ocultas, acabas de descubrir que preguntas '¿qué guardas?' pero nunca '¿qué pasa cuando&hellip;?'. Ese patrón te acompañará a cada entrevista real de tu carrera, con clientes que no traen prompt de juez. Mejor cazarlo hoy, gratis."</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- S7 ERRORES -->
-<section id="s7">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">vii.</span><h2>Los errores que<br>delatan a un novato</h2></div>
-          <span class="sec-chip">12 min · 21:18</span>
-        </div>
-        <p class="sec-objective">Cuatro hábitos hunden una entrevista de requerimientos &mdash; y la IA-cliente está diseñada para castigarlos sin piedad. Recon&oacute;celos ahora para no cometerlos cuando cuenten.</p>
-      </div>
-      <p>La IA-cliente no te va a ayudar: si tropiezas, te deja tropezar &mdash; igual que un cliente real. Estos son los cuatro tropiezos que más bajan la calificación, y que reconocerás en tu propia transcripción:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>La pregunta cerrada.</b> "¿Quieres registrar clientes, verdad?" El cliente contesta "sí" y no aprendiste nada &mdash; le pusiste las palabras en la boca. Las preguntas abiertas ("¿cómo llevas hoy el control de tus clientes?") lo hacen hablar; las cerradas solo confirman lo que ya creías.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Asumir en vez de preguntar.</b> "Entonces el sistema cobra con tarjeta." ¿Lo dijo el cliente o lo diste por hecho? Cada suposición no verificada es un requerimiento inventado &mdash; falla de rastreabilidad &mdash; y a menudo, el error que el cliente descubre al final.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Quedarse en la superficie.</b> Preguntar solo "¿qué datos guardas?" y nunca "¿qué pasa cuando algo sale mal?". Te llevas la punta del iceberg y das la entrevista por terminada &mdash; justo antes de la parte que importaba.</div></div>
-        <div class="point"><span class="point-num">04</span><div><b>Aceptar lo ambiguo.</b> El cliente dice "que sea rápido y fácil" y tú lo anotas tal cual, satisfecho. Un requerimiento ambiguo no se anota: se desambigua ahí mismo &mdash; "¿rápido es responder en menos de dos segundos?" &mdash; o se convertirá en una discusión el día de la entrega.</div></div>
-      </div>
-      <div class="example">
-        <div class="example-tag">El truco para no equivocarte</div>
-        <p>Antes de cada pregunta que vayas a escribir, pásala por dos filtros de Leibniz. Uno: <b>"¿esta pregunta lo hace hablar o solo lo hace asentir?"</b> &mdash; si la respuesta posible es sí/no, reescríbela abierta. Dos: <b>"¿estoy preguntando o estoy asumiendo?"</b> &mdash; si hay un dato en tu frase que el cliente no dijo, convierte la afirmación en pregunta. Dos filtros, y ya evitaste los cuatro errores.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- S8 TALLER -->
-<section id="s8">
-  <div class="wrap">
-    <div class="stage">
-      <div class="sec-head">
-        <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Taller: entrevista,<br>propón, calculemus</h2></div>
-          <span class="sec-chip">18 min · 21:30</span>
-        </div>
-        <p class="sec-objective">El momento de la verdad. Entrevistarás a un cliente que esconde su verdad, propondrás tu solución, y dejarás que la IA te ponga número y veredicto. Al final sabrás &mdash; por primera vez con un dato &mdash; qué tan bueno eres escuchando.</p>
-      </div>
-      <p>Trabaja individual o en parejas, un solo chat de IA (Gemini, ChatGPT o la que uses). El ejercicio tiene tres fases y dos prompts. Elige primero un giro que <b>no</b> hayamos visto en clase &mdash; una estética canina, una cafetería, un taller mecánico, una guardería &mdash; para que nada te dé ventaja:</p>
+      <p>Un cliente nunca te entrega todos sus requerimientos de golpe: te da una frase vaga y calla el resto, porque para él es "obvio". La única forma de sacarlo a flote no es escuchar mejor &mdash; es <em>preguntar</em> mejor, sobre todo con la familia de preguntas <b>"¿qué pasa cuando&hellip;?"</b>, que persigue las reglas de negocio escondidas en los casos incómodos: vencimientos, cancelaciones, errores.</p>
+      <p>Trabaja individual o en parejas, un solo chat de IA (Gemini, ChatGPT o la que uses). Elige primero un giro que <b>no</b> hayamos visto en clase &mdash; una estética canina, una cafetería, un taller mecánico, una guardería &mdash; para que nada te dé ventaja:</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
-            <h4>Convoca a tu cliente <span class="fs-time">3 min</span></h4>
+            <h4>Convoca a tu cliente <span class="fs-time">5 min</span></h4>
             <p>Pega el <b>prompt del cliente</b> (abajo) con el giro que elegiste. La IA se pondrá en el papel de un dueño vago y te soltará una sola frase. No pidas su lista &mdash; no te la va a dar. Tu trabajo empieza aquí.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
-            <h4>Entrevista: sube el iceberg <span class="fs-time">7 min</span></h4>
-            <p>Haz preguntas <b>abiertas</b> y, sobre todo, muchas del tipo <b>"¿qué pasa cuando&hellip;?"</b>. Persigue las reglas de negocio en los casos incómodos: vencimientos, cancelaciones, errores, excepciones. Cuida no caer en los cuatro errores &mdash; el cliente no te corregirá.</p>
+            <h4>Entrevista: sube el iceberg <span class="fs-time">16 min</span></h4>
+            <p>Haz preguntas <b>abiertas</b> y, sobre todo, muchas del tipo <b>"¿qué pasa cuando&hellip;?"</b>. Persigue las reglas de negocio en los casos incómodos. Evita dos trampas: preguntar cerrado ("¿quieres X, verdad?") y asumir en vez de preguntar.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
-            <h4>Cierra tu análisis: requerimientos + solución <span class="fs-time">4 min</span></h4>
-            <p>Antes de pedir el veredicto, escribe tú &mdash; en el chat &mdash; <b>tu lista de requerimientos y reglas de negocio</b> descubiertas, y <b>un párrafo</b> describiendo el sistema que le construirías. Esto es lo que el juez medirá en sus dos dimensiones: ¿recopilaste?, ¿y diste con la solución?</p>
+            <h4>Cierra tu análisis: requerimientos + solución <span class="fs-time">10 min</span></h4>
+            <p>Antes de pedir el veredicto, escribe tú &mdash; en el chat &mdash; <b>tu lista de requerimientos y reglas de negocio</b> descubiertas, y <b>un párrafo</b> describiendo el sistema que le construirías.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
-            <h4>Calculemus: pide el veredicto <span class="fs-time">4 min</span></h4>
-            <p>Pega el <b>prompt del juez</b>. La IA revelará su lista secreta, marcará qué descubriste y qué no, comparará tu solución con la suya, y cerrará con tu calificación y el veredicto: <b>¿SÍ, PARCIAL o NO diste con el resultado?</b> Lee sus tres consejos &mdash; son tu tarea real.</p>
+            <h4>Calculemus: pide el veredicto <span class="fs-time">14 min</span></h4>
+            <p>Pega el <b>prompt del juez</b>. La IA revelará su lista secreta, marcará qué descubriste y qué no, y cerrará con tu calificación y el veredicto: <b>¿SÍ, PARCIAL o NO diste con el resultado?</b></p>
           </div>
         </div>
         <div class="field-planb">
-          <b>La nota es un espejo, no un juicio.</b> Si saliste bajo en una dimensión, no la justifiques &mdash; anótala. ¿Flojo en reglas de negocio? Preguntaste "qué" y no "qué pasa cuando". ¿Flojo en solución? Recopilaste datos pero no imaginaste el sistema. Si queda tiempo, córrelo otra vez con otro giro y busca subir <em>esa</em> dimensión. Eso es calculemus: repetir hasta que el número suba.
+          <b>La nota es un espejo, no un juicio.</b> Si saliste bajo en una dimensión, anótala &mdash; es tu tarea real para la próxima entrevista de tu vida.
         </div>
       </div>
 
@@ -565,37 +339,183 @@ análisis de sistemas. Con base en TODA nuestra conversación:
   </div>
 </section>
 
-<!-- S9 CIERRE -->
-<section id="s9">
+<!-- S2 TALLER 2 -->
+<section id="s2">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">ix.</span><h2>Cierre y enlace<br>con la próxima clase</h2></div>
-          <span class="sec-chip">11 min · 21:48</span>
+          <div><span class="sec-num">ii.</span><h2>Taller 2: observa,<br>describe, calculemus</h2></div>
+          <span class="sec-chip">60 min · 20:45</span>
         </div>
-        <p class="sec-objective">Recopilar requerimientos era la única habilidad sin examen. Hoy le pusiste número. La nota importa menos que lo que revela: el mapa de lo que todavía no sabes preguntar.</p>
+        <p class="sec-objective">Segundo juicio, el opuesto al primero: ahí escuchabas a alguien que hablaba. Aquí nadie te va a explicar nada &mdash; hay un sistema ya funcionando, y tu trabajo es entenderlo mirando, no preguntando.</p>
+      </div>
+      <p>Abajo corre un sistema real y pequeño: una calculadora para dividir la cuenta de un restaurante entre varias personas, con propina. Interactúa con él todo lo que quieras &mdash; cambia los valores, prueba casos raros &mdash; pero con una sola restricción, la que hace el ejercicio honesto:</p>
+
+      <div class="no-shot"><span class="ns-ico">&#128683;</span><span>No lo fotografíes, ni lo grabes, ni le tomes captura de pantalla. Tu única herramienta para describirlo es la palabra escrita &mdash; igual que si tuvieras que explicárselo por teléfono a alguien que jamás va a verlo.</span></div>
+
+      <div class="widget-frame">
+        <div class="tw-card" id="targetWidget">
+          <div class="tw-header">&#129534; Divide &amp; Calcula</div>
+          <div class="tw-field">
+            <label for="twBill">Total de la cuenta (MXN)</label>
+            <input type="number" id="twBill" placeholder="0.00" min="0" step="0.01">
+          </div>
+          <div class="tw-field">
+            <label>Personas</label>
+            <div class="tw-stepper">
+              <button type="button" id="twMinus" aria-label="Quitar persona">&minus;</button>
+              <span id="twCount">2</span>
+              <button type="button" id="twPlus" aria-label="Agregar persona">+</button>
+            </div>
+          </div>
+          <div class="tw-field">
+            <label>Propina</label>
+            <div class="tw-tips">
+              <button type="button" class="tw-tip-btn" data-tip="10">10%</button>
+              <button type="button" class="tw-tip-btn on" data-tip="15">15%</button>
+              <button type="button" class="tw-tip-btn" data-tip="20">20%</button>
+              <div class="tw-tip-custom"><input type="number" id="twCustomTip" placeholder="Otro %" min="0" max="100"></div>
+            </div>
+          </div>
+          <div class="tw-result">
+            <div class="tw-row"><span>Propina</span><span id="twTipAmt">&mdash;</span></div>
+            <div class="tw-row"><span>Total con propina</span><span id="twTotal">&mdash;</span></div>
+            <div class="tw-row hl"><span>Por persona</span><span id="twPerHead">&mdash;</span></div>
+            <div class="tw-note" id="twNote"></div>
+          </div>
+        </div>
+      </div>
+
+      <p>Trabaja individual o en parejas, con el mismo chat de IA de siempre. El objetivo no es que el clon se vea igual &mdash; es que <b>haga lo mismo</b>, botón por botón:</p>
+
+      <div class="field two">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Explora sin capturar pantalla <span class="fs-time">10 min</span></h4>
+            <p>Prueba de todo: baja las personas hasta el límite, deja la cuenta vacía, usa propina personalizada en 0 y en 100, y sobre todo &mdash; prueba con distintos números de personas y fíjate si el total "por persona" siempre cuadra exacto con el total. Ahí hay algo que no es obvio a la primera.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Escribe la especificación completa <span class="fs-time">15 min</span></h4>
+            <p>Redacta un prompt que describa <b>todo</b> lo que observaste: campos, botones, qué calcula cada resultado, y qué pasa en los casos límite que probaste. Que sea completo, no ambiguo, verificable y rastreable &mdash; los mismos criterios de siempre, ahora aplicados a describir en vez de recopilar.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Pide a la IA que construya solo con tu texto <span class="fs-time">15 min</span></h4>
+            <p>Pega el <b>prompt 3</b> (abajo) junto con tu especificación. La IA, sin haber visto el widget, te dirá qué construiría y cómo calcularía cada monto &mdash; y qué tuvo que asumir donde tu descripción no alcanzó.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">4</div>
+          <div>
+            <h4>Compara funcionalidad contra funcionalidad <span class="fs-time">10 min</span></h4>
+            <p>Vuelve al widget de arriba y corre los mismos casos que le pediste a la IA que resolviera. ¿Coincide el resultado? Presta especial atención a lo que pasa cuando la división entre personas no es exacta.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">5</div>
+          <div>
+            <h4>Revela la ficha técnica y calculemus <span class="fs-time">10 min</span></h4>
+            <p>Abre el desplegable de abajo &mdash; es la ficha real del sistema &mdash; y compárala con tu especificación. Luego pega el <b>prompt 4</b>, el juez, para obtener tu calificación y veredicto.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Regla del contrato (otra vez):</b> si la IA construyó algo distinto al widget, el error casi siempre está en tu especificación, no en la IA. Si queda tiempo, reescribe el prompt donde perdiste puntos y vuelve a intentarlo.
+        </div>
+      </div>
+
+      <details class="tw-reveal">
+        <summary>Revelar la ficha técnica (ábrela solo después de intentarlo)</summary>
+        <div class="tw-reveal-body">
+          <ul>
+            <li>Si el total de la cuenta está vacío o en 0, el sistema <b>no calcula</b>: muestra un aviso pidiendo el dato, nunca $0.00 ni un error.</li>
+            <li>Las personas tienen un <b>mínimo de 1</b>: el botón "&minus;" se deshabilita al llegar ahí. No hay máximo.</li>
+            <li>La propina tiene tres botones rápidos (10/15/20%), <b>mutuamente excluyentes</b>, más un campo personalizado limitado de 0 a 100% que desactiva los botones rápidos al usarse.</li>
+            <li>El cálculo base: propina = cuenta &times; %; total = cuenta + propina; por persona = total &divide; personas.</li>
+            <li><b>La regla que casi nadie encuentra a la primera:</b> el monto por persona siempre se <b>redondea hacia arriba</b> al centavo, nunca hacia abajo. Por eso, cuando la división no es exacta, lo que paga cada quien suma unos centavos <b>más</b> que el "total con propina" mostrado &mdash; y el sistema lo avisa aparte, como "total a cobrar".</li>
+            <li>Todo se recalcula <b>al instante</b> con cualquier cambio: no existe un botón de "calcular".</li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt 3 · el constructor (pégalo con tu especificación)</div>
+        <pre>Actúa como desarrollador front-end. Voy a describirte, solo con
+palabras, un pequeño sistema web que ya vi funcionando (una calculadora
+para dividir la cuenta de un restaurante entre varias personas, con
+propina). Tú NO lo has visto — solo cuentas con mi descripción.
+
+Mi descripción completa es: [pega aquí tu especificación: campos,
+botones, validaciones, qué pasa en los casos límite, cómo se calcula
+cada monto].
+
+Con base ÚNICAMENTE en eso:
+1. Dime qué pantalla y controles construirías.
+2. Explica, paso a paso, cómo calcularías el monto por persona.
+3. Señala cualquier duda que te haya quedado, o cualquier regla que
+   hayas tenido que asumir porque mi descripción no la cubría.</pre>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt 4 · el juez de la especificación (pégalo al final)</div>
+        <pre>Actúa como profesor de análisis de sistemas. Te comparto dos cosas:
+
+1. Mi especificación original (la que le di a la IA en el paso
+   anterior): [pega tu prompt 3].
+2. La ficha técnica real del sistema que estaba observando: [pega aquí
+   la ficha técnica que revelé].
+
+Compara ambas y:
+1. Señala qué reglas de mi especificación coinciden exactamente con la
+   ficha real.
+2. Señala qué reglas se me escaparon por completo (revisa en especial
+   si detecté la regla del redondeo).
+3. Señala si describí algo de más que no existía en el sistema real.
+4. Califica mi especificación de 0 a 100:
+   - cobertura de funcionalidades básicas (30)
+   - detección de reglas de negocio ocultas, como el redondeo (35)
+   - claridad y ausencia de ambigüedad (20)
+   - manejo de validaciones y casos vacíos o límite (15)
+5. Veredicto: ¿mi descripción habría bastado para construir un clon
+   funcionalmente idéntico? (SÍ / PARCIAL / NO), en dos líneas.
+6. Los 2 hábitos de observación que más me habrían ayudado.</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 CIERRE -->
+<section id="s3">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">iii.</span><h2>Cierre y Tarea 6</h2></div>
+          <span class="sec-chip">14 min · 21:45</span>
+        </div>
+        <p class="sec-objective">Dos juicios, un solo principio: escuchar lo que otro calla y describir lo que tú viste son la misma habilidad, mirando en direcciones opuestas.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>El requerimiento que no descubres es invisible &mdash; no da error, solo falta. La mayoría de los sistemas fracasan por no escuchar, no por no construir. Es el punto ciego del análisis, y hoy lo hiciste visible.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Bajo la frase del cliente hay un iceberg: lo explícito flota, lo implícito y lo tácito están sumergidos. Solo sube con buenas preguntas &mdash; abiertas, sin asumir, y sobre todo "¿qué pasa cuando&hellip;?".</div></div>
-        <div class="point"><span class="point-num">03</span><div>Calculemus: la IA como cliente oculto y como juez convierte "¿lo hice bien?" en un número y un veredicto. No para ganar &mdash; para tener, por fin, un espejo de tus puntos ciegos.</div></div>
+        <div class="point"><span class="point-num">01</span><div>El requerimiento que no descubres es invisible; el detalle que no describes se llena solo &mdash; y casi nunca como tú querías. Calculemus les puso número a los dos hoy.</div></div>
+        <div class="point"><span class="point-num">02</span><div>La IA sirvió tres papeles distintos &mdash; cliente, constructor y juez &mdash; y en los tres casos la calificación no es el premio: es el mapa de por dónde se te va la información cuando escuchas o cuando describes.</div></div>
       </div>
 
       <div class="challenge">
-        <div class="challenge-eyebrow">Reto opcional · sin puntos · llévalo a tu proyecto</div>
-        <h3>Pon a tu propio cliente frente al juez</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">El juez no sirve solo para el juego: sírvete de él con los requerimientos <b>reales</b> de tu proyecto integrador, antes de que el hueco lo encuentre tu calificación:</p>
-        <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Pega tu lista de requerimientos y pídele a la IA que actúe como analista senior: que cace <b>ambigüedades, huecos y suposiciones</b>, y que te haga las cinco preguntas "¿qué pasa cuando&hellip;?" que tú no te hiciste.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">&#10003;</span>Recordatorio: la <b>Tarea 6</b> (diagrama E-R + SQL generado con IA) se entrega este <b>jueves 23 de julio</b>. Un buen modelo de datos empieza por unos requerimientos completos &mdash; hoy practicaste justo eso.</li>
-        </ul>
+        <div class="challenge-eyebrow">Tarea 6 · valor 1 punto · entrega: jueves 23 de julio</div>
+        <h3>Recordatorio: el diagrama E-R + SQL con IA</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Sigue en pie la tarea de la clase 17: el diagrama entidad-relación completo de tu proyecto integrador, el prompt exacto que usaste, el SQL que la IA generó y su ejecución. Los dos talleres de hoy son práctica directa para esa entrega.</p>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El jueves que viene</div>
-          <p class="say-text">"Pascal y los árboles de decisión. Ya sabes recopilar lo que el cliente quiere; el jueves veremos cómo el sistema decide &mdash; cómo convertir un enredo de reglas de negocio en un árbol que elige, rama por rama, la acción correcta."</p>
+          <p class="say-text">"Pascal y los árboles de decisión. Ya sabes recopilar lo que el cliente quiere y describir lo que tú propones; el jueves veremos cómo el sistema decide &mdash; cómo convertir un enredo de reglas de negocio en un árbol que elige, rama por rama, la acción correcta."</p>
         </div>
       </div>
     </div>
@@ -628,94 +548,78 @@ análisis de sistemas. Con base en TODA nuestra conversación:
   window.addEventListener('scroll', updateActive, { passive: true });
   updateActive();
 
-  const animObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
-  }, { threshold: 0.2 });
-  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
-
   // ============================================================
-  // Explorador del iceberg: de la frase del cliente a su solución.
-  // Cada capa es un bloque HTML que se revela al tocar un botón.
+  // El sistema en vivo: "Divide & Calcula" — calculadora real de
+  // cuenta compartida con propina. Es el sistema que los estudiantes
+  // deben observar y describir (sin captura) en el Taller 2.
   // ============================================================
-  (function initDfx() {
-    const tabsWrap = document.getElementById('dfxTabs');
-    const canvas = document.getElementById('dfxCanvas');
-    if (!tabsWrap || !canvas) return;
-    const tabs = tabsWrap.querySelectorAll('.dfx-tab');
-    const levelEl = document.getElementById('dfxLevel');
-    const titleEl = document.getElementById('dfxTitle');
-    const readEl = document.getElementById('dfxRead');
-    const balanceEl = document.getElementById('dfxBalance');
+  (function initTargetWidget() {
+    const billEl = document.getElementById('twBill');
+    if (!billEl) return;
+    const minusBtn = document.getElementById('twMinus');
+    const plusBtn = document.getElementById('twPlus');
+    const countEl = document.getElementById('twCount');
+    const tipBtns = document.querySelectorAll('.tw-tip-btn');
+    const customTipEl = document.getElementById('twCustomTip');
+    const tipAmtEl = document.getElementById('twTipAmt');
+    const totalEl = document.getElementById('twTotal');
+    const perHeadEl = document.getElementById('twPerHead');
+    const noteEl = document.getElementById('twNote');
 
-    const LEVELS = {
-      '0': {
-        level: 'Capa 1 · Lo explícito',
-        title: 'Lo que el cliente dijo en voz alta',
-        read: '<b>Lee así:</b> el novato oye "control de clientes" e imagina una lista de nombres &mdash; y da la entrevista por entendida. Pero la palabra trampa es <b>"sencillo"</b>: casi nunca significa "pocas funciones"; significa "no quiero pensar en esto, piénsalo tú". El cliente que pide algo sencillo suele ser el que más reglas ocultas carga.',
-        balance: 'Si te quedas en esta capa, construyes una agenda de contactos &mdash; y entregas un sistema que el cliente ni reconoce como lo que pidió.',
-        body:
-          '<p class="ice-quote">"Quiero un sistema para llevar el control de mis clientes del gimnasio. Nada complicado, algo <span>sencillo</span>."</p>'
-      },
-      '1': {
-        level: 'Capa 2 · Lo implícito y lo tácito',
-        title: 'Lo que necesita — y no dijo',
-        read: '<b>Lee así:</b> las tres primeras salen con una pregunta básica ("¿qué llevas hoy en tu cuaderno?"). Las cinco de abajo &mdash; las caras &mdash; solo emergen si preguntas <b>"¿qué pasa cuando&hellip;?"</b>. Son reglas de negocio que el dueño vive a diario y no sabe que debe decirte: para él son obvias, para tu sistema son invisibles.',
-        balance: 'El dueño tenía 8 requerimientos en mente. La frase inicial te dio 0. La pregunta honesta: ¿cuántos habrías sacado tú &mdash; y cuántos son de la mitad de abajo?',
-        body:
-          '<ul class="req-list">' +
-          '<li class="req-group">Con una pregunta básica &mdash; lo implícito</li>' +
-          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Registrar clientes con sus datos y su <b>tipo de membresía</b></span></li>' +
-          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Registrar los <b>pagos</b> de mensualidad</span></li>' +
-          '<li class="req-item surface"><span class="mk">&#9679;</span><span>Ver quién está al corriente y <b>quién debe</b></span></li>' +
-          '<li class="req-group">Solo con "¿qué pasa cuando&hellip;?" &mdash; lo tácito, lo caro</li>' +
-          '<li class="req-item deep"><span class="mk">&#9650;</span><span>¿Qué pasa cuando una membresía <b>vence a medio mes</b>? ¿Corte inmediato o acceso hasta fin de mes?</span></li>' +
-          '<li class="req-item deep"><span class="mk">&#9650;</span><span>Membresías con <b>límite de visitas</b> frente a ilimitadas &mdash; se cobran y se controlan distinto</span></li>' +
-          '<li class="req-item deep"><span class="mk">&#9650;</span><span><b>Congelar</b> una membresía por viaje o lesión sin perder los días pagados</span></li>' +
-          '<li class="req-item deep"><span class="mk">&#9650;</span><span>Clases con <b>cupo</b>: ¿reservación?, ¿lista de espera?, ¿penalización por no asistir?</span></li>' +
-          '<li class="req-item deep"><span class="mk">&#9650;</span><span>El gimnasio <b>cierra en días festivos</b> &mdash; ¿esos días cuentan para la membresía?</span></li>' +
-          '</ul>'
-      },
-      '2': {
-        level: 'Capa 3 · La solución que imaginó',
-        title: 'El sistema que el cliente tenía en la cabeza',
-        read: '<b>Lee así:</b> esto es lo que el dueño esperaba <em>en silencio</em> al decir "sencillo". Nunca lo describió porque, para él, era la definición obvia de "control de clientes". Nota la distancia entre su frase y esto: ese hueco no está en sus palabras &mdash; es, exactamente, el trabajo del analista.',
-        balance: '"Diste con el resultado" no es adivinar esta caja: es hacer las preguntas que obligan al cliente a describírtela él mismo. Hoy la IA será este dueño &mdash; y luego tu juez. Calculemus.',
-        body:
-          '<div class="sol-card">' +
-          '<p><b>Control de acceso en la puerta:</b> el cliente pasa su credencial o un QR y el sistema lo deja entrar &mdash; o lo bloquea solo si debe. "Que yo no tenga que estar revisando quién pagó."</p>' +
-          '<p><b>Aviso automático de vencimiento:</b> un mensaje al cliente 3 días antes de que expire su membresía, para que renueve sin que el dueño persiga a nadie.</p>' +
-          '<p><b>Reservación de clases desde el celular</b>, con cupo y lista de espera, porque las clases llenas eran su dolor de cabeza.</p>' +
-          '<p><b>Un reporte mensual de ingresos</b> de una sola mirada. Para el dueño, "sencillo" era <em>esto</em> &mdash; que el sistema piense por él &mdash; no "pocas funciones".</p>' +
-          '</div>'
-      }
-    };
+    let people = 2;
+    let tipPct = 15;
 
-    function render(level) {
-      const data = LEVELS[level];
-      if (!data) return;
-      tabs.forEach(t => {
-        const on = t.dataset.level === level;
-        t.classList.toggle('on', on);
-        t.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-      levelEl.textContent = data.level;
-      titleEl.textContent = data.title;
-      readEl.innerHTML = data.read;
-      balanceEl.innerHTML = data.balance;
-      const fig = document.createElement('div');
-      fig.className = 'dfx-fig';
-      fig.innerHTML = data.body;
-      canvas.innerHTML = '';
-      canvas.appendChild(fig);
-      requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.add('show')));
+    function mxn(n) {
+      return '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    tabs.forEach(t => {
-      t.setAttribute('aria-pressed', t.classList.contains('on') ? 'true' : 'false');
-      t.addEventListener('click', () => render(t.dataset.level));
+    function setTipActive(pct, fromCustom) {
+      tipPct = pct;
+      tipBtns.forEach(b => b.classList.toggle('on', !fromCustom && Number(b.dataset.tip) === pct));
+      if (!fromCustom) customTipEl.value = '';
+      recalc();
+    }
+
+    function recalc() {
+      countEl.textContent = String(people);
+      minusBtn.disabled = people <= 1;
+
+      const bill = parseFloat(billEl.value);
+      if (!bill || bill <= 0) {
+        tipAmtEl.textContent = '—';
+        totalEl.textContent = '—';
+        perHeadEl.textContent = '—';
+        noteEl.textContent = 'Ingresa el total de la cuenta para calcular.';
+        return;
+      }
+      const tipAmt = bill * (tipPct / 100);
+      const total = bill + tipAmt;
+      const perHeadExact = total / people;
+      const perHead = Math.ceil(perHeadExact * 100) / 100;
+      const collected = perHead * people;
+
+      tipAmtEl.textContent = mxn(tipAmt);
+      totalEl.textContent = mxn(total);
+      perHeadEl.textContent = mxn(perHead) + ' c/u';
+
+      noteEl.textContent = (collected - total > 0.004)
+        ? 'Total a cobrar: ' + mxn(collected) + ' — el redondeo por persona no deja centavos sueltos.'
+        : '';
+    }
+
+    billEl.addEventListener('input', recalc);
+    minusBtn.addEventListener('click', () => { if (people > 1) { people--; recalc(); } });
+    plusBtn.addEventListener('click', () => { people++; recalc(); });
+    tipBtns.forEach(b => b.addEventListener('click', () => setTipActive(Number(b.dataset.tip), false)));
+    customTipEl.addEventListener('input', () => {
+      const raw = parseFloat(customTipEl.value);
+      if (isNaN(raw)) return;
+      const clamped = Math.max(0, Math.min(100, raw));
+      if (clamped !== raw) customTipEl.value = String(clamped);
+      setTipActive(clamped, true);
     });
 
-    render('0');
+    recalc();
   })();
 </script>
 
