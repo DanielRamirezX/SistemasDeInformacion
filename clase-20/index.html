@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
 <style>
   :root {
     --paper: #EFE6D2;
@@ -143,22 +144,6 @@
   .field-planb b { color: var(--ochre); font-weight: 600; }
 
   /* ============================================================
-     MATRIZ DE DECISIÓN (s5) — reuso del grid animado
-  ============================================================ */
-  .dm-table { margin: 28px 0; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
-  .dm-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); }
-  .dm-cell { padding: 12px 14px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); font-size: 13.5px; line-height: 1.4; color: var(--ink-soft); }
-  .dm-cell:nth-child(4n+1) { border-left: none; }
-  .dm-grid > .dm-cell:nth-child(-n+4) { border-top: none; }
-  .dm-head { background: var(--paper-elev); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
-  .dm-opt { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); }
-  .dm-score { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
-  .dm-cell.dm-win { background: rgba(93,102,56,0.10); }
-  .dm-win .dm-opt, .dm-win .dm-score { color: var(--olive); }
-  .dm-total { font-weight: 600; }
-  @media (max-width: 560px) { .dm-cell { font-size: 12px; padding: 9px 9px; } .dm-opt { font-size: 15px; } }
-
-  /* ============================================================
      ÁRBOL DE DECISIÓN INTERACTIVO (s6)
   ============================================================ */
   .tree { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
@@ -205,20 +190,6 @@
   .tree-fade { animation: treeFade 0.4s ease; }
   @keyframes treeFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ============================================================
-     DIAGRAMA DE ESTADOS — SVG (s4)
-  ============================================================ */
-  .std-box { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 26px 22px 16px; margin: 28px 0; }
-  .std-svg { width: 100%; max-width: 600px; height: auto; display: block; margin: 0 auto; }
-  .std-state { fill: var(--paper-elev); stroke: var(--ink-soft); stroke-width: 1.4; }
-  .std-state.std-final { stroke: var(--blood); stroke-width: 1.7; }
-  .std-init { fill: var(--ink); }
-  .std-trans { stroke: var(--ink-muted); stroke-width: 1.2; fill: none; }
-  .std-label { font-family: var(--serif); font-style: italic; font-size: 15px; fill: var(--ink); }
-  .std-edge { font-family: var(--mono); font-size: 10px; fill: var(--ochre); letter-spacing: 0.02em; }
-  .std-note { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-top: 12px; letter-spacing: 0.04em; text-align: center; }
-  .std-note b { color: var(--blood); font-weight: 500; }
-
   /* expediente de requerimientos (s7) — reuso del grid animado */
   .exp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
   @media (max-width: 720px) { .exp-grid { grid-template-columns: 1fr 1fr; } }
@@ -234,6 +205,130 @@
   .exp-card h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
   .exp-card .ex-tab { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
   .exp-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
+
+  /* ============================================================
+     PÁGINA VIVA — actividades de decisión
+  ============================================================ */
+  .compact-lead { max-width: 650px; font-family: var(--serif); font-size: 25px; font-style: italic; line-height: 1.42; color: var(--ink-soft); }
+  .decision-strip { display: grid; grid-template-columns: repeat(3, 1fr); margin: 34px 0 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .decision-step { min-height: 150px; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(234, 224, 202, 0.28); transition: background 0.25s ease, transform 0.25s ease; }
+  .decision-step:hover { background: var(--paper-deep); transform: translateY(-3px); }
+  .decision-step-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
+  .decision-step strong { display: block; font-family: var(--serif); font-size: 22px; line-height: 1.1; color: var(--ink); margin-bottom: 8px; }
+  .decision-step p { font-size: 13.5px; line-height: 1.5; color: var(--ink-muted); margin: 0; }
+  .pascal-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .pascal-pill { padding: 10px 14px; border: 1px solid var(--line-strong); background: var(--paper-deep); border-radius: 999px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .pascal-pill b { color: var(--blood); font-weight: 500; }
+
+  .activity { position: relative; overflow: hidden; margin: 32px 0; padding: 30px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--paper-deep); }
+  .activity::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--blood), var(--ochre), transparent); }
+  .activity-kicker { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blood); }
+  .activity-kicker::before { content: '↗'; font-size: 16px; line-height: 1; }
+  .activity h3 { margin: 10px 0 6px; font-size: 32px; }
+  .activity-copy { font-size: 14px; color: var(--ink-muted); line-height: 1.55; margin: 0 0 24px; max-width: 660px; }
+  .activity-copy b { color: var(--ink-soft); font-weight: 600; }
+  .formula { margin: 0 0 22px; padding: 12px 14px; border-left: 2px solid var(--ochre); background: var(--paper); color: var(--ink-soft); font-family: var(--mono); font-size: 12px; line-height: 1.55; }
+  .formula b { color: var(--blood); font-weight: 500; }
+  .control-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .range-control { padding: 15px 14px 13px; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+  .range-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+  .range-control label { font-family: var(--serif); font-size: 18px; line-height: 1.1; color: var(--ink); }
+  .range-control output { font-family: var(--mono); font-size: 11px; color: var(--blood); white-space: nowrap; }
+  .range-control input { display: block; width: 100%; min-height: 28px; accent-color: var(--blood); cursor: pointer; }
+  .range-help { display: block; margin-top: 4px; color: var(--ink-faint); font-size: 11px; line-height: 1.35; }
+  .preset-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 18px 0 0; }
+  .preset-label { margin-right: 2px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
+  .choice-btn, .state-action { border: 1px solid var(--line-strong); border-radius: 4px; padding: 8px 12px; background: transparent; color: var(--ink-soft); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: color 0.2s, background 0.2s, border-color 0.2s, transform 0.2s; touch-action: manipulation; }
+  .choice-btn:hover, .choice-btn.is-active { color: var(--paper); background: var(--blood); border-color: var(--blood); transform: translateY(-1px); }
+  .choice-btn:focus-visible, .state-action:focus-visible { outline: 2px solid var(--blood); outline-offset: 2px; }
+  .ve-dashboard { display: grid; grid-template-columns: minmax(190px, .8fr) minmax(260px, 1.2fr); gap: 16px; margin-top: 22px; }
+  .ve-result, .ve-insight { padding: 20px; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+  .result-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+  .ve-value { margin: 6px 0 3px; color: var(--blood); font-family: var(--serif); font-size: clamp(36px, 5vw, 54px); font-style: italic; line-height: 1; }
+  .ve-verdict { color: var(--ink-soft); font-family: var(--serif); font-size: 19px; font-style: italic; line-height: 1.2; }
+  .ve-insight { display: grid; gap: 14px; align-content: center; }
+  .ve-scale-labels { display: flex; justify-content: space-between; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ve-track { position: relative; height: 11px; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 99px; background: rgba(160, 36, 24, 0.09); }
+  .ve-track::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--ink-muted); opacity: 0.55; }
+  .ve-bar { position: absolute; top: 1px; bottom: 1px; border-radius: 99px; background: var(--olive); transition: left 0.45s cubic-bezier(.2,.8,.2,1), width 0.45s cubic-bezier(.2,.8,.2,1), background 0.3s ease; }
+  .ve-bar.is-negative { background: var(--blood); }
+  .ve-break-even { font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
+  .ve-break-even b { color: var(--ink); font-weight: 600; }
+
+  .state-lab { padding-bottom: 28px; }
+  .state-map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 25px 0 18px; }
+  .state-node { position: relative; min-height: 106px; padding: 17px 14px; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--paper); transition: transform 0.32s ease, border-color 0.32s ease, background 0.32s ease, box-shadow 0.32s ease; }
+  .state-node::after { content: '→'; position: absolute; right: -17px; top: 43px; z-index: 2; color: var(--ochre); font-family: var(--serif); font-size: 24px; }
+  .state-node:last-child::after { display: none; }
+  .state-node:nth-child(3)::after { display: none; }
+  .state-node.is-current { border-color: var(--blood); background: #f3e6d4; box-shadow: 0 8px 24px rgba(160, 36, 24, 0.13); transform: translateY(-4px); }
+  .state-node.is-past { border-color: rgba(93,102,56,.65); }
+  .state-node.is-final { border-style: dashed; }
+  .state-node-kicker { display: block; font-family: var(--mono); font-size: 8px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-faint); }
+  .state-node strong { display: block; margin-top: 4px; font-family: var(--serif); font-size: 23px; font-style: italic; line-height: 1.1; color: var(--ink); }
+  .state-token { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; color: var(--blood); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .state-token::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--blood); animation: tokenPulse 1.4s ease-in-out infinite; }
+  .state-node:not(.is-current) .state-token { display: none; }
+  .state-actions { display: flex; flex-wrap: wrap; gap: 9px; margin: 0 0 15px; }
+  .state-action { background: var(--paper); }
+  .state-action:hover:not(:disabled) { border-color: var(--blood); color: var(--blood); transform: translateY(-1px); }
+  .state-action.is-danger:hover:not(:disabled) { border-color: var(--blood); background: var(--blood); color: var(--paper); }
+  .state-action:disabled { cursor: not-allowed; color: var(--ink-faint); border-color: var(--line); background: transparent; opacity: .68; }
+  .state-log { min-height: 48px; padding: 12px 14px; border-left: 2px solid var(--ochre); background: var(--paper); font-family: var(--serif); font-size: 17px; font-style: italic; color: var(--ink-soft); line-height: 1.35; }
+  .state-log b { color: var(--blood); font-weight: 600; }
+
+  .matrix-lab { padding-bottom: 28px; }
+  .weight-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+  .weight-control { padding: 14px; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+  .weight-control label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--ink); font-family: var(--serif); font-size: 19px; line-height: 1.1; }
+  .weight-control output { color: var(--blood); font-family: var(--mono); font-size: 11px; }
+  .weight-control input { display: block; width: 100%; min-height: 25px; margin-top: 8px; accent-color: var(--blood); cursor: pointer; }
+  .matrix-table-wrap { overflow-x: auto; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--paper); }
+  .matrix-table { width: 100%; min-width: 570px; border-collapse: collapse; font-size: 13px; }
+  .matrix-table th, .matrix-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; color: var(--ink-soft); }
+  .matrix-table thead th { background: var(--paper-elev); color: var(--ink-muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .matrix-table tbody tr:last-child td { border-bottom: none; }
+  .matrix-table .option-name { color: var(--ink); font-family: var(--serif); font-size: 18px; font-style: italic; }
+  .matrix-table .calc { color: var(--ink-muted); font-family: var(--mono); font-size: 11px; }
+  .matrix-table .total { color: var(--ink); font-family: var(--mono); font-size: 13px; font-weight: 500; }
+  .matrix-table tr.is-winner td { background: rgba(93, 102, 56, 0.10); }
+  .matrix-table tr.is-winner .option-name, .matrix-table tr.is-winner .total { color: var(--olive); }
+  .matrix-summary { display: grid; grid-template-columns: minmax(180px, .7fr) 1.3fr; gap: 16px; align-items: center; margin-top: 16px; }
+  .matrix-winner { padding: 16px; border-left: 2px solid var(--olive); background: var(--paper); color: var(--ink-soft); font-family: var(--serif); font-size: 18px; font-style: italic; line-height: 1.25; }
+  .matrix-winner b { color: var(--olive); }
+  .matrix-bars { display: grid; gap: 8px; }
+  .matrix-bar-row { display: grid; grid-template-columns: 102px 1fr 30px; gap: 9px; align-items: center; }
+  .matrix-bar-name { color: var(--ink-muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .matrix-bar-track { height: 8px; overflow: hidden; border-radius: 99px; background: rgba(42, 29, 20, 0.1); }
+  .matrix-bar-fill { height: 100%; border-radius: inherit; background: var(--ochre); transition: width .42s cubic-bezier(.2,.8,.2,1), background .25s ease; }
+  .matrix-bar-fill.is-winner { background: var(--olive); }
+  .matrix-bar-value { color: var(--ink-soft); font-family: var(--mono); font-size: 11px; text-align: right; }
+
+  html.js [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .62s ease, transform .62s cubic-bezier(.2,.75,.3,1); transition-delay: var(--reveal-delay, 0ms); }
+  html.js [data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+  .pop-in { animation: popIn .38s cubic-bezier(.2,.8,.2,1); }
+  @keyframes popIn { from { opacity: .25; transform: translateY(7px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes tokenPulse { 50% { transform: scale(1.55); opacity: .5; } }
+
+  @media (max-width: 900px) {
+    .value-lab .control-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .decision-strip, .control-grid, .weight-controls, .ve-dashboard, .matrix-summary { grid-template-columns: 1fr; }
+    .activity { padding: 24px 18px; }
+    .state-map { grid-template-columns: 1fr 1fr; }
+    .state-node::after { display: none; }
+  }
+  @media (max-width: 480px) {
+    .decision-strip { grid-template-columns: 1fr; }
+    .state-map { grid-template-columns: 1fr; }
+    .state-node { min-height: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    html.js [data-reveal] { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -316,13 +411,23 @@
         </div>
         <p class="sec-objective">Tienes el DFD, el modelo entidad-relación y los casos de uso. Te falta modelar algo que no es ni un dato ni un proceso: la elección bajo incertidumbre.</p>
       </div>
-      <p>A lo largo del bloque de modelado aprendiste a dibujar casi todo lo que ocurre dentro de un sistema. El diagrama de flujo de datos te mostró cómo viaja la información; el modelo entidad-relación, cómo se guarda; los casos de uso, qué hace cada actor con ella. Todos esos modelos comparten algo: describen lo que el sistema <em>hace</em>, suponiendo que ya decidiste construirlo y cómo.</p>
-      <p>Pero antes y durante todo proyecto hay decisiones que ningún DFD captura: ¿automatizo este proceso o lo dejo manual? ¿compro una herramienta o desarrollo a la medida? ¿lanzo ya o espero a tener más datos? Son decisiones bajo <em>incertidumbre</em> &mdash; no sabes con certeza qué saldrá &mdash; y se pueden modelar igual que un proceso: con ramas, costos, beneficios y probabilidades. De eso trata hoy, y por eso nos acompaña Pascal, el hombre que convirtió la apuesta más grande de su vida en un árbol de decisión.</p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">El dato que duele</div>
-          <p class="say-text">"La mayoría de las malas decisiones de TI no se toman mal: se toman a ojo. 'Pues yo creo que conviene automatizar' no es un análisis &mdash; es una corazonada con saco. Modelar la decisión no garantiza acertar, pero te obliga a hacer explícito lo que estás apostando."</p>
-        </div>
+      <p class="compact-lead" data-reveal>Ya puedes dibujar <em>qué ocurre</em>. Hoy dibujas la parte que suele quedar escondida: <em>por qué elegiste una ruta y no otra</em>.</p>
+      <div class="decision-strip" data-reveal style="--reveal-delay:80ms">
+        <article class="decision-step">
+          <span class="decision-step-kicker">Ya lo modelaste</span>
+          <strong>Datos</strong>
+          <p>Qué guarda el sistema.</p>
+        </article>
+        <article class="decision-step">
+          <span class="decision-step-kicker">Ya lo modelaste</span>
+          <strong>Procesos</strong>
+          <p>Cómo se mueve la información.</p>
+        </article>
+        <article class="decision-step">
+          <span class="decision-step-kicker">Hoy</span>
+          <strong>Decisiones</strong>
+          <p>Qué ruta conviene cuando no hay certeza.</p>
+        </article>
       </div>
     </div>
   </div>
@@ -339,13 +444,16 @@
         </div>
         <p class="sec-objective">Porque inventó, casi de pasada, las dos herramientas que usarás hoy: el cálculo de probabilidades y el árbol de decisión bajo incertidumbre.</p>
       </div>
-      <p>Pascal fue matemático, físico e inventor &mdash; construyó una de las primeras calculadoras mecánicas a los diecinueve años. Pero su contribución a esta clase nació de una conversación sobre apuestas: junto con Fermat, en 1654, fundó el <em>cálculo de probabilidades</em>. Por primera vez, lo incierto dejó de ser puro destino y se volvió algo medible. Esa es la primera mitad de tu caja de herramientas de hoy: ponerle un número a "qué tan probable es que pase".</p>
-      <p>La segunda mitad es su célebre <em>apuesta</em>. Pascal razonó así sobre creer o no en Dios: hay dos opciones (creer, no creer) y dos estados inciertos del mundo (existe, no existe); cada combinación tiene un costo y un beneficio. Aunque la probabilidad de acertar fuera mínima, el beneficio de creer y acertar era infinito, así que la rama "creer" dominaba. No discutimos teología: lo que nos importa es la <em>forma</em> de su razonamiento. Eso es, literalmente, un árbol de decisión &mdash; ramas, probabilidades, costos y beneficios &mdash; tres siglos antes de que se llamara así.</p>
-      <div class="say">
-        <div class="say-card">
-          <div class="say-label">Pascal aplicado a la decisión</div>
-          <p class="say-text">"La apuesta de Pascal no te dice qué creer; te enseña a decidir cuando no puedes estar seguro. Y eso es el oficio del analista: nunca tendrás toda la información, pero igual hay que elegir &mdash; con la rama explícita, no con la corazonada escondida."</p>
-        </div>
+      <p class="compact-lead" data-reveal>Pascal convirtió una apuesta en una cuenta: <em>opciones + azar + consecuencias</em>.</p>
+      <div class="pascal-pills" data-reveal style="--reveal-delay:80ms">
+        <span class="pascal-pill"><b>1654</b> · probabilidades con Fermat</span>
+        <span class="pascal-pill"><b>2</b> · opciones posibles</span>
+        <span class="pascal-pill"><b>2</b> · estados inciertos</span>
+        <span class="pascal-pill"><b>1</b> · decisión defendible</span>
+      </div>
+      <div class="example" data-reveal style="--reveal-delay:130ms">
+        <div class="example-tag">La idea útil</div>
+        <p>No importa la teología de la apuesta; importa su estructura: hacer visibles las <b>ramas</b>, asignar una <b>probabilidad</b> y comparar lo que se gana o se pierde. Esa estructura sirve igual para elegir un sistema.</p>
       </div>
     </div>
   </div>
@@ -362,19 +470,62 @@
         </div>
         <p class="sec-objective">Una decisión dibujada: nodos de decisión, nodos de azar, ramas con probabilidad y, al final de cada rama, un resultado con su valor. Pascal en una hoja.</p>
       </div>
-      <p>Un árbol de decisión es un modelo que descompone una elección en sus partes y las hace visibles. Tiene una gramática mínima, y vale la pena nombrarla con precisión porque cada símbolo significa algo distinto:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Nodo de decisión (cuadrado).</b> Un punto donde <em>tú</em> eliges: automatizar o no, comprar o desarrollar. De aquí salen las ramas que tú controlas.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>Nodo de azar (círculo).</b> Un punto donde decide el mundo, no tú: el proyecto sale bien o mal, el proveedor cumple o no. Sus ramas llevan una <em>probabilidad</em>.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Rama.</b> Cada camino posible. De un nodo de azar, las probabilidades de sus ramas suman 1 (el 100&nbsp;%). El mundo siempre cae en alguna.</div></div>
-        <div class="point"><span class="point-num">04</span><div><b>Hoja (resultado).</b> El final de una rama, con su valor: lo que ganas o pierdes si llegas ahí. En pesos, en tiempo, en lo que estés midiendo.</div></div>
+      <div class="points" data-reveal>
+        <div class="point"><span class="point-num">□</span><div><b>Decisión.</b> Una ruta que tú controlas.</div></div>
+        <div class="point"><span class="point-num">○</span><div><b>Azar.</b> Una ruta que decide el mundo.</div></div>
+        <div class="point"><span class="point-num">↗</span><div><b>Rama.</b> Un camino con probabilidad.</div></div>
+        <div class="point"><span class="point-num">×</span><div><b>Hoja.</b> El resultado en dinero, tiempo o riesgo.</div></div>
       </div>
-      <p>Con eso se calcula el <em>valor esperado</em> de cada decisión: para cada rama de azar, multiplicas su probabilidad por su resultado y sumas. Es justo la cuenta que hizo Pascal con su apuesta. Veámoslo con un caso que te toca de cerca:</p>
-      <div class="example">
-        <div class="example-tag">La apuesta del analista</div>
-        <p>Un negocio decide si <b>automatiza</b> su control de inventario. Automatizar cuesta <b>$120,000</b>. Si sale bien (probabilidad estimada 70&nbsp;%), ahorra <b>$300,000</b> en dos años; si sale mal (30&nbsp;%), apenas ahorra <b>$40,000</b> y cargó con el costo. El valor esperado de automatizar es <b>0.70 &times; 300,000 + 0.30 &times; 40,000 &minus; 120,000 = $102,000</b> a favor. La rama "no automatizar" vale $0. El árbol no te <em>obliga</em> a automatizar &mdash; pero pone sobre la mesa que, con esos números, la corazonada y la cuenta coinciden. Y si no coincidieran, sabrías exactamente dónde discutir: en la probabilidad o en los montos.</p>
+
+      <div class="activity value-lab" id="valueLab" data-reveal>
+        <div class="activity-kicker">Actividad 1 · mueve los supuestos</div>
+        <h3>¿Conviene automatizar?</h3>
+        <p class="activity-copy">Cambia los cuatro supuestos. El <b>valor esperado</b> recalcula al instante contra la alternativa de no hacer nada: $0.</p>
+        <p class="formula">valor esperado = <b>p</b> × ahorro si funciona + (1 − <b>p</b>) × ahorro si falla − inversión</p>
+
+        <div class="control-grid">
+          <div class="range-control">
+            <div class="range-top"><label for="veProbability">Que funcione</label><output id="veProbabilityOut">70 %</output></div>
+            <input id="veProbability" type="range" min="5" max="95" step="5" value="70">
+            <span class="range-help">Probabilidad estimada</span>
+          </div>
+          <div class="range-control">
+            <div class="range-top"><label for="veSuccess">Si funciona</label><output id="veSuccessOut">$300 mil</output></div>
+            <input id="veSuccess" type="range" min="100" max="500" step="10" value="300">
+            <span class="range-help">Ahorro en dos años</span>
+          </div>
+          <div class="range-control">
+            <div class="range-top"><label for="veFailure">Si falla</label><output id="veFailureOut">$40 mil</output></div>
+            <input id="veFailure" type="range" min="0" max="160" step="10" value="40">
+            <span class="range-help">Ahorro residual</span>
+          </div>
+          <div class="range-control">
+            <div class="range-top"><label for="veCost">Inversión</label><output id="veCostOut">$120 mil</output></div>
+            <input id="veCost" type="range" min="20" max="260" step="10" value="120">
+            <span class="range-help">Costo de automatizar</span>
+          </div>
+        </div>
+
+        <div class="preset-row" aria-label="Escenarios rápidos">
+          <span class="preset-label">Prueba un caso</span>
+          <button class="choice-btn is-active" type="button" data-ve-preset="base">Caso base</button>
+          <button class="choice-btn" type="button" data-ve-preset="riesgo">Riesgo alto</button>
+          <button class="choice-btn" type="button" data-ve-preset="ahorro">Ahorro alto</button>
+        </div>
+
+        <div class="ve-dashboard">
+          <div class="ve-result pop-in" id="veResult">
+            <div class="result-label">Resultado de automatizar</div>
+            <div class="ve-value" id="veValue" aria-live="polite">+$102 mil</div>
+            <div class="ve-verdict" id="veVerdict">Sí conviene, con estos supuestos.</div>
+          </div>
+          <div class="ve-insight">
+            <div class="ve-scale-labels"><span>Pierde</span><span>$0</span><span>Gana</span></div>
+            <div class="ve-track" aria-hidden="true"><div class="ve-bar" id="veBar"></div></div>
+            <p class="ve-break-even" id="veBreakEven">El punto de equilibrio aparece aquí.</p>
+          </div>
+        </div>
       </div>
-      <p>Esa es la magia silenciosa del árbol: no elimina la incertidumbre, la hace <em>discutible</em>. Cuando alguien diga "yo creo que va a salir mal", podrás preguntar "¿con qué probabilidad?" &mdash; y la conversación se mueve de la fe a la evidencia.</p>
     </div>
   </div>
 </section>
@@ -390,47 +541,45 @@
         </div>
         <p class="sec-objective">El árbol modela una decisión que tomas una vez. El diagrama de estados modela algo que cambia de situación con el tiempo &mdash; y las decisiones que disparan cada cambio.</p>
       </div>
-      <p>Hay decisiones puntuales (¿automatizo?) y hay objetos que <em>viven</em> dentro del sistema cambiando de situación: un pedido pasa de "nuevo" a "pagado" a "enviado"; una solicitud de vacaciones, de "pendiente" a "aprobada" o "rechazada". Para esos, UML te da el <em>diagrama de estados</em>: cada estado es un círculo, cada transición una flecha rotulada con el evento que la dispara. Es el mapa de cómo se mueve algo a lo largo de su vida.</p>
+      <p class="compact-lead" data-reveal>Un pedido no “está en la base de datos”: <em>vive</em>. Prueba las transiciones permitidas y descubre las que el sistema debe bloquear.</p>
 
-      <div class="std-box">
-        <svg class="std-svg" viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de estados de un pedido: nuevo, pagado, enviado, cancelado">
-          <defs>
-            <marker id="stdArr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
-              <path d="M0,0 L8,4.5 L0,9" style="fill: none; stroke: var(--ink-muted); stroke-width: 1.2;"/>
-            </marker>
-          </defs>
-          <!-- estado inicial -->
-          <circle class="std-init" cx="34" cy="70" r="7"/>
-          <line class="std-trans" x1="41" y1="70" x2="78" y2="70" marker-end="url(#stdArr)"/>
-          <!-- Nuevo -->
-          <rect class="std-state" x="82" y="48" width="104" height="44" rx="14"/>
-          <text class="std-label" x="134" y="75" text-anchor="middle">Nuevo</text>
-          <!-- Nuevo -> Pagado -->
-          <line class="std-trans" x1="186" y1="70" x2="262" y2="70" marker-end="url(#stdArr)"/>
-          <text class="std-edge" x="224" y="62" text-anchor="middle">pagar</text>
-          <!-- Pagado -->
-          <rect class="std-state" x="266" y="48" width="104" height="44" rx="14"/>
-          <text class="std-label" x="318" y="75" text-anchor="middle">Pagado</text>
-          <!-- Pagado -> Enviado -->
-          <line class="std-trans" x1="370" y1="70" x2="446" y2="70" marker-end="url(#stdArr)"/>
-          <text class="std-edge" x="408" y="62" text-anchor="middle">despachar</text>
-          <!-- Enviado (final) -->
-          <rect class="std-state std-final" x="450" y="48" width="104" height="44" rx="14"/>
-          <text class="std-label" x="502" y="75" text-anchor="middle">Enviado</text>
-          <!-- Nuevo -> Cancelado -->
-          <path class="std-trans" d="M120,92 C108,150 120,182 134,182" marker-end="url(#stdArr)"/>
-          <text class="std-edge" x="70" y="150" text-anchor="middle">cancelar</text>
-          <!-- Cancelado (final) -->
-          <rect class="std-state std-final" x="138" y="160" width="116" height="44" rx="14"/>
-          <text class="std-label" x="196" y="187" text-anchor="middle">Cancelado</text>
-          <!-- Pagado -> Cancelado (reembolso) -->
-          <path class="std-trans" d="M300,92 C280,140 250,168 256,178" marker-end="url(#stdArr)"/>
-          <text class="std-edge" x="300" y="150" text-anchor="middle">reembolsar</text>
-        </svg>
-        <div class="std-note"><b>"Enviado" y "Cancelado" son estados finales</b> (borde rojo): de ahí el pedido ya no se mueve. Fíjate que desde "Nuevo" se puede cancelar, y desde "Pagado" la cancelación obliga a reembolsar &mdash; cada flecha es una regla de negocio escondida.</div>
+      <div class="activity state-lab" id="stateLab" data-reveal>
+        <div class="activity-kicker">Actividad 2 · opera el pedido #401</div>
+        <h3>La máquina de estados</h3>
+        <p class="activity-copy">Las acciones apagadas son transiciones <b>prohibidas</b>. Cada botón disponible es una regla de negocio que alguien tuvo que decidir.</p>
+
+        <div class="state-map" aria-label="Estados posibles del pedido">
+          <div class="state-node is-current" data-state-node="nuevo">
+            <span class="state-node-kicker">inicio</span>
+            <strong>Nuevo</strong>
+            <span class="state-token">Pedido #401</span>
+          </div>
+          <div class="state-node" data-state-node="pagado">
+            <span class="state-node-kicker">tras cobrar</span>
+            <strong>Pagado</strong>
+            <span class="state-token">Pedido #401</span>
+          </div>
+          <div class="state-node is-final" data-state-node="enviado">
+            <span class="state-node-kicker">final</span>
+            <strong>Enviado</strong>
+            <span class="state-token">Pedido #401</span>
+          </div>
+          <div class="state-node is-final" data-state-node="cancelado">
+            <span class="state-node-kicker">final alterno</span>
+            <strong>Cancelado</strong>
+            <span class="state-token">Pedido #401</span>
+          </div>
+        </div>
+
+        <div class="state-actions" aria-label="Acciones del pedido">
+          <button class="state-action" type="button" data-state-action="pay">Cobrar</button>
+          <button class="state-action" type="button" data-state-action="ship">Despachar</button>
+          <button class="state-action is-danger" type="button" data-state-action="cancel">Cancelar</button>
+          <button class="state-action is-danger" type="button" data-state-action="refund">Reembolsar</button>
+          <button class="state-action" type="button" data-state-action="reset">Reiniciar</button>
+        </div>
+        <p class="state-log" id="stateLog" role="status" aria-live="polite"><b>Nuevo.</b> Puedes cobrar o cancelar el pedido.</p>
       </div>
-
-      <p>¿Qué tiene esto que ver con decidir? Mucho: cada flecha que <em>no</em> dibujas es una transición prohibida &mdash; una decisión de diseño. ¿Se puede cancelar un pedido ya enviado? Si no hay flecha, dijiste que no. El diagrama de estados te fuerza a decidir, una por una, qué transiciones permites; y cada una suele esconder un costo (un reembolso, una devolución, un reproceso). Es Pascal otra vez: cada camino tiene su precio, y vale la pena verlo antes de dibujarlo.</p>
     </div>
   </div>
 </section>
@@ -446,34 +595,73 @@
         </div>
         <p class="sec-objective">El árbol brilla cuando hay azar. La matriz brilla cuando hay que comparar varias opciones contra varios criterios que no pesan igual.</p>
       </div>
-      <p>No toda decisión es una apuesta contra el azar. Muchas veces tienes opciones claras &mdash; tres herramientas candidatas, por ejemplo &mdash; y el problema es que cada una es mejor en algo. Ahí entra la <em>matriz de decisión</em>: opciones en las filas, criterios en las columnas. A cada criterio le das un <b>peso</b> (qué tanto te importa), calificas cada opción del 1 al 5, multiplicas por el peso y sumas. Gana la fila con el total más alto.</p>
-      <p>Caso real: tu negocio necesita un sistema de punto de venta y tiene tres caminos. Los criterios pesan así: costo (peso 3), facilidad de uso (peso 2), soporte local (peso 1). Las cifras son calificaciones de 1 a 5 ya multiplicadas por su peso:</p>
+      <p class="compact-lead" data-reveal>Una matriz no decide por ti: expone <em>qué te importa más</em>. Mueve los pesos y mira si tu ganador se sostiene.</p>
 
-      <div class="dm-table">
-        <div class="dm-grid">
-          <div class="dm-cell dm-head">Opción</div>
-          <div class="dm-cell dm-head">Costo &times;3</div>
-          <div class="dm-cell dm-head">Uso &times;2</div>
-          <div class="dm-cell dm-head">Soporte &times;1</div>
-          <div class="dm-cell dm-opt">Desarrollo a la medida</div>
-          <div class="dm-cell dm-score">1 &rarr; 3</div>
-          <div class="dm-cell dm-score">5 &rarr; 10</div>
-          <div class="dm-cell dm-score">5 &rarr; 5 · <span class="dm-total">= 18</span></div>
-          <div class="dm-cell dm-opt dm-win">Software de paquete</div>
-          <div class="dm-cell dm-score dm-win">5 &rarr; 15</div>
-          <div class="dm-cell dm-score dm-win">3 &rarr; 6</div>
-          <div class="dm-cell dm-score dm-win">3 &rarr; 3 · <span class="dm-total">= 24</span></div>
-          <div class="dm-cell dm-opt">Servicio en la nube (SaaS)</div>
-          <div class="dm-cell dm-score">4 &rarr; 12</div>
-          <div class="dm-cell dm-score">4 &rarr; 8</div>
-          <div class="dm-cell dm-score">2 &rarr; 2 · <span class="dm-total">= 22</span></div>
+      <div class="activity matrix-lab" id="matrixLab" data-reveal>
+        <div class="activity-kicker">Actividad 3 · cambia las prioridades</div>
+        <h3>¿Qué sistema de punto de venta gana?</h3>
+        <p class="activity-copy">Cada opción ya tiene una calificación de 1 a 5. Ajusta la importancia de cada criterio; la tabla, las barras y la recomendación cambian contigo.</p>
+
+        <div class="weight-controls">
+          <div class="weight-control">
+            <label for="matrixCost">Costo <output id="matrixCostOut">peso 3</output></label>
+            <input id="matrixCost" type="range" min="1" max="5" step="1" value="3">
+          </div>
+          <div class="weight-control">
+            <label for="matrixUse">Facilidad de uso <output id="matrixUseOut">peso 2</output></label>
+            <input id="matrixUse" type="range" min="1" max="5" step="1" value="2">
+          </div>
+          <div class="weight-control">
+            <label for="matrixSupport">Soporte local <output id="matrixSupportOut">peso 1</output></label>
+            <input id="matrixSupport" type="range" min="1" max="5" step="1" value="1">
+          </div>
         </div>
-      </div>
 
-      <p>Con estos pesos gana el <em>software de paquete</em> (24). Pero mira lo interesante: si el costo te importara menos y el uso fuera lo crítico, el desarrollo a la medida treparía. La matriz no decide por ti &mdash; te muestra que <b>la decisión vive en los pesos</b>. Cambiar qué te importa cambia el ganador, y eso te obliga a ser honesto sobre tus prioridades. Es la versión sin azar del árbol: mismo espíritu pascaliano, cuenta explícita en lugar de corazonada.</p>
-      <div class="example">
-        <div class="example-tag">Cuándo cada herramienta</div>
-        <p><b>Árbol de decisión:</b> cuando el resultado depende del azar y puedes estimar probabilidades (¿saldrá bien el proyecto?). <b>Matriz de decisión:</b> cuando comparas opciones conocidas contra criterios ponderados (¿cuál herramienta?). <b>Diagrama de estados:</b> cuando lo que modelas cambia de situación con el tiempo (¿cómo evoluciona un pedido?). No compiten &mdash; un buen análisis a menudo usa las tres en el mismo expediente.</p>
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th scope="col">Opción</th>
+                <th scope="col">Costo × <span id="matrixCostHead">3</span></th>
+                <th scope="col">Uso × <span id="matrixUseHead">2</span></th>
+                <th scope="col">Soporte × <span id="matrixSupportHead">1</span></th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="matrixRowMeasure">
+                <td class="option-name">A la medida</td>
+                <td class="calc" id="matrixMeasureCost">1 × 3 = 3</td>
+                <td class="calc" id="matrixMeasureUse">5 × 2 = 10</td>
+                <td class="calc" id="matrixMeasureSupport">5 × 1 = 5</td>
+                <td class="total" id="matrixMeasureTotal">18</td>
+              </tr>
+              <tr id="matrixRowPackage">
+                <td class="option-name">Paquete</td>
+                <td class="calc" id="matrixPackageCost">5 × 3 = 15</td>
+                <td class="calc" id="matrixPackageUse">3 × 2 = 6</td>
+                <td class="calc" id="matrixPackageSupport">3 × 1 = 3</td>
+                <td class="total" id="matrixPackageTotal">24</td>
+              </tr>
+              <tr id="matrixRowSaas">
+                <td class="option-name">SaaS</td>
+                <td class="calc" id="matrixSaasCost">4 × 3 = 12</td>
+                <td class="calc" id="matrixSaasUse">4 × 2 = 8</td>
+                <td class="calc" id="matrixSaasSupport">2 × 1 = 2</td>
+                <td class="total" id="matrixSaasTotal">22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="matrix-summary">
+          <p class="matrix-winner" id="matrixWinner" aria-live="polite">Con estos pesos, gana <b>Paquete</b>.</p>
+          <div class="matrix-bars" aria-label="Comparación visual de resultados">
+            <div class="matrix-bar-row"><span class="matrix-bar-name">A la medida</span><div class="matrix-bar-track"><div class="matrix-bar-fill" id="matrixBarMeasure"></div></div><span class="matrix-bar-value" id="matrixBarMeasureValue">18</span></div>
+            <div class="matrix-bar-row"><span class="matrix-bar-name">Paquete</span><div class="matrix-bar-track"><div class="matrix-bar-fill is-winner" id="matrixBarPackage"></div></div><span class="matrix-bar-value" id="matrixBarPackageValue">24</span></div>
+            <div class="matrix-bar-row"><span class="matrix-bar-name">SaaS</span><div class="matrix-bar-track"><div class="matrix-bar-fill" id="matrixBarSaas"></div></div><span class="matrix-bar-value" id="matrixBarSaasValue">22</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -490,15 +678,15 @@
         </div>
         <p class="sec-objective">Hasta aquí leíste árboles. Ahora vas a recorrer uno: toca cada rama y el sitio te revela su costo, su beneficio y su probabilidad &mdash; hasta una recomendación razonada.</p>
       </div>
-      <p>El caso: una <em>panadería local</em> con cinco sucursales lleva su inventario en cuadernos. El dueño te contrató para decidir qué hacer. Recorre el árbol tocando una opción en cada nodo. En cada rama verás el <b>costo</b> (lo que cuesta), el <b>beneficio</b> (lo que aporta) y, en los nodos de azar, la <b>probabilidad</b>. Al llegar a una hoja, el sitio arma el balance y te da una recomendación &mdash; que, como toda recomendación, tú confirmarás o rebatirás.</p>
+      <p class="compact-lead" data-reveal>Ahora elige una ruta para una panadería de cinco sucursales. Lee <em>costo, beneficio y probabilidad</em>; después cuestiona la recomendación.</p>
 
-      <div class="tree" id="tree">
-        <div class="tree-instr">Toca una rama para avanzar &middot; caso: panadería con 5 sucursales e inventario en cuadernos</div>
+      <div class="tree" id="tree" data-reveal style="--reveal-delay:80ms">
+        <div class="tree-instr">Actividad 4 · toca una rama para avanzar · panadería con 5 sucursales</div>
         <div class="tree-breadcrumb" id="treeCrumbs" aria-live="polite"></div>
         <div id="treeStage"></div>
       </div>
 
-      <p>¿Notaste lo que hiciste? No "elegiste con el corazón": recorriste ramas, leíste costos y beneficios, y la decisión emergió de los números. Eso no quita el juicio &mdash; tú decidiste qué probabilidades creer &mdash; pero lo vuelve explícito y defendible. Es, exactamente, la apuesta de Pascal aplicada a una panadería: ramas, costos, beneficios y probabilidades, hasta una elección que puedes sostener frente a quien sea.</p>
+      <p class="activity-copy" data-reveal>La conclusión no reemplaza tu juicio: te obliga a señalar <b>qué supuesto</b> cambiarías para llegar a otra decisión.</p>
     </div>
   </div>
 </section>
@@ -514,7 +702,7 @@
         </div>
         <p class="sec-objective">Todos los modelos del curso &mdash; los de antes y los de hoy &mdash; no viven sueltos. Se archivan en un solo documento: el expediente de requerimientos de tu sistema.</p>
       </div>
-      <p>Llevas medio curso produciendo piezas: stakeholders, casos de uso, DFD, modelo entidad-relación y, hoy, árboles y matrices de decisión. El error de novato es dejarlas dispersas en archivos sueltos. El profesional las <em>encuaderna</em> en un expediente de requerimientos &mdash; el documento maestro que prueba que la decisión de construir (o no) fue razonada, no improvisada. Estas son sus secciones típicas; reconocerás casi todas:</p>
+      <p class="compact-lead" data-reveal>Un expediente convierte piezas sueltas en una decisión <em>rastreable</em>.</p>
 
       <div class="exp-grid" data-animate>
         <div class="exp-card">
@@ -549,7 +737,7 @@
         </div>
       </div>
 
-      <p>Tu árbol de decisión &mdash; el de la tarea de hoy &mdash; no es un ejercicio suelto: es la sección de <em>factibilidad y decisión</em> de tu expediente. Es la prueba documental de que, como Pascal, hiciste explícita la apuesta antes de jugarla. Cuando alguien te pregunte "¿por qué decidieron construir esto?", la respuesta no será "se nos ocurrió": será una página con ramas, costos y probabilidades.</p>
+      <p class="activity-copy" data-reveal>Tu árbol vive en <b>Factibilidad y decisión</b>: evidencia de que la apuesta se discutió antes de construir.</p>
     </div>
   </div>
 </section>
@@ -565,39 +753,39 @@
         </div>
         <p class="sec-objective">Bocetas hoy, a mano, el árbol de decisión de tu proyecto integrador &mdash; el esqueleto de lo que entregarás en la Tarea 8. Insumo directo de tu expediente.</p>
       </div>
-      <p>Pascal no descubrió su apuesta de un golpe: la razonó por partes. Hagamos igual. Hoy no necesitas Excel ni Miro &mdash; eso es para la tarea. Hoy necesitas una hoja, un lápiz y la honestidad de poner números aunque sean estimados:</p>
+      <p class="compact-lead" data-reveal>En una hoja: <em>elige, estima, calcula y defiende</em>.</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
             <h4>Nombra la decisión raíz <span class="fs-time">3 min</span></h4>
-            <p>¿Cuál es la apuesta central de tu proyecto? Escríbela como pregunta cerrada: "¿Automatizar el proceso X o dejarlo manual?", "¿Desarrollar a la medida o comprar paquete?". Ese es tu <b>nodo de decisión raíz</b> &mdash; el cuadrado del que sale todo.</p>
+            <p>Escribe una pregunta cerrada: “¿automatizar X o dejarlo manual?”. Ese es tu <b>nodo raíz</b>.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
             <h4>Dibuja las ramas y sus nodos de azar <span class="fs-time">5 min</span></h4>
-            <p>Para cada opción, ¿qué puede salir? Pon al menos un <b>nodo de azar</b> (círculo) con dos ramas: "sale bien" y "sale mal". A cada rama de azar ponle una probabilidad estimada &mdash; deben sumar 100&nbsp;% por nodo. No busques exactitud; busca hacer explícita tu intuición.</p>
+            <p>Por cada opción, agrega “sale bien” y “sale mal” con probabilidades que sumen <b>100&nbsp;%</b>.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
             <h4>Mete costos y beneficios en las hojas <span class="fs-time">6 min</span></h4>
-            <p>Al final de cada rama, anota el resultado en pesos: costo de esa opción y beneficio esperado. Calcula el <b>valor esperado</b> de cada decisión (probabilidad &times; resultado, sumado). Esto es tu mini análisis de factibilidad de costos &mdash; el corazón de la Tarea 8.</p>
+            <p>Anota costo y beneficio al final de cada rama; calcula su <b>valor esperado</b>.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
             <h4>Defiende tu rama ganadora <span class="fs-time">4 min</span></h4>
-            <p>Con un compañero: enséñale tu árbol y deja que ataque tus probabilidades ("¿de verdad 70&nbsp;%?"). Tu trabajo no es ganar, sino ajustar los números o sostenerlos con un argumento. La versión que sobreviva es la base de tu entregable.</p>
+            <p>Deja que alguien cuestione tus probabilidades. Ajusta o defiende la rama ganadora.</p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Si no tienes cifras reales</b> &mdash; estima y márcalo como estimación. Un árbol con números estimados y honestos vale infinitamente más que una corazonada sin números. Pascal apostó sin certeza; tú también puedes &mdash; siempre que la apuesta esté escrita.
+          <b>¿No tienes cifras reales?</b> Estima y márcalo. Una estimación explícita vale más que una corazonada escondida.
         </div>
       </div>
     </div>
@@ -669,10 +857,15 @@
   window.addEventListener('scroll', updateActive, { passive: true });
   updateActive();
 
-  const animObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
-  }, { threshold: 0.2 });
-  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+  const animatedItems = document.querySelectorAll('[data-animate]');
+  if ('IntersectionObserver' in window) {
+    const animObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
+    }, { threshold: 0.2 });
+    animatedItems.forEach(el => animObserver.observe(el));
+  } else {
+    animatedItems.forEach(el => el.classList.add('go'));
+  }
 
   // ============================================================
   // ÁRBOL DE DECISIÓN INTERACTIVO — caso: panadería con 5 sucursales
@@ -893,6 +1086,237 @@
     }
 
     reset();
+  })();
+
+  // ============================================================
+  // REVELADO SUAVE AL DESPLAZARSE
+  // ============================================================
+  (function initReveal() {
+    const revealItems = document.querySelectorAll('[data-reveal]');
+    if (!revealItems.length) return;
+    if (!('IntersectionObserver' in window)) {
+      revealItems.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12 });
+    revealItems.forEach(el => revealObserver.observe(el));
+  })();
+
+  // ============================================================
+  // ACTIVIDAD 1 — VALOR ESPERADO
+  // ============================================================
+  (function initValueLab() {
+    const ids = ['veProbability', 'veSuccess', 'veFailure', 'veCost'];
+    const inputs = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    if (Object.values(inputs).some(input => !input)) return;
+
+    const outputs = {
+      probability: document.getElementById('veProbabilityOut'),
+      success: document.getElementById('veSuccessOut'),
+      failure: document.getElementById('veFailureOut'),
+      cost: document.getElementById('veCostOut'),
+      value: document.getElementById('veValue'),
+      verdict: document.getElementById('veVerdict'),
+      breakEven: document.getElementById('veBreakEven'),
+      bar: document.getElementById('veBar')
+    };
+    const presets = {
+      base: { veProbability: 70, veSuccess: 300, veFailure: 40, veCost: 120 },
+      riesgo: { veProbability: 40, veSuccess: 260, veFailure: 20, veCost: 160 },
+      ahorro: { veProbability: 80, veSuccess: 430, veFailure: 60, veCost: 110 }
+    };
+    const presetButtons = document.querySelectorAll('[data-ve-preset]');
+    const formatMoney = (amount, signed = false) => {
+      const prefix = signed && amount > 0 ? '+' : amount < 0 ? '−' : '';
+      return prefix + '$' + Math.abs(Math.round(amount)) + ' mil';
+    };
+
+    function isPreset(values, preset) {
+      return Object.keys(preset).every(key => values[key] === preset[key]);
+    }
+
+    function update() {
+      const values = Object.fromEntries(ids.map(id => [id, Number(inputs[id].value)]));
+      const probability = values.veProbability / 100;
+      const expected = probability * values.veSuccess + (1 - probability) * values.veFailure - values.veCost;
+
+      outputs.probability.textContent = values.veProbability + ' %';
+      outputs.success.textContent = formatMoney(values.veSuccess);
+      outputs.failure.textContent = formatMoney(values.veFailure);
+      outputs.cost.textContent = formatMoney(values.veCost);
+      outputs.value.textContent = formatMoney(expected, true);
+      outputs.verdict.textContent = expected > 0
+        ? 'Sí conviene: supera el $0 de no automatizar.'
+        : expected < 0
+          ? 'No con estos supuestos: manual vale más.'
+          : 'Empate: hace falta otro criterio.';
+
+      const denominator = values.veSuccess - values.veFailure;
+      const breakEven = denominator > 0 ? ((values.veCost - values.veFailure) / denominator) * 100 : Infinity;
+      if (breakEven <= 0) {
+        outputs.breakEven.innerHTML = '<b>Punto de equilibrio:</b> incluso con 0 % de éxito, el ahorro residual cubre la inversión.';
+      } else if (breakEven >= 100) {
+        outputs.breakEven.innerHTML = '<b>Punto de equilibrio:</b> ni con 100 % de éxito se recupera la inversión.';
+      } else {
+        outputs.breakEven.innerHTML = '<b>Punto de equilibrio:</b> necesitas al menos ' + breakEven.toFixed(1).replace('.', ',') + ' % de probabilidad de éxito.';
+      }
+
+      const limit = 220;
+      const width = Math.min(Math.abs(expected) / limit, 1) * 50;
+      outputs.bar.style.width = width + '%';
+      outputs.bar.style.left = (expected >= 0 ? 50 : 50 - width) + '%';
+      outputs.bar.classList.toggle('is-negative', expected < 0);
+
+      presetButtons.forEach(button => {
+        const preset = presets[button.dataset.vePreset];
+        button.classList.toggle('is-active', isPreset(values, preset));
+      });
+    }
+
+    ids.forEach(id => inputs[id].addEventListener('input', update));
+    presetButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const preset = presets[button.dataset.vePreset];
+        Object.entries(preset).forEach(([id, value]) => { inputs[id].value = value; });
+        update();
+      });
+    });
+    update();
+  })();
+
+  // ============================================================
+  // ACTIVIDAD 2 — MÁQUINA DE ESTADOS
+  // ============================================================
+  (function initStateLab() {
+    const log = document.getElementById('stateLog');
+    const nodes = document.querySelectorAll('[data-state-node]');
+    const buttons = document.querySelectorAll('[data-state-action]');
+    if (!log || !nodes.length || !buttons.length) return;
+
+    const rules = {
+      nuevo: {
+        pay: { to: 'pagado' },
+        cancel: { to: 'cancelado' }
+      },
+      pagado: {
+        ship: { to: 'enviado' },
+        refund: { to: 'cancelado' }
+      },
+      enviado: {},
+      cancelado: {}
+    };
+    const messages = {
+      nuevo: '<b>Nuevo.</b> Puedes cobrar o cancelar el pedido.',
+      pagado: '<b>Pagado.</b> Puedes despachar o reembolsar.',
+      enviado: '<b>Enviado.</b> Estado final: cancelar ya no es válido.',
+      cancelado: '<b>Cancelado.</b> Estado final: no hay más transiciones.'
+    };
+    let current = 'nuevo';
+    let visited = new Set();
+
+    function render() {
+      nodes.forEach(node => {
+        const key = node.dataset.stateNode;
+        node.classList.toggle('is-current', key === current);
+        node.classList.toggle('is-past', key !== current && visited.has(key));
+      });
+      buttons.forEach(button => {
+        const action = button.dataset.stateAction;
+        button.disabled = action === 'reset' ? false : !rules[current][action];
+      });
+      log.innerHTML = messages[current];
+      log.classList.remove('pop-in');
+      void log.offsetWidth;
+      log.classList.add('pop-in');
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const action = button.dataset.stateAction;
+        if (action === 'reset') {
+          current = 'nuevo';
+          visited = new Set();
+          render();
+          return;
+        }
+        const transition = rules[current][action];
+        if (!transition) return;
+        visited.add(current);
+        current = transition.to;
+        render();
+      });
+    });
+    render();
+  })();
+
+  // ============================================================
+  // ACTIVIDAD 3 — MATRIZ PONDERADA
+  // ============================================================
+  (function initMatrixLab() {
+    const inputs = {
+      cost: document.getElementById('matrixCost'),
+      use: document.getElementById('matrixUse'),
+      support: document.getElementById('matrixSupport')
+    };
+    if (Object.values(inputs).some(input => !input)) return;
+
+    const options = [
+      { key: 'Measure', label: 'A la medida', ratings: { cost: 1, use: 5, support: 5 } },
+      { key: 'Package', label: 'Paquete', ratings: { cost: 5, use: 3, support: 3 } },
+      { key: 'Saas', label: 'SaaS', ratings: { cost: 4, use: 4, support: 2 } }
+    ];
+    const criteria = ['cost', 'use', 'support'];
+    const outputs = {
+      cost: document.getElementById('matrixCostOut'),
+      use: document.getElementById('matrixUseOut'),
+      support: document.getElementById('matrixSupportOut'),
+      winner: document.getElementById('matrixWinner')
+    };
+
+    function update() {
+      const weights = Object.fromEntries(criteria.map(key => [key, Number(inputs[key].value)]));
+      criteria.forEach(key => {
+        outputs[key].textContent = 'peso ' + weights[key];
+        document.getElementById('matrix' + key.charAt(0).toUpperCase() + key.slice(1) + 'Head').textContent = weights[key];
+      });
+
+      const scored = options.map(option => {
+        const total = criteria.reduce((sum, criterion) => sum + option.ratings[criterion] * weights[criterion], 0);
+        criteria.forEach(criterion => {
+          const suffix = criterion.charAt(0).toUpperCase() + criterion.slice(1);
+          document.getElementById('matrix' + option.key + suffix).textContent =
+            option.ratings[criterion] + ' × ' + weights[criterion] + ' = ' + option.ratings[criterion] * weights[criterion];
+        });
+        document.getElementById('matrix' + option.key + 'Total').textContent = total;
+        return { ...option, total };
+      });
+
+      const max = Math.max(...scored.map(option => option.total));
+      const winners = scored.filter(option => option.total === max);
+      scored.forEach(option => {
+        const winner = option.total === max;
+        document.getElementById('matrixRow' + option.key).classList.toggle('is-winner', winner);
+        const bar = document.getElementById('matrixBar' + option.key);
+        bar.style.width = (option.total / max * 100) + '%';
+        bar.classList.toggle('is-winner', winner);
+        document.getElementById('matrixBar' + option.key + 'Value').textContent = option.total;
+      });
+
+      if (winners.length === 1) {
+        outputs.winner.innerHTML = 'Con estos pesos, gana <b>' + winners[0].label + '</b> con ' + max + ' puntos.';
+      } else {
+        outputs.winner.innerHTML = 'Con estos pesos hay empate: <b>' + winners.map(option => option.label).join(' y ') + '</b> con ' + max + ' puntos.';
+      }
+    }
+
+    criteria.forEach(key => inputs[key].addEventListener('input', update));
+    update();
   })();
 </script>
 
