@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capítulo 22 · Hegel · Sistemas de Información</title>
-<meta name="description" content="Clase 22: abstracción y refinamiento sucesivo del diseño. Modularidad, arquitectura de software, estructura de datos, separación de responsabilidades y capas, y conceptos modernos como microservicios y serverless. El refinamiento como dialéctica de Hegel: tesis, antítesis, síntesis. Cuatrimestre 26-3.">
+<meta name="description" content="Clase 22: grandes fracasos de sistemas de información, investigados como un forense. El modelo del queso suizo, cinco casos reales documentados (Ariane 5, Mars Climate Orbiter, Therac-25, Knight Capital, CrowdStrike) con enlace a su informe oficial, y una auditoría de riesgos con IA sobre tu propio proyecto. La lechuza de Minerva, según Hegel. Cuatrimestre 26-3.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -58,10 +58,10 @@
   .nav-brand b { color: var(--blood); font-weight: 500; }
   .nav-brand a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
   .nav-brand a:hover { border-bottom-color: var(--ink-muted); }
-  .nav-links { display: flex; gap: 18px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 15px; list-style: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; flex-wrap: wrap; }
   .nav-links a { color: var(--ink-muted); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
   .nav-links a:hover { color: var(--blood); border-bottom-color: var(--blood); }
-  @media (max-width: 980px) { .nav-links { display: none; } }
+  @media (max-width: 1120px) { .nav-links { display: none; } }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
   .stage { max-width: 760px; margin: 0 auto; }
   section { padding: 80px 0; position: relative; }
@@ -87,7 +87,7 @@
   .stat-value { font-family: var(--serif); font-size: 26px; color: var(--ink); line-height: 1.1; }
   .quote { text-align: center; padding: 100px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
   .quote::before { content: '\201C'; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 120px; color: var(--ochre); opacity: 0.30; line-height: 1; }
-  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(34px, 5vw, 56px); line-height: 1.15; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
+  .quote-text { font-family: var(--serif); font-style: italic; font-size: clamp(30px, 4.4vw, 50px); line-height: 1.2; color: var(--ink); max-width: 820px; margin: 0 auto 30px; letter-spacing: -0.015em; }
   .quote-attr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); }
   .quote-attr b { color: var(--ochre); font-weight: 500; }
   .sec-head { margin-bottom: 56px; border-top: 1px solid var(--line); padding-top: 56px; }
@@ -127,80 +127,17 @@
   .reveal-hero { opacity: 0; transform: translateY(20px); animation: fadeUp 1.1s ease 0.15s forwards; }
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* tarjetas de conceptos (aparecen al hacer scroll) — reuso del grid de clase 11 */
-  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
-  @media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
-  .card-r { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 20px 18px; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-  .cards-grid.go .card-r { opacity: 1; transform: translateY(0); }
-  .cards-grid.go .card-r:nth-child(1) { transition-delay: 0.05s; }
-  .cards-grid.go .card-r:nth-child(2) { transition-delay: 0.13s; }
-  .cards-grid.go .card-r:nth-child(3) { transition-delay: 0.21s; }
-  .cards-grid.go .card-r:nth-child(4) { transition-delay: 0.29s; }
-  .cards-grid.go .card-r:nth-child(5) { transition-delay: 0.37s; }
-  .cards-grid.go .card-r:nth-child(6) { transition-delay: 0.45s; }
-  .card-r h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
-  .card-r .cr-when { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blood); margin-bottom: 10px; }
-  .card-r p { font-size: 13px; color: var(--ink-soft); line-height: 1.45; margin: 0; }
-
-  /* ============================================================
-     REFINAMIENTO DIALÉCTICO INTERACTIVO (s6)
-     tesis -> antítesis -> síntesis, en rondas, con revelado progresivo
-  ============================================================ */
-  .dia { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
-  .dia-progress { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
-  .dia-round { font-family: var(--serif); font-style: italic; font-size: 23px; color: var(--ink); line-height: 1.25; margin-bottom: 20px; }
-  .dia-track { display: flex; gap: 8px; margin-bottom: 22px; }
-  .dia-dot { width: 26px; height: 4px; border-radius: 2px; background: var(--line-strong); transition: background 0.3s; }
-  .dia-dot.on { background: var(--blood); }
-  .dia-steps { display: grid; gap: 12px; }
-  .dia-step { border: 1px solid var(--line-strong); border-radius: 6px; padding: 18px 20px; background: var(--paper); opacity: 0; transform: translateY(10px); max-height: 0; overflow: hidden; padding-top: 0; padding-bottom: 0; border-width: 0; transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.5s ease, padding 0.5s ease, border-width 0.5s ease; }
-  .dia-step.show { opacity: 1; transform: translateY(0); max-height: 360px; padding-top: 18px; padding-bottom: 18px; border-width: 1px; }
-  .dia-step .ds-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
-  .dia-step .ds-label::before { content: ''; width: 18px; height: 1px; }
-  .dia-step.is-tesis { border-top: 3px solid var(--olive); }
-  .dia-step.is-tesis .ds-label { color: var(--olive); }
-  .dia-step.is-tesis .ds-label::before { background: var(--olive); }
-  .dia-step.is-anti { border-top: 3px solid var(--blood); }
-  .dia-step.is-anti .ds-label { color: var(--blood); }
-  .dia-step.is-anti .ds-label::before { background: var(--blood); }
-  .dia-step.is-sint { border-top: 3px solid var(--ochre); }
-  .dia-step.is-sint .ds-label { color: var(--ochre); }
-  .dia-step.is-sint .ds-label::before { background: var(--ochre); }
-  .dia-step .ds-text { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
-  .dia-step .ds-text b { color: var(--ink); font-weight: 600; }
-  .dia-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
-  .dia-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; background: var(--blood); color: var(--paper); border: 1px solid var(--blood); border-radius: 4px; cursor: pointer; transition: background 0.2s, transform 0.15s, opacity 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
-  .dia-btn:hover:not(:disabled) { background: var(--blood-dark); transform: translateY(-1px); }
-  .dia-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .dia-btn:disabled { opacity: 0.4; cursor: default; }
-  .dia-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
-  .dia-reset:hover { background: var(--paper); color: var(--ink); }
-  .dia-reset:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .dia-conclusion { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
-  .dia-conclusion.show { opacity: 1; max-height: 600px; }
-  .dia-conclusion b { color: var(--blood); font-weight: 600; }
-
-  /* diagrama de capas (s4) — SVG estático con revelado al hacer scroll */
-  .layers-box { background: var(--paper-deep); border: 1px solid var(--line); border-radius: 6px; padding: 28px 24px 18px; margin: 32px 0; }
-  .layers-svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
-  .ly-band { stroke: var(--ink-soft); stroke-width: 1.4; }
-  .ly-pres { fill: var(--paper-elev); }
-  .ly-logic { fill: var(--paper); }
-  .ly-data { fill: var(--paper-elev); }
-  .ly-name { font-family: var(--serif); font-style: italic; font-size: 19px; fill: var(--ink); }
-  .ly-tag { font-family: var(--mono); font-size: 10px; fill: var(--ink-muted); letter-spacing: 0.1em; }
-  .ly-arrow { stroke: var(--ochre); stroke-width: 1.4; }
-  .ly-note { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-top: 14px; letter-spacing: 0.04em; text-align: center; }
-  .ly-note b { color: var(--blood); font-weight: 500; }
-  @media (max-width: 560px) { .layers-box { padding: 18px 10px 12px; } }
-
-  /* ejemplo y taller (reuso) */
+  /* ejemplo / prompt-box / taller (reuso en todo el sitio) */
   .example { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 6px; padding: 26px; margin: 24px 0; }
   .example-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ochre); margin-bottom: 8px; }
   .example p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
   .example p b { color: var(--ink); font-weight: 600; }
+  .prompt-box { background: var(--paper); border: 1px solid var(--line-strong); border-left: 3px solid var(--blood); border-radius: 6px; padding: 22px 24px; margin: 24px 0; }
+  .prompt-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blood); margin-bottom: 12px; }
+  .prompt-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; word-break: break-word; margin: 0; }
   .field { background: var(--paper-deep); border: 1px solid var(--line-strong); border-left: 3px solid var(--olive); border-radius: 6px; padding: 30px 28px; margin: 32px 0; }
+  .field.two { border-left-color: var(--blood); }
+  .field.two .field-step-num { background: var(--blood); }
   .field-step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
   .field-step:first-child { border-top: none; padding-top: 0; }
   .field-step-num { font-family: var(--mono); font-size: 12px; color: var(--paper); background: var(--olive); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -209,6 +146,68 @@
   .field-step p .fs-time { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blood); margin-left: 8px; }
   .field-planb { margin-top: 18px; background: var(--paper); border: 1px dashed var(--ochre); border-radius: 4px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink-muted); }
   .field-planb b { color: var(--ochre); font-weight: 600; }
+
+  /* ============================================================
+     EL MODELO DEL QUESO SUIZO (s3) — capas que se alinean
+  ============================================================ */
+  .cheese { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 8px; padding: 30px 28px; margin: 32px 0; }
+  .cheese-stack { position: relative; max-width: 440px; margin: 0 auto 20px; }
+  .cheese-row { margin-bottom: 12px; }
+  .cheese-row-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 5px; }
+  .cheese-slice { position: relative; height: 44px; border-radius: 8px; border: 1px solid var(--line-strong); background: linear-gradient(135deg, #F1D97E, #E2C05C); overflow: visible; }
+  .cheese-hole { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--paper-deep); border: 1px solid var(--line-strong); transform: translate(-50%, -50%); transition: left 1.1s cubic-bezier(.4,0,.2,1); }
+  .cheese-beam { position: absolute; top: 0; bottom: 0; left: 50%; width: 12px; transform: translateX(-50%); background: linear-gradient(180deg, rgba(160,36,24,0.05), rgba(160,36,24,0.85) 50%, rgba(160,36,24,0.05)); opacity: 0; transition: opacity 0.5s ease 1.05s; pointer-events: none; border-radius: 6px; }
+  .cheese-stack.aligned .cheese-beam { opacity: 1; }
+  .cheese-result { text-align: center; font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blood); opacity: 0; transition: opacity 0.5s ease 1.2s; margin-bottom: 6px; }
+  .cheese-stack.aligned + .cheese-result { opacity: 1; }
+  .cheese-controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+  .cheese-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 11px 20px; background: var(--blood); color: var(--paper); border: 1px solid var(--blood); border-radius: 4px; cursor: pointer; transition: background 0.2s, transform 0.15s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .cheese-btn:hover { background: var(--blood-dark); transform: translateY(-1px); }
+  .cheese-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 16px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .cheese-reset:hover { background: var(--paper); color: var(--ink); }
+  .cheese-caption { text-align: center; font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; max-width: 480px; margin: 0 auto; min-height: 1.6em; }
+  .cheese-caption b { color: var(--blood); font-weight: 600; }
+
+  /* ============================================================
+     EL EXPEDIENTE: 5 CASOS REALES (s4)
+  ============================================================ */
+  .case-list { display: grid; gap: 18px; margin: 32px 0; }
+  .case-file { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 8px; padding: 24px 26px 22px 30px; position: relative; }
+  .case-file::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--blood); border-radius: 8px 0 0 8px; }
+  .case-head { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+  .case-name-wrap { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .case-name { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); }
+  .case-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--paper); background: var(--blood); padding: 4px 10px; border-radius: 3px; white-space: nowrap; }
+  .case-date { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-muted); white-space: nowrap; }
+  .case-body { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 12px 0; }
+  .case-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin: 14px 0; padding: 14px 0; border-top: 1px dashed var(--line-strong); border-bottom: 1px dashed var(--line-strong); }
+  .cm-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ochre); margin-bottom: 4px; }
+  .cm-value { font-size: 13.5px; color: var(--ink-soft); line-height: 1.45; }
+  .cm-value b { color: var(--ink); font-weight: 600; }
+  .case-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; color: var(--blood); text-decoration: none; border-bottom: 1px solid transparent; margin-top: 4px; }
+  .case-link:hover { border-bottom-color: var(--blood); }
+
+  /* ============================================================
+     EXPEDIENTE AMPLIADO: LÍNEA DE TIEMPO REVELADA (s5)
+  ============================================================ */
+  .tl { background: var(--paper-deep); border: 1px solid var(--line-strong); border-radius: 8px; padding: 30px 28px; margin: 32px 0; }
+  .tl-progress { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 18px; }
+  .tl-steps { display: grid; gap: 0; }
+  .tl-step { border-top: 1px solid var(--line); opacity: 0; transform: translateY(10px); max-height: 0; overflow: hidden; padding: 0; transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.5s ease, padding 0.5s ease; }
+  .tl-step.show { opacity: 1; transform: translateY(0); max-height: 220px; padding: 16px 0; }
+  .tl-step:first-child { border-top: none; }
+  .tl-time { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--blood); margin-bottom: 7px; display: block; }
+  .tl-text { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
+  .tl-text b { color: var(--ink); font-weight: 600; }
+  .tl-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .tl-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; background: var(--blood); color: var(--paper); border: 1px solid var(--blood); border-radius: 4px; cursor: pointer; transition: background 0.2s, transform 0.15s, opacity 0.2s; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+  .tl-btn:hover:not(:disabled) { background: var(--blood-dark); transform: translateY(-1px); }
+  .tl-btn:disabled { opacity: 0.4; cursor: default; }
+  .tl-reset { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 11px 18px; background: transparent; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .tl-reset:hover { background: var(--paper); color: var(--ink); }
+  .tl-after { margin-top: 14px; padding: 16px 18px; border-radius: 4px; background: var(--paper); border: 1px dashed var(--blood); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease, max-height 0.4s ease; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .tl-after.show { opacity: 1; max-height: 400px; }
+  .tl-after b { color: var(--blood); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -221,12 +220,13 @@
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#s1">Repaso</a></li>
       <li><a href="#s2">Hegel</a></li>
-      <li><a href="#s3">Abstracción</a></li>
-      <li><a href="#s4">Modularidad</a></li>
-      <li><a href="#s5">Hoy en la nube</a></li>
-      <li><a href="#s6">Refinamiento</a></li>
-      <li><a href="#s7">Taller</a></li>
-      <li><a href="#s8">Cierre</a></li>
+      <li><a href="#s3">Queso suizo</a></li>
+      <li><a href="#s4">El expediente</a></li>
+      <li><a href="#s5">Knight Capital</a></li>
+      <li><a href="#s6">Qué cambió</a></li>
+      <li><a href="#s7">Taller 1</a></li>
+      <li><a href="#s8">Taller 2</a></li>
+      <li><a href="#s9">Cierre</a></li>
     </ul>
   </div>
 </nav>
@@ -236,7 +236,7 @@
     <div class="stage">
       <div class="eyebrow"><b>Capítulo 22</b> &nbsp;/&nbsp; 28</div>
       <h1 class="hero-title">Hegel</h1>
-      <p class="hero-tagline">Diseñar es refinar:<br>tesis, antítesis, <span>síntesis</span>.</p>
+      <p class="hero-tagline">Ningún desastre es un accidente.<br>Es una fila de <span>agujeros que se alinearon</span>.</p>
       <div class="hero-stats">
         <div><div class="stat-label">Fecha</div><div class="stat-value">Jue 30 julio 2026</div></div>
         <div><div class="stat-label">Horario</div><div class="stat-value">20:00 — 21:59</div></div>
@@ -249,8 +249,8 @@
 
 <section class="quote">
   <div class="wrap">
-    <p class="quote-text">Lo verdadero es el todo.</p>
-    <p class="quote-attr">— <b>G. W. F. Hegel</b> · Fenomenología del espíritu · 1807</p>
+    <p class="quote-text">La lechuza de Minerva emprende su vuelo solo al caer el crepúsculo.</p>
+    <p class="quote-attr">— <b>G. W. F. Hegel</b> · Filosofía del derecho, prefacio · 1820</p>
   </div>
 </section>
 
@@ -260,19 +260,20 @@
       <div class="sec-head">
         <div class="sec-head-row">
           <div><span class="sec-num">·</span><h2>Agenda de hoy</h2></div>
-          <span class="sec-chip">119 min · el diseño se refina</span>
+          <span class="sec-chip">119 min · el expediente de los sistemas</span>
         </div>
-        <p class="sec-objective">Hoy bajamos al interior del sistema. Aprenderás a abstraer &mdash; quedarte con lo esencial &mdash; y a refinar el diseño en rondas, como una dialéctica: una idea, los problemas que revela, y una versión mejor que los supera.</p>
+        <p class="sec-objective">Hoy no hablamos de fallas en abstracto: las vemos estallar. Un cohete que se autodestruye, una sonda perdida en Marte, pacientes que recibieron dosis letales de radiación, 460 millones de dólares perdidos en 45 minutos, medio mundo con la pantalla azul &mdash; cinco catástrofes reales que tienen algo en común: nunca fue un solo error. Fue una fila de defensas imperfectas que un día se alinearon. Hoy investigas como forense, con el modelo del queso suizo como lupa, y con IA como tu asistente de investigación.</p>
       </div>
       <div class="agenda">
-        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: tienes la metodología; ahora, ¿qué construyes por dentro?</span><span class="agenda-dur">8 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:00</span><span class="agenda-title">Repaso: sabes construir bien; ¿qué pasa cuando algo se escapa?</span><span class="agenda-dur">8 min</span></div>
         <div class="agenda-row"><span class="agenda-time">20:08</span><span class="agenda-title">¿Por qué Hegel?</span><span class="agenda-dur">8 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">Abstracción: quedarse con lo esencial</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:32</span><span class="agenda-title">Modularidad, arquitectura y estructura de datos</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">20:50</span><span class="agenda-title">Conceptos modernos: microservicios y serverless</span><span class="agenda-dur">16 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:06</span><span class="agenda-title">El refinamiento dialéctico, paso a paso</span><span class="agenda-dur">18 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:24</span><span class="agenda-title">Taller: refina tu diseño en dos rondas</span><span class="agenda-dur">24 min</span></div>
-        <div class="agenda-row"><span class="agenda-time">21:48</span><span class="agenda-title">Cierre y Tarea 9</span><span class="agenda-dur">11 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:16</span><span class="agenda-title">El modelo del queso suizo: por qué los desastres necesitan varios errores a la vez</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:30</span><span class="agenda-title">El expediente: 5 casos reales, 5 causas raíz</span><span class="agenda-dur">22 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">20:52</span><span class="agenda-title">Investigación a fondo: los 45 minutos de Knight Capital</span><span class="agenda-dur">16 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:08</span><span class="agenda-title">Qué cambió después: la lechuza vuela</span><span class="agenda-dur">10 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:18</span><span class="agenda-title">Taller 1: investiga un caso como forense</span><span class="agenda-dur">18 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:36</span><span class="agenda-title">Taller 2: audita tu proyecto con IA</span><span class="agenda-dur">14 min</span></div>
+        <div class="agenda-row"><span class="agenda-time">21:50</span><span class="agenda-title">Cierre y Tarea 9</span><span class="agenda-dur">9 min</span></div>
       </div>
     </div>
   </div>
@@ -284,17 +285,17 @@
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">i.</span><h2>Tienes el cómo.<br>¿Qué construyes por dentro?</h2></div>
+          <div><span class="sec-num">i.</span><h2>Sabes construir bien.<br>¿Qué pasa cuando<br>algo se escapa?</h2></div>
           <span class="sec-chip">8 min · 20:00</span>
         </div>
-        <p class="sec-objective">Elegiste metodología y aprendiste a leer el contexto. Falta lo que vive bajo la superficie: la forma interna del sistema &mdash; y esa forma no nace perfecta.</p>
+        <p class="sec-objective">Ya sabes levantar requisitos, modelar datos, diseñar arquitectura. La pregunta de hoy es distinta: cuando algo sale mal de verdad &mdash; no un bug menor, sino una catástrofe &mdash; ¿qué fue exactamente lo que falló?</p>
       </div>
-      <p>En las clases anteriores construiste el esqueleto de tu proyecto: los stakeholders, el contrato de los casos de uso, la metodología con la que vas a trabajar. Ya sabes <em>qué</em> debe hacer tu sistema y <em>cómo</em> lo vas a desarrollar. Hoy abrimos la caja y miramos su interior: cómo se organiza por dentro para que sea entendible, mantenible y no se derrumbe a la primera modificación.</p>
-      <p>Y aquí aparece una verdad incómoda que casi nadie te dice: el buen diseño no se inventa de un golpe. Nadie dibuja la arquitectura definitiva en la primera servilleta. El diseño nace tosco, se topa con problemas, y se rehace mejor &mdash; una y otra vez. A ese proceso lo llamamos <em>refinamiento sucesivo</em>, y tiene la misma forma que el motor del pensamiento de Hegel: tesis, antítesis, síntesis. Por eso hoy nos acompaña él.</p>
+      <p>Casi nadie construye un sistema pensando en el desastre. Y sin embargo, la historia de la computación está llena de ellos: cohetes que explotan, sondas que se pierden, máquinas que matan sin querer, mercados que colapsan en minutos. Lo que tienen en común estos casos no es la mala suerte &mdash; es que <em>alguien</em>, en algún momento, tomó una decisión razonable con la información que tenía, y esa decisión resultó ser la pieza que faltaba para que todo se derrumbara.</p>
+      <p>Hoy vamos a investigar cinco de estos casos, documentados con informes oficiales reales, como si fuéramos forenses. No para señalar culpables &mdash; para entrenar el ojo que distingue el <em>síntoma</em> de la <em>causa raíz</em>, la misma habilidad que ya vienes usando desde que aprendiste a levantar requisitos.</p>
       <div class="say">
         <div class="say-card">
           <div class="say-label">El dato que duele</div>
-          <p class="say-text">"El diseño que entregas en la versión 1 casi nunca es el bueno: es el que te enseña cuál era el bueno. Quien se enamora de su primer boceto y se niega a romperlo construye sistemas rígidos que se quiebran al primer cambio del cliente."</p>
+          <p class="say-text">"Casi ningún desastre de sistemas se explica con una sola falla. Si de verdad bastara un solo error para hundir un cohete o quebrar una empresa, ningún sistema complejo sobreviviría un día. Lo aterrador &mdash; y lo esperanzador &mdash; es que hacen falta varias fallas <em>a la vez</em>. Eso significa que cualquiera de ellas, atrapada a tiempo, habría bastado para evitarlo todo."</p>
         </div>
       </div>
     </div>
@@ -310,254 +311,350 @@
           <div><span class="sec-num">ii.</span><h2>¿Por qué<br>Hegel?</h2></div>
           <span class="sec-chip">8 min · 20:08</span>
         </div>
-        <p class="sec-objective">Porque describió, mejor que nadie, cómo una idea se vuelve verdadera: no de un salto, sino superando sus propias contradicciones.</p>
+        <p class="sec-objective">Porque describió, mejor que nadie, dos cosas que hoy necesitamos: que toda idea (todo diseño) carga una contradicción que tarde o temprano estalla, y que solo entendemos el costo real de una decisión mirando hacia atrás.</p>
       </div>
-      <p>A Hegel se le atribuye el esquema más famoso de la filosofía: <em>tesis, antítesis, síntesis</em>. Una idea se afirma (tesis); de ella brota su contradicción, lo que le falta o lo que la pone en aprietos (antítesis); y de esa tensión surge una idea superior que conserva lo bueno de la primera y resuelve el conflicto (síntesis). A ese movimiento Hegel lo llama <em>dialéctica</em>, y para él no es un truco de retórica: es la forma misma en que avanza el conocimiento.</p>
-      <p>La segunda idea, la de la cita de hoy: "lo verdadero es el todo". Para Hegel ninguna verdad está completa en su primer momento; solo se entiende cuando recorres el proceso entero, con sus contradicciones incluidas. Trasládalo a tu diseño: tu primer boceto no es "falso" &mdash; es la tesis, el primer momento de una verdad que aún no se completa. El diseño verdadero es el todo: el recorrido completo de versiones, no la primera ni la última aislada.</p>
+      <p>A Hegel se le atribuye el esquema más famoso de la filosofía: <em>tesis, antítesis, síntesis</em>. Un sistema se construye y se cree sólido (tesis); en su interior ya vive una falla que nadie vio, esperando las condiciones exactas para manifestarse (antítesis); y cuando por fin estalla, del desastre nace una norma, un estándar, una práctica nueva que no existía antes (síntesis). Los cinco casos de hoy son, cada uno, una vuelta completa de esa rueda.</p>
+      <p>La cita de hoy es quizás la más famosa de Hegel: "la lechuza de Minerva emprende su vuelo solo al caer el crepúsculo". Minerva era la diosa de la sabiduría, y su lechuza &mdash; símbolo de esa sabiduría &mdash; solo alza el vuelo cuando el día ya terminó. Hegel quería decir que la comprensión verdadera de un momento histórico siempre llega <em>después</em>, nunca durante. Con estos cinco casos pasa exactamente eso: el informe oficial, el que explica con precisión qué falló, siempre se publica meses o años después del desastre &mdash; nunca antes.</p>
       <div class="say">
         <div class="say-card">
-          <div class="say-label">Hegel aplicado al diseño</div>
-          <p class="say-text">"Cuando tu revisor encuentra un agujero en tu arquitectura, no te está humillando: te está regalando la antítesis. Sin ese golpe, tu diseño se quedaría en la tesis para siempre. El conflicto no es el enemigo del diseño &mdash; es su motor."</p>
+          <div class="say-label">Hegel aplicado al desastre</div>
+          <p class="say-text">"El trabajo del analista es una carrera contra la lechuza de Minerva: intentar entender el sistema con la claridad de un informe post-mortem, pero <em>antes</em> de que exista un muerto que investigar. Hoy practicamos exactamente eso &mdash; leer las fallas ajenas para adelantarnos a las propias."</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S3 ABSTRACCIÓN -->
+<!-- S3 QUESO SUIZO -->
 <section id="s3">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iii.</span><h2>Abstracción:<br>quedarse con lo esencial</h2></div>
-          <span class="sec-chip">16 min · 20:16</span>
+          <div><span class="sec-num">iii.</span><h2>El modelo del<br>queso suizo</h2></div>
+          <span class="sec-chip">14 min · 20:16</span>
         </div>
-        <p class="sec-objective">Abstraer es decidir qué ignorar. Un buen diseño no captura toda la realidad: captura solo lo que importa para el problema que resuelve.</p>
+        <p class="sec-objective">Un modelo real, usado hoy en aviación, medicina y sistemas críticos: ningún sistema serio depende de una sola defensa. Depende de varias, en capas &mdash; y cada una, por diseño, tiene agujeros.</p>
       </div>
-      <p>Abstraer es el primer acto de todo diseño: separar lo esencial de lo accidental. Un mapa del metro no muestra las calles reales, ni las distancias exactas, ni el color de los edificios &mdash; y precisamente por eso es útil. Si dibujara <em>todo</em>, sería la ciudad misma y no serviría para orientarte. La abstracción es el arte de tirar información a propósito para que lo importante resalte.</p>
-      <p>En el diseño de sistemas pasa lo mismo. Cuando modelas a un "cliente", no guardas su estatura ni su color favorito: guardas su nombre, su identificación y su saldo, porque eso es lo que el sistema necesita. Lo demás es ruido. Tres principios para abstraer con criterio:</p>
-      <div class="points">
-        <div class="point"><span class="point-num">01</span><div><b>Abstraer es elegir qué ocultar.</b> Una buena abstracción esconde la complejidad por debajo y ofrece arriba una idea simple: "guardar pedido" oculta validaciones, base de datos y mil detalles. Quien usa la abstracción no necesita saber cómo funciona por dentro.</div></div>
-        <div class="point"><span class="point-num">02</span><div><b>El nivel de abstracción correcto depende del problema.</b> Demasiado abstracto y el diseño no dice nada útil; demasiado concreto y te ahogas en detalles antes de entender el conjunto. El oficio está en elegir la altura justa para cada decisión.</div></div>
-        <div class="point"><span class="point-num">03</span><div><b>Se refina de lo general a lo particular.</b> Primero las grandes piezas y cómo se hablan; luego, dentro de cada una, los detalles. Bajar de nivel demasiado pronto es la causa número uno de diseños que nadie entiende.</div></div>
+      <p>En 1990, el psicólogo <b>James Reason</b> propuso una imagen que se volvió estándar en el análisis de accidentes: imagina varias rebanadas de queso suizo, una detrás de otra. Cada rebanada es una capa de defensa &mdash; revisar el diseño, probar antes de publicar, monitorear en producción, tener a alguien listo para reaccionar. Ninguna rebanada es perfecta: cada una tiene sus propios agujeros, sus propias limitaciones. Pero mientras los agujeros de cada capa estén en lugares distintos, ningún peligro logra atravesar <em>todas</em> las rebanadas a la vez.</p>
+      <p>El desastre solo ocurre cuando, por una combinación de casualidad y negligencia acumulada, los agujeros de <em>todas</em> las capas se alinean al mismo tiempo &mdash; y algo logra pasar de principio a fin sin que nada lo detenga. Prueba tú mismo: estas cinco capas nunca están alineadas por accidente en un sistema bien cuidado.</p>
+
+      <div class="cheese">
+        <div class="cheese-stack" id="cheeseStack">
+          <div class="cheese-row"><div class="cheese-row-label">1 · Diseño y requisitos</div><div class="cheese-slice"><div class="cheese-hole" data-orig="20" style="left:20%"></div></div></div>
+          <div class="cheese-row"><div class="cheese-row-label">2 · Revisión de código</div><div class="cheese-slice"><div class="cheese-hole" data-orig="74" style="left:74%"></div></div></div>
+          <div class="cheese-row"><div class="cheese-row-label">3 · Pruebas antes de producción</div><div class="cheese-slice"><div class="cheese-hole" data-orig="38" style="left:38%"></div></div></div>
+          <div class="cheese-row"><div class="cheese-row-label">4 · Monitoreo en producción</div><div class="cheese-slice"><div class="cheese-hole" data-orig="83" style="left:83%"></div></div></div>
+          <div class="cheese-row"><div class="cheese-row-label">5 · Reacción humana a tiempo</div><div class="cheese-slice"><div class="cheese-hole" data-orig="57" style="left:57%"></div></div></div>
+          <div class="cheese-beam" id="cheeseBeam"></div>
+        </div>
+        <div class="cheese-result" id="cheeseResult">Alineados: el peligro atraviesa las cinco capas</div>
+        <div class="cheese-controls">
+          <button type="button" class="cheese-btn" id="cheeseBtn">Alinéalos: así fue el 1 de agosto de 2012</button>
+          <button type="button" class="cheese-reset" id="cheeseReset">Reiniciar</button>
+        </div>
+        <div class="cheese-caption" id="cheeseCaption">Por defecto, los cinco agujeros están en posiciones distintas &mdash; ningún peligro los atraviesa todos. Toca el botón para ver qué pasa cuando, por descuido, terminan alineados.</div>
       </div>
-      <p>Aquí enlaza Hegel: tu primera abstracción &mdash; la tesis &mdash; siempre oculta de más o de menos. Diseñar es ir ajustando ese velo en rondas, descubriendo en cada una qué dejaste fuera que sí importaba. La abstracción no se acierta a la primera; se <em>refina</em>.</p>
+
+      <div class="example">
+        <div class="example-tag">Por qué este modelo cambia cómo investigas</div>
+        <p>El queso suizo te obliga a hacer una pregunta distinta ante cualquier falla: no "¿quién se equivocó?", sino <b>"¿cuántas capas tuvieron que fallar a la vez para que esto pasara &mdash; y cuál de ellas era la más barata de arreglar?"</b>. Esa pregunta es la que vas a usar en cada uno de los cinco casos de hoy.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S4 MODULARIDAD / ARQUITECTURA / DATOS -->
+<!-- S4 EL EXPEDIENTE -->
 <section id="s4">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">iv.</span><h2>Modularidad,<br>arquitectura y datos</h2></div>
-          <span class="sec-chip">18 min · 20:32</span>
+          <div><span class="sec-num">iv.</span><h2>El expediente:<br>5 casos reales,<br>5 causas raíz</h2></div>
+          <span class="sec-chip">22 min · 20:30</span>
         </div>
-        <p class="sec-objective">Tres caras de la misma virtud: descomponer el todo en partes con responsabilidades claras, que se puedan entender y cambiar por separado.</p>
-      </div>
-      <p>Si la abstracción decide <em>qué</em> mostrar, la <em>modularidad</em> decide cómo partir el sistema en piezas. Un sistema modular es un conjunto de módulos &mdash; partes con una responsabilidad bien definida &mdash; que se comunican por interfaces claras. La regla de oro tiene dos lados: <em>alta cohesión</em> (cada módulo hace una sola cosa y la hace completa) y <em>bajo acoplamiento</em> (los módulos dependen lo menos posible entre sí). Así, cambiar uno no obliga a tocar a los demás.</p>
-      <p>La <em>separación de responsabilidades</em> es el principio detrás de todo esto: cada parte se ocupa de un asunto y no se mete en los ajenos. Su expresión más clásica es la arquitectura en <em>capas</em>: lo que el usuario ve, las reglas del negocio y el manejo de los datos viven en estratos separados que solo se hablan por sus bordes.</p>
-
-      <div class="layers-box" data-animate>
-        <svg class="layers-svg" viewBox="0 0 520 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de arquitectura en tres capas: presentación, lógica de negocio y datos">
-          <rect class="ly-band ly-pres" x="120" y="20" width="300" height="58" rx="6"/>
-          <text class="ly-name" x="270" y="46" text-anchor="middle">Capa de presentación</text>
-          <text class="ly-tag" x="270" y="66" text-anchor="middle">LO QUE EL USUARIO VE Y TOCA</text>
-
-          <rect class="ly-band ly-logic" x="120" y="106" width="300" height="58" rx="6"/>
-          <text class="ly-name" x="270" y="132" text-anchor="middle">Capa de lógica de negocio</text>
-          <text class="ly-tag" x="270" y="152" text-anchor="middle">LAS REGLAS Y DECISIONES DEL SISTEMA</text>
-
-          <rect class="ly-band ly-data" x="120" y="192" width="300" height="58" rx="6"/>
-          <text class="ly-name" x="270" y="218" text-anchor="middle">Capa de datos</text>
-          <text class="ly-tag" x="270" y="238" text-anchor="middle">CÓMO SE GUARDA Y RECUPERA LA INFORMACIÓN</text>
-
-          <line class="ly-arrow" x1="270" y1="78" x2="270" y2="106"/>
-          <line class="ly-arrow" x1="270" y1="164" x2="270" y2="192"/>
-          <polygon points="270,106 265,98 275,98" fill="var(--ochre)"/>
-          <polygon points="270,192 265,184 275,184" fill="var(--ochre)"/>
-          <polygon points="270,78 265,86 275,86" fill="var(--ochre)"/>
-          <polygon points="270,164 265,172 275,172" fill="var(--ochre)"/>
-        </svg>
-        <div class="ly-note"><b>Cada capa solo habla con su vecina.</b> Si cambias la base de datos, la presentación ni se entera: ese aislamiento es justo lo que te regala la separación de responsabilidades.</div>
+        <p class="sec-objective">Cinco expedientes, cinco industrias, cinco causas raíz distintas &mdash; todas documentadas en informes oficiales públicos. Cada uno enlaza directo a la fuente: léelo si quieres los detalles completos.</p>
       </div>
 
-      <p>La tercera cara es la <em>estructura de datos</em>: cómo organizas la información para que el sistema la encuentre, la relacione y la conserve sin contradicciones. Una estructura mal diseñada arrastra al sistema entero; una bien pensada hace que todo lo demás fluya. Aquí cabe recordar Hegel: la frontera entre dos módulos &mdash; o entre dos capas &mdash; suele ser donde se esconde la próxima antítesis. Cuando un módulo necesita saber demasiado del otro, ese roce te está avisando que la división aún no es la buena, y que toca refinar.</p>
+      <div class="case-list">
+        <div class="case-file">
+          <div class="case-head">
+            <div class="case-name-wrap"><span class="case-name">Ariane 5, vuelo 501</span><span class="case-tag">Aeroespacial</span></div>
+            <span class="case-date">4 de junio de 1996 · Kourou, Guayana Francesa</span>
+          </div>
+          <p class="case-body">Treinta y siete segundos después del encendido, el cohete se desvió de su trayectoria y se autodestruyó, con cuatro satélites científicos a bordo.</p>
+          <div class="case-meta">
+            <div><div class="cm-label">Causa raíz</div><div class="cm-value">El software de navegación se <b>reutilizó del Ariane 4</b> sin revalidar sus rangos numéricos: la velocidad horizontal, mucho mayor en el Ariane 5, desbordó una variable y tumbó el sistema completo.</div></div>
+            <div><div class="cm-label">Consecuencia</div><div class="cm-value">Pérdida total del cohete y su carga: <b>~370 millones de dólares</b>.</div></div>
+            <div><div class="cm-label">Capa que falló</div><div class="cm-value">Revisión y prueba de código reutilizado bajo las condiciones reales del nuevo vehículo.</div></div>
+          </div>
+          <a class="case-link" href="https://sci.esa.int/web/cluster/-/38889-ariane-501-report-by-board-of-inquiry" target="_blank" rel="noopener">Leer el informe oficial de la ESA ↗</a>
+        </div>
+
+        <div class="case-file">
+          <div class="case-head">
+            <div class="case-name-wrap"><span class="case-name">Mars Climate Orbiter</span><span class="case-tag">Espacio · NASA</span></div>
+            <span class="case-date">Perdida el 23 de septiembre de 1999</span>
+          </div>
+          <p class="case-body">Tras nueve meses de viaje, la sonda se acercó demasiado a la atmósfera de Marte y se perdió por completo.</p>
+          <div class="case-meta">
+            <div><div class="cm-label">Causa raíz</div><div class="cm-value">Un equipo entregó datos de empuje en <b>libras-segundo</b> (sistema inglés); el software de navegación esperaba <b>newton-segundo</b> (métrico). Nadie verificó la conversión de punta a punta entre los dos equipos.</div></div>
+            <div><div class="cm-label">Consecuencia</div><div class="cm-value">Pérdida total de la misión: <b>~327 millones de dólares</b>.</div></div>
+            <div><div class="cm-label">Capa que falló</div><div class="cm-value">Comunicación de requisitos entre equipos + verificación de extremo a extremo.</div></div>
+          </div>
+          <a class="case-link" href="https://science.ksc.nasa.gov/mars/msp98/news/mco991110.html" target="_blank" rel="noopener">Leer el informe oficial de la NASA ↗</a>
+        </div>
+
+        <div class="case-file">
+          <div class="case-head">
+            <div class="case-name-wrap"><span class="case-name">Therac-25</span><span class="case-tag">Medicina</span></div>
+            <span class="case-date">1985 — 1987 · varios hospitales de EE. UU. y Canadá</span>
+          </div>
+          <p class="case-body">Una máquina de radioterapia administró, al menos seis veces, dosis de radiación cientos de veces mayores a las recetadas. Varios pacientes murieron.</p>
+          <div class="case-meta">
+            <div><div class="cm-label">Causa raíz</div><div class="cm-value">Una <b>condición de carrera</b> en el software permitía activar el haz equivocado si el operador corregía datos muy rápido; el fabricante había <b>quitado los seguros de hardware</b> de los modelos anteriores, confiando ciegamente en que "el software ya era infalible".</div></div>
+            <div><div class="cm-label">Consecuencia</div><div class="cm-value">Muertes y lesiones graves; rediseño completo de los estándares de seguridad en software médico.</div></div>
+            <div><div class="cm-label">Capa que falló</div><div class="cm-value">Pruebas del software + eliminar el respaldo físico independiente (una sola capa de defensa).</div></div>
+          </div>
+          <a class="case-link" href="http://sunnyday.mit.edu/therac-25.html" target="_blank" rel="noopener">Leer la investigación de Nancy Leveson (MIT) ↗</a>
+        </div>
+
+        <div class="case-file">
+          <div class="case-head">
+            <div class="case-name-wrap"><span class="case-name">Knight Capital</span><span class="case-tag">Finanzas</span></div>
+            <span class="case-date">1 de agosto de 2012 · Nueva York</span>
+          </div>
+          <p class="case-body">En 45 minutos, el sistema de trading automatizado de Knight Capital ejecutó millones de órdenes erróneas al abrir el mercado.</p>
+          <div class="case-meta">
+            <div><div class="cm-label">Causa raíz</div><div class="cm-value">Una función <b>desactivada casi una década atrás</b> ("código zombi") se reactivó por accidente durante un despliegue apresurado; uno de ocho servidores no recibió bien la actualización y nadie lo verificó antes de abrir el mercado.</div></div>
+            <div><div class="cm-label">Consecuencia</div><div class="cm-value"><b>460 millones de dólares</b> perdidos; la empresa, debilitada, fue vendida meses después.</div></div>
+            <div><div class="cm-label">Capa que falló</div><div class="cm-value">Código muerto sin eliminar + despliegue sin verificación completa + sin interruptor de emergencia.</div></div>
+          </div>
+          <a class="case-link" href="https://www.sec.gov/newsroom/press-releases/2013-222" target="_blank" rel="noopener">Leer el comunicado oficial de la SEC ↗</a>
+        </div>
+
+        <div class="case-file">
+          <div class="case-head">
+            <div class="case-name-wrap"><span class="case-name">CrowdStrike</span><span class="case-tag">Ciberseguridad</span></div>
+            <span class="case-date">19 de julio de 2024 · global</span>
+          </div>
+          <p class="case-body">Una actualización de rutina hizo colapsar (pantalla azul) alrededor de 8.5 millones de computadoras con Windows en el mundo entero al mismo tiempo: aerolíneas, hospitales y bancos detenidos por horas.</p>
+          <div class="case-meta">
+            <div><div class="cm-label">Causa raíz</div><div class="cm-value">Una discrepancia entre los campos que esperaba el sensor (21) y los que traía la actualización (20) causó una lectura de memoria fuera de rango; la <b>propia herramienta de validación</b> de la empresa no detectó el error, y se publicó <b>a todo el mundo de una sola vez</b>, sin fases.</div></div>
+            <div><div class="cm-label">Consecuencia</div><div class="cm-value">Uno de los apagones informáticos más grandes de la historia; pérdidas globales estimadas en miles de millones de dólares.</div></div>
+            <div><div class="cm-label">Capa que falló</div><div class="cm-value">Validación automática de la actualización + despliegue gradual por fases.</div></div>
+          </div>
+          <a class="case-link" href="https://www.crowdstrike.com/wp-content/uploads/2024/08/Channel-File-291-Incident-Root-Cause-Analysis-08.06.2024.pdf" target="_blank" rel="noopener">Leer el informe oficial de causa raíz (PDF) ↗</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S5 CONCEPTOS MODERNOS -->
+<!-- S5 KNIGHT CAPITAL A FONDO -->
 <section id="s5">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">v.</span><h2>Conceptos modernos:<br>microservicios y serverless</h2></div>
-          <span class="sec-chip">16 min · 20:50</span>
+          <div><span class="sec-num">v.</span><h2>Investigación a fondo:<br>los 45 minutos de<br>Knight Capital</h2></div>
+          <span class="sec-chip">16 min · 20:52</span>
         </div>
-        <p class="sec-objective">La modularidad llevada a la nube. No son modas: son la misma idea de separar responsabilidades, aplicada a sistemas que viven en internet.</p>
+        <p class="sec-objective">Revisemos uno de los cinco casos minuto a minuto. Vas a ver, en cámara lenta, las mismas cinco capas del queso suizo fallando una tras otra &mdash; exactamente como pasó de verdad.</p>
       </div>
-      <p>Estas palabras suenan a último grito tecnológico, pero por dentro son hijas directas de la modularidad que acabamos de ver. Son <em>maneras de empacar y desplegar</em> esos módulos. Conócelas para que sepas de qué hablan en una entrevista &mdash; y para que entiendas que también son etapas de un refinamiento histórico, una respuesta dialéctica a los límites de lo anterior:</p>
+      <p>Avanza con el botón. Cada paso es un momento real de la cronología &mdash; documentada en la orden administrativa de la SEC &mdash; que llevó a la pérdida de 460 millones de dólares en menos de una hora:</p>
 
-      <div class="cards-grid" data-animate>
-        <div class="card-r">
-          <h4>Monolito</h4>
-          <div class="cr-when">la tesis · todo en un bloque</div>
-          <p>Un solo programa que lo hace todo. Simple de arrancar; pero al crecer, cualquier cambio obliga a redesplegar el bloque entero. Su rigidez es la antítesis que vino después.</p>
+      <div class="tl" id="tl">
+        <div class="tl-progress" id="tlProgress">Paso 0 de 6 · el expediente ampliado</div>
+        <div class="tl-steps" id="tlSteps">
+          <div class="tl-step" data-step="0"><span class="tl-time">2003 — 2005</span><div class="tl-text"><b>El código que nadie borró.</b> Knight desactiva una función interna llamada "Power Peg". No la elimina &mdash; solo la apaga con una bandera. Código muerto, durmiendo dentro del sistema durante casi una década.</div></div>
+          <div class="tl-step" data-step="1"><span class="tl-time">28 de julio de 2012</span><div class="tl-text"><b>El despliegue apresurado.</b> Para participar en un nuevo programa de la bolsa de Nueva York, Knight reescribe parte de su enrutador de órdenes y reutiliza la vieja bandera para controlar la función nueva &mdash; sin notar que esa misma bandera podía revivir el código zombi.</div></div>
+          <div class="tl-step" data-step="2"><span class="tl-time">31 de julio, antes de la apertura</span><div class="tl-text"><b>El servidor olvidado.</b> El nuevo código se instala en 7 de 8 servidores de producción. Nadie tiene un checklist obligatorio para confirmar que los ocho quedaron iguales &mdash; y el octavo se queda con el código viejo.</div></div>
+          <div class="tl-step" data-step="3"><span class="tl-time">1 de agosto, 9:30 a.m.</span><div class="tl-text"><b>La apertura del mercado.</b> El octavo servidor interpreta la señal de la bandera nueva como "activa Power Peg". La función zombi despierta y empieza a comprar y vender acciones sin parar, un poco cada vez, millones de veces por minuto.</div></div>
+          <div class="tl-step" data-step="4"><span class="tl-time">9:30 — 10:15 a.m.</span><div class="tl-text"><b>Los 45 minutos.</b> No existe una alerta automática que detenga el sistema ante un volumen anormal de operaciones, ni un interruptor de emergencia claro. Para cuando alguien humano entiende lo que pasa y logra apagarlo todo, ya se perdieron 460 millones de dólares.</div></div>
+          <div class="tl-step" data-step="5"><span class="tl-time">Meses después</span><div class="tl-text"><b>El colapso.</b> Knight Capital, gravemente debilitada, es comprada por un competidor. La SEC abre una investigación formal contra la empresa.</div></div>
         </div>
-        <div class="card-r">
-          <h4>Microservicios</h4>
-          <div class="cr-when">la síntesis · piezas independientes</div>
-          <p>El sistema se parte en servicios pequeños y autónomos &mdash; pagos, usuarios, inventario &mdash; que se despliegan por separado y se hablan por la red. Modularidad extrema; a cambio, más complejidad para coordinarlos.</p>
+        <div class="tl-bar">
+          <button class="tl-btn" id="tlNext" type="button">Revelar el primer paso</button>
+          <button class="tl-reset" id="tlReset" type="button">Volver a empezar</button>
         </div>
-        <div class="card-r">
-          <h4>Serverless</h4>
-          <div class="cr-when">olvídate del servidor</div>
-          <p>Subes funciones sueltas a la nube y el proveedor decide dónde y cuándo correrlas; pagas solo por el uso real. El servidor sigue existiendo &mdash; solo dejó de ser tu problema.</p>
-        </div>
-        <div class="card-r">
-          <h4>API</h4>
-          <div class="cr-when">la interfaz entre piezas</div>
-          <p>El contrato por el que un módulo le pide algo a otro sin saber cómo lo hace por dentro. Es la abstracción de la clase de hoy, hecha frontera entre servicios.</p>
-        </div>
-        <div class="card-r">
-          <h4>La nube</h4>
-          <div class="cr-when">infraestructura a demanda</div>
-          <p>Cómputo, almacenamiento y red que rentas en vez de comprar. Permite crecer o encoger según la demanda &mdash; el terreno donde lo anterior cobra sentido.</p>
-        </div>
-        <div class="card-r">
-          <h4>Ojo: no siempre conviene</h4>
-          <div class="cr-when">la madurez de elegir</div>
-          <p>Cortar en microservicios un sistema pequeño es matar una mosca a cañonazos: añade complejidad sin beneficio. La elección, como en cada clase, depende del contexto.</p>
+        <div class="tl-after" id="tlAfter">
+          Cuenta las capas: <b>código muerto sin eliminar (1)</b>, <b>revisión de despliegue incompleta (2 y 3)</b>, <b>sin monitoreo que detuviera el volumen anormal (4)</b>, <b>sin interruptor de emergencia (4)</b>. Cuatro agujeros, alineados en 45 minutos. Cualquiera de ellos, atrapado a tiempo, habría bastado para evitarlo todo.
         </div>
       </div>
-
-      <p>Fíjate en la lectura hegeliana de toda esta historia: el monolito (tesis) reveló su rigidez al crecer (antítesis), y los microservicios surgieron como síntesis. Pero esa síntesis trajo su propia complejidad &mdash; una nueva antítesis &mdash; que herramientas como serverless intentan superar. La tecnología no avanza en línea recta: avanza resolviendo las contradicciones que ella misma genera. Igual que tu diseño.</p>
     </div>
   </div>
 </section>
 
-<!-- S6 INTERACTIVO: REFINAMIENTO DIALÉCTICO -->
+<!-- S6 QUÉ CAMBIÓ DESPUÉS -->
 <section id="s6">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vi.</span><h2>El refinamiento<br>dialéctico, paso a paso</h2></div>
-          <span class="sec-chip">18 min · 21:06</span>
+          <div><span class="sec-num">vi.</span><h2>Qué cambió después:<br>la lechuza vuela</h2></div>
+          <span class="sec-chip">10 min · 21:08</span>
         </div>
-        <p class="sec-objective">Veamos el refinamiento en cámara lenta. Un diseño abstracto, el problema que esconde, y la versión que lo supera &mdash; en varias rondas, para que el ciclo se te grabe.</p>
+        <p class="sec-objective">Ningún desastre real termina en la tragedia: siempre deja una norma, un estándar, una práctica que no existía antes. Es la síntesis hegeliana, documentada.</p>
       </div>
-      <p>Vamos a refinar juntos el diseño de un sistema sencillo: una <em>app de pedidos a domicilio</em>. Avanza con el botón. En cada paso verás aparecer la <span style="color:var(--olive); font-style:italic;">tesis</span> (el diseño actual), luego la <span style="color:var(--blood); font-style:italic;">antítesis</span> (el problema que revela) y por fin la <span style="color:var(--ochre); font-style:italic;">síntesis</span> (la versión refinada) &mdash; que se convierte en la tesis de la ronda siguiente. Esa es la dialéctica del diseño, en vivo.</p>
-
-      <div class="dia" id="dia">
-        <div class="dia-progress" id="diaProgress">Ronda 1 de 3 · el motor del refinamiento</div>
-        <div class="dia-round" id="diaRound"></div>
-        <div class="dia-track" id="diaTrack" aria-hidden="true">
-          <span class="dia-dot on"></span><span class="dia-dot"></span><span class="dia-dot"></span>
-        </div>
-        <div class="dia-steps" id="diaSteps" aria-live="polite"></div>
-        <div class="dia-bar">
-          <button class="dia-btn" id="diaNext" type="button">Revelar el siguiente paso</button>
-          <button class="dia-reset" id="diaReset" type="button">Volver a empezar</button>
-        </div>
-        <div class="dia-conclusion" id="diaConclusion">
-          ¿Ves el patrón? <b>Cada síntesis se volvió la tesis de la siguiente ronda</b> &mdash; y cada una escondía un problema nuevo. El diseño no llegó a "terminado": llegó a "suficientemente bueno por ahora". Eso es lo que Hegel quería decir con "lo verdadero es el todo": el diseño bueno no es ninguna de estas versiones aislada, sino el recorrido completo que las une. Tu trabajo no es acertar a la primera, sino saber leer cada antítesis sin tomarla como un fracaso.
-        </div>
+      <div class="points">
+        <div class="point"><span class="point-num">Ariane 5</span><div>La ESA reforzó los procesos de verificación de software reutilizado entre generaciones distintas de cohetes: nunca más reutilizar sin revalidar cada supuesto numérico.</div></div>
+        <div class="point"><span class="point-num">Mars Climate Orbiter</span><div>La NASA estableció el uso obligatorio del sistema métrico en todos los contratos, con verificación de unidades de extremo a extremo entre equipos.</div></div>
+        <div class="point"><span class="point-num">Therac-25</span><div>Nacieron estándares de seguridad de software médico (antecedentes directos de normas como la IEC 62304) que exigen respaldos de hardware independientes del software.</div></div>
+        <div class="point"><span class="point-num">Knight Capital</span><div>La SEC exige hoy "kill switches" (interruptores de emergencia) obligatorios y límites de riesgo previos para todo acceso automatizado a los mercados.</div></div>
+        <div class="point"><span class="point-num">CrowdStrike</span><div>La industria reforzó el estándar de despliegues graduales por fases y validación más estricta antes de publicar actualizaciones masivas.</div></div>
       </div>
-
-      <p>Lo importante no son los detalles de esta app, sino el ritmo: afirmar, encontrar la grieta, superarla, y volver a empezar con la mirada más alta. Ese ritmo es el que vas a practicar ahora con tu propio proyecto.</p>
+      <div class="example">
+        <div class="example-tag">Y la IA, en todo esto</div>
+        <p>Hoy una IA podría ayudar a detectar antes muchas de estas fallas: revisando código reutilizado en busca de supuestos rotos, señalando inconsistencias de unidades entre dos documentos, sugiriendo casos de prueba límite que un humano no pensó. Pero ojo con la trampa: <b>una IA solo detecta lo que se le pide que busque</b>. El criterio de qué preguntar &mdash; qué capa del queso suizo revisar &mdash; sigue siendo del analista. Vas a probarlo tú mismo en un momento.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- S7 TALLER -->
+<!-- S7 TALLER 1 -->
 <section id="s7">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">vii.</span><h2>Taller: refina tu<br>diseño en dos rondas</h2></div>
-          <span class="sec-chip">24 min · 21:24</span>
+          <div><span class="sec-num">vii.</span><h2>Taller 1: investiga<br>un caso como forense</h2></div>
+          <span class="sec-chip">18 min · 21:18</span>
         </div>
-        <p class="sec-objective">Aplica la dialéctica a tu proyecto: parte de un diseño tosco a propósito, deja que un compañero le encuentre la grieta y refínalo. Dos rondas, sin enamorarte de tu primer boceto.</p>
+        <p class="sec-objective">Formen equipos. Cada equipo toma un caso del expediente &mdash; o trae uno propio, bien documentado &mdash; y produce su propio informe de causa raíz usando el queso suizo como marco.</p>
       </div>
-      <p>Hegel diría que un diseño que nunca enfrentó su contradicción no es del todo verdadero: es solo una opinión que aún no se probó. Así que hoy dibujas el diseño interno de tu proyecto, lo sometes a la antítesis de un colega y lo refinas. Esto alimenta directamente la sección de arquitectura y diseño de tu documento.</p>
 
       <div class="field">
         <div class="field-step">
           <div class="field-step-num">1</div>
           <div>
-            <h4>Dibuja la tesis: tu diseño en módulos o capas <span class="fs-time">7 min</span></h4>
-            <p>Boceta el interior de tu sistema: sus <b>módulos principales</b> o sus <b>capas</b> (presentación, lógica, datos), con una línea por cada parte que dice qué responsabilidad tiene. A mano o en una herramienta. No busques que sea perfecto &mdash; busca que esté completo.</p>
+            <h4>Elijan un caso <span class="fs-time">3 min</span></h4>
+            <p>Uno de los cinco del expediente &mdash; o, si conocen otro caso real y bien documentado (otro apagón, otra falla famosa), pueden usarlo. Repártanse para que no se repita el mismo caso dos veces en el salón.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">2</div>
           <div>
-            <h4>Intercambia: tu colega encuentra la antítesis <span class="fs-time">5 min</span></h4>
-            <p>Pásale tu diagrama a un compañero. Su misión es señalar <b>una grieta</b>: un módulo que hace demasiado, dos piezas que se necesitan de más (alto acoplamiento), una responsabilidad que vive en la capa equivocada o un dato sin lugar claro. Una grieta concreta, no "está bien".</p>
+            <h4>Identifiquen las capas que fallaron <span class="fs-time">6 min</span></h4>
+            <p>Nombren al menos <b>tres capas de defensa</b> que deberían haber detenido el problema, y expliquen en una frase por qué cada una tenía un agujero ese día.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">3</div>
           <div>
-            <h4>Refina: dibuja la síntesis <span class="fs-time">7 min</span></h4>
-            <p>Rehaz tu diseño superando esa grieta: divide el módulo que hacía demasiado, baja el acoplamiento, recoloca la responsabilidad. La síntesis conserva lo bueno de tu tesis y resuelve el conflicto &mdash; no es empezar de cero.</p>
+            <h4>Escriban su informe de causa raíz <span class="fs-time">6 min</span></h4>
+            <p>En una sola frase: ¿cuál fue la <b>causa raíz real</b> (no el síntoma)? Y una recomendación concreta &mdash; la más barata de las posibles &mdash; que la habría evitado.</p>
           </div>
         </div>
         <div class="field-step">
           <div class="field-step-num">4</div>
           <div>
-            <h4>Segunda ronda y firma <span class="fs-time">5 min</span></h4>
-            <p>Una grieta más sobre tu versión refinada &mdash; ahora vista con tu propia mirada &mdash; y un último ajuste. Guarda <b>las tres versiones</b>: tesis, antítesis anotada y síntesis. Ese recorrido, no solo el dibujo final, es lo que va a tu documento del proyecto.</p>
+            <h4>Compartan su hallazgo <span class="fs-time">3 min</span></h4>
+            <p>30 segundos por equipo: el caso, la causa raíz, y qué capa era la más barata de arreglar.</p>
           </div>
         </div>
         <div class="field-planb">
-          <b>Regla de la antítesis</b> &mdash; señalar grietas no es presumir ni ofender: es el regalo más valioso que un colega te puede dar. El que más huecos le encuentra hoy a tu diseño es el que te ahorra rehacerlo cuando ya esté construido. Y recuerda: no defiendas tu boceto a muerte &mdash; defiende tu sistema, que es distinto.
+          <b>El síntoma no es la causa.</b> "El código tenía un bug" es el síntoma; "nadie revalidó los supuestos al reutilizar el código en un contexto nuevo" es la causa raíz. Si su informe se queda en el síntoma, sigan preguntando "¿y eso por qué pasó?" una vez más.
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- S8 CIERRE -->
+<!-- S8 TALLER 2 -->
 <section id="s8">
   <div class="wrap">
     <div class="stage">
       <div class="sec-head">
         <div class="sec-head-row">
-          <div><span class="sec-num">viii.</span><h2>Cierre y Tarea 9</h2></div>
-          <span class="sec-chip">11 min · 21:48</span>
+          <div><span class="sec-num">viii.</span><h2>Taller 2: audita<br>tu proyecto con IA</h2></div>
+          <span class="sec-chip">14 min · 21:36</span>
         </div>
-        <p class="sec-objective">Abstraer es quedarse con lo esencial; refinar es tener el valor de rehacerlo. El diseño verdadero es el todo: el recorrido, no el primer boceto.</p>
+        <p class="sec-objective">Ahora al revés: en vez de investigar un desastre ajeno, busca las capas débiles de tu propio proyecto &mdash; antes de que alguien más las encuentre por ti.</p>
+      </div>
+      <p>Vuelve a un artefacto de tu proyecto integrador &mdash; tu diagrama E-R, tu diseño de API, tu esquema de módulos &mdash; y pídele a una IA que juegue el papel de auditora de riesgos, buscando qué capas de defensa podrían tener agujeros en tu sistema:</p>
+
+      <div class="field two">
+        <div class="field-step">
+          <div class="field-step-num">1</div>
+          <div>
+            <h4>Elige un artefacto de tu proyecto <span class="fs-time">2 min</span></h4>
+            <p>Tu diagrama E-R, tu diseño de API, o la descripción de una función crítica de tu sistema (cobros, acceso, datos sensibles).</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">2</div>
+          <div>
+            <h4>Pide a la IA que audite las capas de defensa <span class="fs-time">6 min</span></h4>
+            <p>Usa el prompt de abajo. Pídele que imagine, para tu sistema específico, un escenario del tipo "¿cuál sería tu Knight Capital?" &mdash; qué capas están más débiles.</p>
+          </div>
+        </div>
+        <div class="field-step">
+          <div class="field-step-num">3</div>
+          <div>
+            <h4>Elige el riesgo más grave y anótalo <span class="fs-time">6 min</span></h4>
+            <p>De todo lo que señaló, ¿cuál agujero taparías primero? Anota qué cambiarías &mdash; ese es tu hallazgo real del día, más allá del juego.</p>
+          </div>
+        </div>
+        <div class="field-planb">
+          <b>Regla del contrato (otra vez):</b> si la IA no encuentra nada preocupante, sospecha &mdash; casi ningún sistema real está libre de capas débiles. Dale más detalle de tu proyecto y vuelve a preguntar.
+        </div>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-tag">Prompt · la auditora de riesgos</div>
+        <pre>Actúa como auditora de riesgos de sistemas, entrenada en el modelo del
+queso suizo (capas de defensa: requisitos, revisión, pruebas, monitoreo,
+reacción humana). Este es un artefacto de mi proyecto: [pega tu diagrama
+E-R, tu diseño de API o la descripción de una función crítica].
+
+1. Imagina un escenario del tipo "¿cuál sería el Knight Capital de este
+   sistema?": una combinación plausible de 2 o 3 fallas pequeñas que,
+   juntas, causarían un problema serio (pérdida de dinero, datos, o
+   confianza del usuario).
+2. Para cada falla de ese escenario, dime qué capa de defensa (de las
+   cinco) tenía el agujero, y por qué.
+3. De todo lo que señalaste, dime cuál agujero es el más barato y
+   urgente de tapar primero, y cómo lo taparías.
+4. No inventes funcionalidad que no está en mi artefacto — si algo es
+   ambiguo, pregúntame antes de asumir.</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S9 CIERRE -->
+<section id="s9">
+  <div class="wrap">
+    <div class="stage">
+      <div class="sec-head">
+        <div class="sec-head-row">
+          <div><span class="sec-num">ix.</span><h2>Cierre y Tarea 9</h2></div>
+          <span class="sec-chip">9 min · 21:50</span>
+        </div>
+        <p class="sec-objective">Ningún sistema serio es perfecto en ninguna de sus capas &mdash; y no tiene por qué serlo. Lo que evita el desastre no es la perfección: es que los agujeros nunca se alineen todos a la vez.</p>
       </div>
       <div class="points">
-        <div class="point"><span class="point-num">01</span><div>Abstraer es decidir qué ignorar para que lo esencial resalte. Se refina de lo general a lo particular, eligiendo en cada decisión la altura justa.</div></div>
-        <div class="point"><span class="point-num">02</span><div>Modularidad, capas y estructura de datos son tres caras de una misma virtud: alta cohesión, bajo acoplamiento, cada parte en su responsabilidad. Microservicios y serverless son esa idea llevada a la nube &mdash; cuando el contexto lo justifica.</div></div>
-        <div class="point"><span class="point-num">03</span><div>El diseño avanza como una dialéctica: tesis, antítesis, síntesis. Cada grieta que tu revisor encuentra es el motor de la siguiente versión, no un fracaso.</div></div>
+        <div class="point"><span class="point-num">01</span><div>Ningún desastre de sistemas ocurre por un solo error: el modelo del queso suizo explica por qué siempre hace falta que varias capas de defensa fallen a la vez.</div></div>
+        <div class="point"><span class="point-num">02</span><div>Cinco casos reales, cinco causas raíz distintas &mdash; reutilización sin revalidar, comunicación de requisitos, exceso de confianza en una sola capa, código muerto reactivado, despliegue sin fases &mdash; todos evitables con prácticas que ya conoces del curso.</div></div>
+        <div class="point"><span class="point-num">03</span><div>La lechuza de Minerva: el informe siempre llega después. El trabajo del analista es adelantarse a esa comprensión &mdash; con o sin ayuda de IA &mdash; antes de que sea demasiado tarde y costosa.</div></div>
       </div>
 
       <div class="challenge">
         <div class="challenge-eyebrow">Tarea 9 · valor 1 punto · entrega: lunes 10 de agosto</div>
-        <h3>Infografía de abstracción y refinamiento</h3>
-        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Crea una infografía que muestre cómo aplicas abstracción y refinamiento al diseño de tu proyecto. En Miro, Notion o la herramienta que prefieras &mdash; formato libre. Es insumo directo de la sección de diseño y arquitectura de tu documento:</p>
+        <h3>Tu expediente forense</h3>
+        <p style="font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;">Documenta lo que investigaste hoy, en formato libre (Notion, Miro, un documento) &mdash; combina el análisis de un caso real con la auditoría de tu propio proyecto:</p>
         <ul style="list-style:none; padding:0; margin:0;">
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Muestra tu <b>abstracción</b>: las grandes piezas de tu sistema (módulos o capas) y qué decidiste ocultar o dejar fuera, y por qué.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Muestra tu <b>refinamiento</b> como dialéctica: al menos una ronda tesis &rarr; antítesis &rarr; síntesis (parte del taller de hoy si quieres).</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Que sea <b>visual</b>: diagramas de módulos o capas, flechas, antes y después. Nada de muros de texto &mdash; es una infografía, no un ensayo.</li>
-          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Cierra señalando qué grieta superó tu refinamiento. Si usaste IA, agrega tu sección "Cómo usé IA".</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>El <b>informe de causa raíz</b> de tu Taller 1: el caso, las capas del queso suizo que fallaron, y la recomendación más barata que lo habría evitado. Incluye el enlace a la fuente oficial que usaste.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>La <b>auditoría de riesgos</b> de tu proyecto del Taller 2: el escenario que imaginó la IA, y qué agujero decidiste tapar primero.</li>
+          <li style="padding:10px 0 10px 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-soft); position:relative;"><span style="position:absolute; left:0; color:var(--blood); font-weight:600;">✓</span>Cierra con tu sección "Cómo usé IA": qué te propuso, qué le corregiste o rechazaste, y por qué.</li>
         </ul>
       </div>
 
       <div class="say">
         <div class="say-card">
           <div class="say-label">El lunes que viene</div>
-          <p class="say-text">"Da Vinci y el diseño de interfaces. De la arquitectura interna pasamos a lo que ve el usuario: la simplicidad como la máxima sofisticación."</p>
+          <p class="say-text">"Da Vinci y el diseño de interfaces. Hoy vimos lo que puede salir mal por dentro; el lunes vemos lo único que el usuario en realidad ve &mdash; y por qué la simplicidad es la sofisticación más difícil de lograr."</p>
         </div>
       </div>
     </div>
@@ -590,112 +687,83 @@
   window.addEventListener('scroll', updateActive, { passive: true });
   updateActive();
 
-  const animObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('go'); animObserver.unobserve(e.target); } });
-  }, { threshold: 0.2 });
-  document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+  // ============================================================
+  // Modelo del queso suizo: alinea/reinicia los agujeros.
+  // ============================================================
+  (function initCheese() {
+    const stack = document.getElementById('cheeseStack');
+    if (!stack) return;
+    const btn = document.getElementById('cheeseBtn');
+    const resetBtn = document.getElementById('cheeseReset');
+    const caption = document.getElementById('cheeseCaption');
+    const holes = stack.querySelectorAll('.cheese-hole');
 
-  // ============================================================
-  // Refinamiento dialéctico: revelado progresivo en rondas
-  // ============================================================
-  const DIA_ROUNDS = [
-    {
-      round: 'Primer boceto: lo más simple que podría funcionar.',
-      steps: [
-        { kind: 'tesis', label: 'Tesis · el diseño actual', html: '<b>Un solo módulo "Pedido"</b> que lo hace todo: recibe el platillo elegido, calcula el total, cobra la tarjeta y avisa al repartidor. Una sola pieza, fácil de entender de un vistazo.' },
-        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'El módulo <b>hace demasiado</b> (baja cohesión). El día que cambie la forma de cobrar, hay que tocar el mismo bloque donde vive el cálculo del total y el aviso al repartidor. Un cambio pequeño arriesga todo.' },
-        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Separamos responsabilidades: <b>"Carrito"</b> (qué se pide y cuánto suma), <b>"Cobro"</b> (el pago) y <b>"Reparto"</b> (la entrega). Tres módulos cohesivos. Ahora cambiar el pago no toca nada más.' }
-      ]
-    },
-    {
-      round: 'La síntesis anterior es ahora nuestra tesis. ¿Qué grieta esconde?',
-      steps: [
-        { kind: 'tesis', label: 'Tesis · el diseño actual', html: 'Tres módulos &mdash; <b>Carrito, Cobro y Reparto</b> &mdash; pero <b>Cobro</b> lee directamente la base de datos de pedidos para saber el total, y <b>Reparto</b> también la consulta a su manera.' },
-        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'Hay <b>alto acoplamiento</b> con los datos: cada módulo conoce por dentro cómo se guarda un pedido. Si cambia la estructura de datos, se rompen los tres a la vez. La frontera está mal puesta.' },
-        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Metemos una <b>capa de datos</b> en medio: nadie toca la base directamente, todos piden por una interfaz común ("dame el total del pedido N"). Cambiar cómo se guarda ya no afecta a Cobro ni a Reparto.' }
-      ]
-    },
-    {
-      round: 'Última ronda. El sistema creció; la tesis vuelve a tensionarse.',
-      steps: [
-        { kind: 'tesis', label: 'Tesis · el diseño actual', html: 'El sistema funciona y la app se hizo popular. A la hora de la comida, <b>miles de pedidos al mismo tiempo</b> saturan el módulo de Reparto, que tarda en asignar repartidores.' },
-        { kind: 'anti', label: 'Antítesis · el problema que revela', html: 'Todo vive en <b>un solo bloque desplegado junto</b>: para aguantar el pico de Reparto hay que escalar también Carrito y Cobro, aunque esos no estén saturados. Se paga de más y la rigidez vuelve.' },
-        { kind: 'sint', label: 'Síntesis · la versión refinada', html: 'Convertimos cada módulo en un <b>microservicio independiente</b> en la nube. Reparto escala solo cuando se satura, sin tocar a los demás. La modularidad de antes, ahora también en el despliegue &mdash; pero con su propia complejidad nueva por gestionar.' }
-      ]
+    const ALIGNED_CAPTION = 'Así fue: el código muerto de Power Peg (capa 2), un despliegue sin verificar los ocho servidores (capas 2 y 3), y sin monitoreo ni interruptor de emergencia que detuviera la anomalía (capas 4 y 5) — cuatro agujeros, alineados en 45 minutos.';
+    const DEFAULT_CAPTION = 'Por defecto, los cinco agujeros están en posiciones distintas — ningún peligro los atraviesa todos. Toca el botón para ver qué pasa cuando, por descuido, terminan alineados.';
+
+    function align() {
+      holes.forEach(h => { h.style.left = '50%'; });
+      stack.classList.add('aligned');
+      caption.textContent = ALIGNED_CAPTION;
     }
-  ];
+    function reset() {
+      holes.forEach(h => { h.style.left = h.dataset.orig + '%'; });
+      stack.classList.remove('aligned');
+      caption.textContent = DEFAULT_CAPTION;
+    }
 
-  (function initDia() {
-    const box = document.getElementById('dia');
+    btn.addEventListener('click', align);
+    resetBtn.addEventListener('click', reset);
+  })();
+
+  // ============================================================
+  // Expediente ampliado de Knight Capital: revelado progresivo.
+  // ============================================================
+  (function initTimeline() {
+    const box = document.getElementById('tl');
     if (!box) return;
-    const stepsEl = document.getElementById('diaSteps');
-    const roundEl = document.getElementById('diaRound');
-    const progressEl = document.getElementById('diaProgress');
-    const trackEl = document.getElementById('diaTrack');
-    const nextBtn = document.getElementById('diaNext');
-    const resetBtn = document.getElementById('diaReset');
-    const conclusion = document.getElementById('diaConclusion');
-    const dots = trackEl.querySelectorAll('.dia-dot');
+    const stepsEl = document.getElementById('tlSteps');
+    const progressEl = document.getElementById('tlProgress');
+    const nextBtn = document.getElementById('tlNext');
+    const resetBtn = document.getElementById('tlReset');
+    const afterEl = document.getElementById('tlAfter');
+    const steps = stepsEl.querySelectorAll('.tl-step');
 
-    let round = 0;   // ronda actual (0..2)
-    let shown = 0;   // pasos revelados de la ronda actual (0..3)
+    let shown = 0;
 
-    function renderRound() {
-      const r = DIA_ROUNDS[round];
-      roundEl.textContent = r.round;
-      progressEl.textContent = 'Ronda ' + (round + 1) + ' de ' + DIA_ROUNDS.length + ' · el motor del refinamiento';
-      dots.forEach((d, i) => d.classList.toggle('on', i <= round));
-      stepsEl.innerHTML = '';
-      r.steps.forEach((s) => {
-        const div = document.createElement('div');
-        div.className = 'dia-step is-' + s.kind;
-        div.innerHTML = '<div class="ds-label">' + s.label + '</div><div class="ds-text">' + s.html + '</div>';
-        stepsEl.appendChild(div);
-      });
+    function render() {
+      progressEl.textContent = 'Paso ' + shown + ' de ' + steps.length + ' · el expediente ampliado';
     }
 
     function revealNext() {
-      const r = DIA_ROUNDS[round];
-      if (shown < r.steps.length) {
-        const el = stepsEl.children[shown];
-        requestAnimationFrame(() => el.classList.add('show'));
+      if (shown < steps.length) {
+        steps[shown].classList.add('show');
         shown++;
-        // Botón cambia según dónde estamos
-        if (shown < r.steps.length) {
-          const nextKind = r.steps[shown].kind;
-          nextBtn.textContent = nextKind === 'anti' ? 'Revelar la antítesis' : 'Revelar la síntesis';
-        } else if (round < DIA_ROUNDS.length - 1) {
-          nextBtn.textContent = 'Siguiente ronda →';
+        render();
+        if (shown < steps.length) {
+          nextBtn.textContent = 'Siguiente momento →';
         } else {
-          nextBtn.textContent = 'Cerrar el ciclo';
+          nextBtn.textContent = 'Cerrar el expediente';
         }
         return;
       }
-      // Ya se reveló toda la ronda: avanzar de ronda o terminar
-      if (round < DIA_ROUNDS.length - 1) {
-        round++;
-        shown = 0;
-        renderRound();
-        nextBtn.textContent = 'Revelar la tesis';
-      } else {
-        conclusion.classList.add('show');
-        nextBtn.disabled = true;
-        nextBtn.textContent = 'Ciclo completo';
-      }
+      afterEl.classList.add('show');
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Expediente cerrado';
     }
 
     function reset() {
-      round = 0;
+      steps.forEach(s => s.classList.remove('show'));
+      afterEl.classList.remove('show');
       shown = 0;
-      conclusion.classList.remove('show');
       nextBtn.disabled = false;
-      renderRound();
-      nextBtn.textContent = 'Revelar la tesis';
+      nextBtn.textContent = 'Revelar el primer paso';
+      render();
     }
 
     nextBtn.addEventListener('click', revealNext);
     resetBtn.addEventListener('click', reset);
-    reset();
+    render();
   })();
 </script>
 
