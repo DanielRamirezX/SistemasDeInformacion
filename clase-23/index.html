@@ -93,10 +93,10 @@
 
   /* ── TARJETAS RELÁMPAGO ──────────────────────────────────── */
   .fc-grid { display:grid; margin:16px 0 0; grid-template-columns:repeat(4,1fr); gap:10px; }
-  .fc { position:relative; height:148px; padding:0; border:0; background:none; perspective:900px; cursor:pointer; }
-  .fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.8,.2,1); }
+  .fc { position:relative; display:block; width:100%; height:148px; padding:0; border:0; background:none; color:inherit; text-align:inherit; perspective:900px; cursor:pointer; -webkit-appearance:none; appearance:none; }
+  .fc-inner { position:absolute; display:block; inset:0; -webkit-transform-style:preserve-3d; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.8,.2,1); }
   .fc.is-flipped .fc-inner { transform:rotateY(180deg); }
-  .fc-face { position:absolute; display:flex; inset:0; padding:14px 13px; border:1px solid var(--line-strong); border-radius:6px; flex-direction:column; justify-content:center; backface-visibility:hidden; }
+  .fc-face { position:absolute; display:flex; inset:0; padding:14px 13px; border:1px solid var(--line-strong); border-radius:6px; flex-direction:column; justify-content:center; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
   .fc-front { background:var(--paper); } .fc-back { background:var(--paper-deep); transform:rotateY(180deg); }
   .fc-term { color:var(--ink); font:italic 21px/1.08 var(--serif); } .fc-tag { margin-top:8px; color:var(--ink-faint); font:8px var(--mono); letter-spacing:.12em; text-transform:uppercase; }
   .fc-def { color:var(--ink-soft); font-size:12.5px; line-height:1.45; text-align:left; }
@@ -460,11 +460,15 @@
       button.type = 'button';
       button.className = 'fc';
       button.setAttribute('aria-label', 'Tarjeta: ' + card[0] + '. Toca para ver la respuesta.');
+      button.setAttribute('aria-pressed', 'false');
       button.innerHTML = '<span class="fc-inner"><span class="fc-face fc-front"><span class="fc-term">' + card[0] + '</span><span class="fc-tag">' + card[1] + '</span></span><span class="fc-face fc-back"><span class="fc-def">' + card[2] + '</span></span></span>';
-      button.addEventListener('click', () => button.classList.toggle('is-flipped'));
+      button.addEventListener('click', () => {
+        const flipped = button.classList.toggle('is-flipped');
+        button.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+      });
       grid.appendChild(button);
     });
-    if (reset) reset.addEventListener('click', () => grid.querySelectorAll('.fc').forEach(card => card.classList.remove('is-flipped')));
+    if (reset) reset.addEventListener('click', () => grid.querySelectorAll('.fc').forEach(card => { card.classList.remove('is-flipped'); card.setAttribute('aria-pressed', 'false'); }));
   })();
 
   // ── Examen: 20 preguntas sobre los capítulos 1–22 ──────────
